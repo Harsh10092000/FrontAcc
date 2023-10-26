@@ -11,7 +11,7 @@ import Services from "./pages/services/Services";
 import Products from "./pages/products/Products";
 import Cashbook from "./pages/cashbook/Cashbook";
 import Expenses from "./pages/expenses/Expenses";
-import Sales from "./pages/sales/Sales";
+import Sales from "./pages/sales/sales";
 
 const App = () => {
   const router = createBrowserRouter([
