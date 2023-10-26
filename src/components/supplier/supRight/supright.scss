@@ -1,0 +1,61 @@
+.supright {
+  width: 100%;
+  .customer {
+    padding: 10px;
+  }
+  .reminder{
+    margin: 10px;
+    background-color: rgb(246, 246, 246);
+    .right{
+        button{
+            border: 1px solid #d1d1d1;
+            transition: all 400ms ease-in-out;
+        }
+        button:hover{
+            .onhover{
+                color: white !important;
+            }
+        }
+    }
+  }
+  .heading {
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid lightgrey;
+    font-size: 19px;
+  }
+  .transactions {
+    height: calc(100vh - 489px);
+    overflow-y: scroll;
+  }
+  .btn {
+    width: 100%;
+    display: flex;
+    padding: 20px;
+    gap: 30px;
+
+    .pay {
+      width: 50%;
+      background-color: #fee4e2;
+      padding: 10px;
+      border-radius: 8px;
+      transition: all 400ms ease-in;
+    }
+    .receive {
+      width: 50%;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #d1fadf;
+      transition: all 400ms ease-in;
+    }
+    .pay:hover {
+      background-color: rgb(220 38 38);
+      color: white;
+    }
+    .receive:hover {
+      background-color: #39b366;
+      color: white;
+    }
+  }
+}

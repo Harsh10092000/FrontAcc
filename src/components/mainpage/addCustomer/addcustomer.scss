@@ -1,0 +1,62 @@
+.heading {
+  padding: 10px;
+  border-bottom: 1px solid rgb(214, 214, 214);
+}
+.section-wrapper-2 {
+  background-color: white;
+  padding-bottom: 70px;
+  margin: 0 auto;
+  overflow-y: scroll;
+  height: calc(100vh - 87px - 53px);
+  .section-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .forms {
+      flex-direction: column;
+      padding: 30px;
+      svg {
+        position: static;
+      }
+      .box-sec {
+        display: flex;
+        justify-content: flex-end;
+        justify-content: space-between;
+        margin-top: 22px;
+        .sec-1 {
+          margin-right: 10px; // city
+        }
+        .sec-2 {
+          margin-left: 10px; //state
+        }
+      }
+      .check-box-sec {
+        align-items: center;
+      }
+    }
+  }
+}
+
+.add-customer-btn-wrapper2 {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: fixed;
+  bottom: 100px;
+  button{
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #d1fadf;
+    transition: all 400ms ease-in;
+  }
+  button:hover{
+    background-color: #39b366;
+    color: white;
+  }
+}
+// .css-wb57ya-MuiFormControl-root-MuiTextField-root {
+//   margin-top: 0 !important;
+// }

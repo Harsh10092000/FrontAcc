@@ -1,0 +1,30 @@
+.serright{
+    width: 100%;
+    .details{
+        .grItems{
+            padding: 20px 10px;
+            border: 1px solid rgb(221, 221, 221);
+            text-align: center;
+        }
+    }
+    .transactions{
+        height: calc(100vh - 410px);
+        overflow-y: scroll;
+    }
+    .btn{
+        width: 100%;
+        padding: 20px;
+        button{
+            background-color: #dbeafe;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            color: #2563eb;
+            transition: all 400ms ease-in;
+        }
+        button:hover{
+            color: white;
+            background-color: #2563eb;
+        }
+    }
+}

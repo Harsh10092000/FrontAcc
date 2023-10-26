@@ -1,0 +1,28 @@
+.cashleft {
+  width: 100%;
+  .balance {
+    .report {
+      border: 1px solid #2563eb;
+      transition: all 400ms ease-in-out;
+    }
+  }
+  .date {
+    .line {
+      content: "";
+      width: 2px;
+      height: 60px;
+      background: #89a8ec;
+      filter: blur(0.4);
+    }
+  }
+  .transactions {
+    height: calc(100vh - 525px);
+    overflow-y: scroll;
+    border-bottom: 1px solid lightgrey;
+  }
+  .outin {
+    button {
+      transition: all 400ms ease-in-out;
+    }
+  }
+}

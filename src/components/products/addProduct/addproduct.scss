@@ -1,0 +1,92 @@
+.heading {
+    padding: 10px;
+    border-bottom: 1px solid rgb(214, 214, 214);
+  }
+  .add-product-section-wrapper {
+    background-color: white;
+    margin: 0 auto;
+    overflow-y: scroll;
+    height: calc(100vh - 87px - 53px);
+    .section-2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      form {
+        flex-direction: column;
+        padding: 30px;
+        padding-bottom: 0;
+        svg {
+          position: static;
+        }
+        .box-sec {
+          display: flex;
+          
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 22px;
+          .sec-1 {
+            margin-right: 10px; // city
+          }
+          
+          .gst-section-wrapper {
+            background-color: white;
+            margin: 0 auto;
+            padding: 10px 10px 0px 5px;
+            .gst-section {
+              .card-sec {
+                padding: 20px 0;
+                border-bottom: 1px solid rgb(214, 214, 214);
+                justify-content: space-between;
+  
+                .gst-card-text {
+                  padding: 0px 5px;
+                }
+              }
+            }
+          }
+        }
+        .box-sex-1 {
+          position: sticky;
+          top: 0;
+          background-color: white;
+          align-items: flex-start;
+          padding-bottom: 20px;
+          z-index: 999;
+        }
+        .margin-top-zero {
+          margin-top: 0;
+          background-color: rgb(241 245 249);
+          padding-top: 5px;
+        }
+        .margin-bottom-zero {
+          margin-bottom: 0;
+          
+        }
+          
+      }
+    }
+  }
+  
+  .add-product-btn-wrapper {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    position: fixed;
+    bottom: 10px;
+    button{
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #d1fadf;
+      transition: all 400ms ease-in;
+    }
+    button:hover{
+      background-color: #39b366;
+      color: white;
+    }
+  }
+  .css-wb57ya-MuiFormControl-root-MuiTextField-root {
+    margin-top: 0 !important;
+  }

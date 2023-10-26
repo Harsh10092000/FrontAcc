@@ -1,0 +1,55 @@
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.heading {
+  padding: 10px;
+  border-bottom: 1px solid rgb(214, 214, 214);
+}
+
+.cashout-section-wrapper {
+  background-color: white;
+  padding-bottom: 70px;
+  margin: 0 auto;
+  overflow-y: scroll;
+  height: calc(100vh - 87px - 53px);
+  .section-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    form {
+      flex-direction: column;
+      padding: 30px;
+      padding-bottom: 0;
+      svg {
+        position: static;
+      }
+      .box-sec {
+        display: flex;
+        justify-content: flex-end;
+        justify-content: space-between;
+        margin-top: 22px;
+      }
+    }
+  }
+}
+
+.cashout-btn-wrapper {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+}
+
+.css-wb57ya-MuiFormControl-root-MuiTextField-root {
+  margin-top: 0 !important;
+}

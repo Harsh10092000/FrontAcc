@@ -1,0 +1,236 @@
+:root {
+    //--bs-color: #008cff;
+    --text-slate100: rgb(241 245 249);
+    --text-slate600: rgb(71 85 105);
+    --text-blue: #008cba;
+  }
+  
+  .contact-us-wrapper {
+      .contact-us-navbar-wraperr {
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 9%;
+        font-weight: bold;
+        .logo {
+          font-size: 46px;
+          font-weight: 700;
+          color: var(--text-slate600);
+        }
+        .links {
+          display: flex;
+          align-items: center;
+  
+          div {
+            padding: 0 12px;
+            p {
+              color: var(--text-slate600);
+              padding: 10px 20px;
+              text-decoration: none;
+              font-size: 20px;
+              opacity: 1;
+            }
+          }
+        }
+      }
+    .contact-us-heading {
+      background-image: url("https://static.vecteezy.com/system/resources/previews/006/304/593/non_2x/abstract-white-and-light-grey-geometric-square-overlapped-pattern-on-background-with-shadow-modern-silver-color-cube-shape-with-copy-space-simple-and-minimal-banner-design-eps10-vector.jpg");
+      .contact-us-heading-section {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 140, 255, 0.039) 64%,
+          rgba(255, 255, 255, 0.28765151079963236) 100%
+        );
+        padding: 50px 10%;
+        p {
+          font-size: 25px;
+          font-weight: 600;
+        }
+        h1 {
+          font-size: 45px;
+          font-weight: 700;
+          color: var(--text-blue);
+        }
+      }
+    }
+    // #################### section-1 ####################
+    .main-section {
+      padding: 100px 10% 70px 10%;
+  
+      .section-wrapper {
+        .section-text {
+          margin-bottom: 42px;
+          h1 {
+            font-size: 40px;
+            line-height: 50px;
+            font-weight: 700;
+            margin-bottom: 21px;
+          }
+          p {
+            font-size: 17px;
+            line-height: 50px;
+            font-weight: 400;
+          }
+        }
+        .contact-us-card-section {
+          .contact-us-card {
+            background: #fff;
+            padding: 20px 20px 10px 20px;
+            border-radius: 5px;
+            transition: all 500ms ease;
+            .inner-box {
+              padding: 35px;
+              box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.1);
+              .card-section {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                .card-icon {
+                  margin-bottom: 20px;
+                }
+                .card-content {
+                  h4 {
+                    font-size: 20px;
+                    line-height: 30px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                  }
+                  p {
+                    font-size: 17px;
+                    margin-bottom: 25px;
+                  }
+                  a {
+                    border: 1px solid var(--text-blue);
+                    border-radius: 8px;
+                    padding: 10px 32px;
+                    color: var(--text-blue);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      // #################### section-2 ####################
+      .right-section {
+        padding: 0 15px;
+        margin: 0 auto;
+        .right-wrapper {
+          .company-details-wrapper {
+            background-color: var(--text-blue);
+            padding: 25px;
+            border-radius: 6px;
+            h4 {
+              font-size: 22px;
+              line-height: 32px;
+              font-weight: 600;
+            }
+            .inner-section {
+              .card-sec {
+                color: var(--text-slate100);
+                padding: 20px 0;
+                border-bottom: 1px solid rgb(214, 214, 214);
+                .company-details-icon-wrapper {
+                  padding: 3px 9px;
+                  svg {
+                    height: 29px !important;
+                    width: 21px !important;
+                  }
+                }
+                .company-details-text {
+                  padding: 0px 10px;
+                }
+              }
+              // #################### social-media-card-icons  ####################
+              .social-media-card-icons {
+                .inside-sec-card {
+                  padding: 20px 0;
+                  display: flex !important;
+                  flex-direction: column !important;
+  
+                  a {
+                    color: var(--text-slate100);
+                    padding: 10px 9px 10px 9px;
+                    display: inline-block;
+                    //background-color: #6fbed8;
+                    //border-radius: 50%;
+                  }
+                }
+              }
+  
+              // #################### google-map-link  ####################
+              .google-map-link-wrapper {
+                padding: 10px;
+  
+                color: var(--text-slate100);
+                .google-map-link {
+                  border: 1px solid var(--text-slate100);
+                  padding: 8px 0;
+                  border-radius: 8px;
+                  font-size: 17px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    // #################### form-section ####################
+    .form-section {
+      padding: 70px 10%;
+      .form-section-wrapper {
+        .section-heading {
+          p {
+            font-size: 17px;
+            line-height: 50px;
+            font-weight: 400;
+            //color: black;
+          }
+          h1 {
+            font-size: 40px;
+            line-height: 50px;
+            font-weight: 700;
+            color: var(--text-slate600);
+            span {
+              color: var(--text-blue);
+            }
+          }
+        }
+        .send-us-message {
+          .send-us-message-wrapper {
+            .section-wrapper {
+              padding-top: 0px;
+              padding-left: 0;
+  
+              .padding-left-zero {
+                padding-left: 0;
+                padding-right: 25px;
+              }
+              .box-sec {
+                margin: 15px 0;
+              }
+              .message-box {
+                div {
+                  div {
+                    padding: 6px 14px;
+                  }
+                }
+              }
+            }
+          }
+        }
+  
+        .send-msg-btn-wrapper {
+          margin-left: 5px;
+          .send-msg-btn {
+            padding: 10px 32px;
+            border-radius: 8px;
+            background-color: var(--text-blue);
+            color: var(--text-slate100);
+          }
+        }
+      }
+    }
+  }
+  

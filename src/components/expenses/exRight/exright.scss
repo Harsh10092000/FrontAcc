@@ -1,0 +1,21 @@
+.exright {
+  width: 100%;
+  .exCard {
+    .cnt {
+      .editndel {
+        .edit {
+          border: 1px solid #2563eb;
+          transition: all 400ms ease-in-out;
+        }
+        .del {
+          border: 1px solid #dc2626;
+          transition: all 400ms ease-in-out;
+        }
+      }
+    }
+  }
+  .information {
+    height: calc(100vh - 340px);
+    overflow-y: scroll;
+  }
+}

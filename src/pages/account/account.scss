@@ -1,0 +1,85 @@
+.business_acc_section-wrapper {
+    background:linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%),url("../../assets/Account.jpg");
+    background-size: 120%;
+    margin: 0 auto;
+    padding: 22px 32px;
+    z-index: 1;
+    height: calc(100vh - 87px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media screen and (max-width: 600px) {
+      padding: 16px;
+    }
+    .section-1 {
+        background-color: rgba(255, 255, 255, 0.8);
+    width: 600px;
+    padding: 40px;
+    border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      @media screen and (max-width: 600px) {
+        padding: 60px 5px;
+        margin: 20px;
+      }
+      form {
+        flex-direction: column;
+        margin: 0 0px !important;
+        max-width: 100%;
+        padding: 20px;
+        background-color: transparent;
+        
+        svg {
+          position: static;
+        }
+        .box-sec {
+          display: flex;
+          justify-content: flex-end;
+          justify-content: space-between;
+          margin-top: 10px;
+          .img-browse-btn:hover {
+            background-color: #f5f5f5;
+          }
+          button:hover {
+            color: red;
+          }
+          input{
+            padding: 7px 14px;
+          }
+          label {
+            font-size: 14px;
+          }
+        }
+        .upload-img-sec {
+          margin-top: 10px;
+          div , span{
+            font-size: 14px;
+          }
+        }
+        .create_acc_btn_wrapper {
+          margin-top: 22px;
+          .create_acc_btn {
+            padding: 10px 32px;
+            border-radius: 8px;
+            background-color: #d1fadf;
+            transition: all 300ms ease-in;
+          }
+          .create_acc_btn:hover {
+            background-color: #39b366;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    min-width: 100%;
+  }
+  
+  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    width: 100%;
+  }
+  

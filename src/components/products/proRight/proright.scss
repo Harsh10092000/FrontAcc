@@ -1,0 +1,44 @@
+.proright{
+    width: 100%;
+    .details{
+        .grItems{
+            padding: 20px 10px;
+            border: 1px solid rgb(221, 221, 221);
+            text-align: center;
+        }
+    }
+    .transactions{
+        height: calc(100vh - 478px);
+        overflow-y: scroll;
+    }
+    .btn{
+        width: 100%;
+        display: flex;
+        padding: 20px;
+        gap: 30px;
+        
+        .pay{
+            width: 50%;
+            background-color: #fee4e2;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 400ms ease-in;
+        }
+        .receive{
+            width: 50%;
+            padding: 10px;
+            border-radius: 8px;
+            background-color:#D1FADF;
+            transition: all 400ms ease-in;
+
+        }
+        .pay:hover{
+            background-color: rgb(220 38 38);
+            color: white;
+        }
+        .receive:hover{
+            background-color: #39B366;
+            color: white;
+        }
+    }
+}

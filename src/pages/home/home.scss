@@ -1,0 +1,628 @@
+:root {
+    --bs-color: white;
+  }
+  
+  body {
+    margin: 0;
+  }
+  .css-ibpfkq{
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .homepage-main {
+    background-image: url("../../assets/HomeImg.png");
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  
+    .navbar-wraperr {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 9%;
+      font-weight: bold;
+      background: linear-gradient(
+        90deg,
+        rgba(0, 140, 255, 0.4072593539368873) 64%,
+        rgba(255, 255, 255, 0.28765151079963236) 100%
+      );
+      .logo {
+        font-size: 46px;
+        font-weight: 700;
+        color: var(--bs-color);
+      }
+      .links {
+        display: flex;
+        align-items: center;
+  
+        div {
+          padding: 0 12px;
+          a {
+            color: var(--bs-color);
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 20px;
+            opacity: 1;
+          }
+        }
+      }
+    }
+  
+    .section {
+      padding: 0px 0;
+      height: 95%;
+      .section-wrapper {
+        position: relative;
+        text-align: center;
+        color: var(--bs-color);
+        max-width: 100%;
+        height: 95vh;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 140, 255, 0.4072593539368873) 64%,
+          rgba(255, 255, 255, 0.28765151079963236) 100%
+        );
+  
+        .home-page-heading {
+          padding: 5% 14% 3% 14%;
+          margin: auto 0;
+  
+          h1 {
+            font-size: 45px;
+            margin-bottom: 0;
+            font-weight: 500;
+          }
+  
+          h4 {
+            font-size: 20px;
+            font-weight: 300;
+            margin-top: 0;
+            padding-top: 10px;
+          }
+        }
+  
+        .read-more {
+          text-decoration: none;
+          padding: 1% 14% 1% 14%;
+          margin: 0 20px;
+
+          color: white;
+          transition: 0.3s;
+          display: inline-flex;
+          border: 2px solid white;
+          font-size: 16px;
+          padding: 16px;
+          .arrow-icon {
+            font-size: 18px;
+            margin-left: 5px;
+            line-height: 0;
+            transition: all 0.3s ease-in;
+            position: relative;
+            top: 0px;
+            display: inline;
+          }
+        }
+        .read-more:hover {
+          padding-right: 19px;
+        }
+  
+        
+      }
+  
+      .sec-2 {
+        img {
+          all: revert;
+          width: 500px;
+          height: 500px;
+        }
+      }
+    }
+  }
+  
+  
+  .footer {
+    padding: 0 4%;
+    position: absolute;
+    top: 75%;
+    text-align: start !important;
+    align-items: start;
+  
+    .footer-section {
+      .sec {
+        padding: 5px 16px;
+  
+        .inside-sec {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.79);
+          box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.08);
+          border: 1px white solid;
+          background: linear-gradient(
+            180deg,
+            rgba(0, 140, 255, 0.4026785714285714) 0%,
+            rgba(255, 255, 255, 0.50015756302521013) 100%
+          );
+  
+          h1 {
+            all: revert;
+            color: var(--bs-color);
+            color: white;
+            font-size: 25px;
+          }
+          p {
+            all: revert;
+            color: white;
+            font-size: 16px;
+          }
+        }
+      }
+  
+      .sec-1 {
+        .main-heading {
+          h1 {
+            font-size: 40px;
+            color: white;
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+  
+  @media screen and (max-width: 900px) {
+    .homepage-main .section {
+      height: 60vh;
+    }
+  }
+  
+  @media screen and (max-width: 900px) {
+     .footer {
+      display: block;
+    }
+  }
+  
+  @media screen and (max-width: 900px) {
+     .footer {
+      all: revert;
+      position: relative;
+      padding: 50px;
+      background-color: #008cba;
+    }
+  }
+  
+  .css-1633um2-MuiPaper-root {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .section-wrapper .read-more a {
+    text-decoration: none !important;
+  }
+  
+  // #####################  features-section  #########################
+  
+  .features-section {
+    padding: 60px 10%;
+    background-color: white;
+    margin: 0;
+    .features {
+      padding: 20px 40px 39px 40px;
+      background-color: #edf2f8;
+      .section-1 {
+        padding: 30px 20px;
+        background-color: #edf2f8;
+  
+        .sec-1-1 {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          text-align: start !important;
+  
+          h1 {
+            all: revert;
+            text-align: start;
+            margin: 0;
+            padding-top: 10px;
+            span {
+              all: revert;
+              color: #008cba;
+            }
+          }
+  
+          p {
+            all: revert;
+            margin: 0;
+            padding-bottom: 25px;
+            color: #6e6e6e;
+          }
+        }
+  
+        .sec-1-2 {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+  
+          .read-more {
+            text-decoration: none !important;
+            color: black;
+            transition: 0.3s;
+            display: inline-flex;
+            border: 2px solid black;
+            font-size: 18px;
+            padding: 16px;
+            .arrow-icon {
+              font-size: 18px;
+              margin-left: 5px;
+              line-height: 0;
+              transition: 0.3s;
+              position: relative;
+              top: 0px;
+              display: inline;
+            }
+          }
+          .read-more:hover {
+            padding-right: 19px;
+          }
+        }
+      }
+  
+      .section-2 {
+        all: revert;
+        padding: 0 0;
+        border-top: 2px dashed black;
+        position: relative;
+  
+        .icon {
+          all: revert;
+          text-align: start;
+          top: -20px;
+          position: relative;
+          margin-bottom: 10px;
+          .inside-icon {
+            all: revert;
+            background-color: white;
+            background-color: #008cba;
+            color: white;
+            padding: 40px 13px 12px 13px;
+            border-radius: 50%;
+            svg {
+              display: revert;
+              vertical-align: baseline;
+            }
+          }
+        }
+        .sec-2-1 {
+          margin-top: 0px;
+        }
+        .sec-2-2 {
+          margin-top: 0px;
+        }
+  
+        p {
+          all: revert;
+          text-align: start;
+          padding: 0 15px;
+          font-size: 16px;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+  
+  .css-1633um2-MuiPaper-root {
+    text-align: start;
+  }
+  
+  
+  
+  /* ###################  why accbook    ########################### */
+  .why-accbook {
+    padding: 60px 10%;
+    background-color: white;
+    z-index: 99999;
+    position: relative;
+  
+    .sec {
+      margin: 0 auto;
+      .sec-content:hover {
+        .bg-img {
+          opacity: 1;
+        }
+        .inside-img-wrapper {
+          transform: scale(1.2);
+          width: 100%;
+        }
+      }
+  
+      .sec-content {
+        padding: 5px 40px;
+        position: relative;
+        .hidden-heading {
+          opacity: 0;
+        }
+        .img-wrapper {
+          position: relative;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            transition: all 300ms ease-in-out;
+          .inside-img-wrapper {
+            transition: all 5s ease-in;
+          }
+        }
+        p {
+          all: revert;
+          padding-top: 5px;
+        }
+        .home-page-heading {
+          all: revert;
+          position: absolute;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          top: 210px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 90%;
+          left: 4%;
+          z-index: 999;
+          background-color: white;
+          border-radius: 5px;
+          box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.1);
+          p {
+            all: revert;
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 32px;
+            padding: 14px 15px;
+            margin: 0;
+            color: #008cba;
+          }
+        }
+      }
+    }
+  }
+  
+  .css-1tu1tt3-MuiPaper-root-MuiCard-root {
+    margin: 0 auto;
+  }
+  
+  /* ###################  services-wrapper   ########################### */
+  .services-wrapper h1 {
+    all: revert;
+    padding: 40px 0 0px 0;
+  }
+  .services-wrapper {
+    background-color: #edf2f8;
+    height: 100%;
+    .inside-shape {
+      height: 800px;
+      width: 950px;
+      background: linear-gradient(
+        30deg,
+        rgba(255, 255, 255, 0.50015756302521013) 10%,
+        rgba(0, 140, 255, 0.8026785714285714) 90%
+      );
+      transform: rotate(26deg);
+      top: -200px;
+      left: -45%;
+      position: relative;
+      border-radius: 100px 213px 100px 100px;
+      padding: 40px;
+      z-index: 1;
+    }
+    @media screen and (max-width: 850px) {
+      .inside-shape {
+        opacity: 0;
+        width: 0;
+      }
+    }
+  
+    .section {
+      background-color: #edf2f8;
+      width: 100%;
+      position: relative;
+      height: 500px;
+      @media screen and (max-width: 500px) {
+        height: 800px;
+      }
+  
+      .sec-1 {
+        background-color: #edf2f8;
+        top: -820px;
+        position: absolute;
+        text-align: center;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0 auto;
+        vertical-align: middle;
+  
+        span {
+          color: #008cba;
+        }
+        p {
+          all: revert;
+          color: #6e6e6e;
+        }
+      }
+  
+      .sec-2 {
+        padding: 0 18%;
+        top: -600px;
+        position: relative;
+  
+        Item {
+          padding: 0;
+        }
+  
+        .sec-card {
+          padding: 10px 30px;
+  
+          .inside-sec-card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+              0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            padding: 25px 30px;
+            border-radius: 20px;
+  
+            h1 {
+              all: revert;
+              padding-top: 0;
+              font-size: 32px;
+              color: #008cba;
+            }
+  
+            p {
+              all: revert;
+              font-size: 16px;
+              color: #6e6e6e;
+            }
+          }
+        }
+        @media screen and (max-width: 500px) {
+          padding: 0 8%;
+          top: -580px;
+        }
+      }
+  
+      .sec-2::after {
+        position: absolute;
+        content: "";
+        height: 100%;
+        width: 10px;
+        background-color: blue;
+        background-image: linear-gradient(blue, yellow);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 1) 10%,
+          rgba(0, 140, 255, 0.8026785714285714) 100%
+        );
+        border-radius: 8px;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      @media screen and (max-width: 850px) {
+        .sec-2::after {
+          display: none;
+        }
+      }
+    }
+  }
+  
+  /* ###################  website for diff businesses    ########################### */
+  
+  .businessTypeWrapper h1,
+  .businessTypeWrapper p {
+    all: revert;
+  }
+  
+  .businessTypeWrapper {
+    padding: 80px 14%;
+    .secT {
+      .secT-1 {
+        padding: 20px 30px;
+  
+        .secT-card {
+          //border: 1px black solid;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          padding: 20px 30px;
+          text-align: start;
+          position: relative;
+          z-index: 99;
+          background-color: white;
+          .inside-secT-card {
+            h1 {
+              all: revert;
+              color: #008cba;
+            }
+            p {
+              all: revert;
+              color: #6e6e6e;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  /* ################### Faq    ########################### */
+  .faq-wrapper {
+    padding: 60px 10%;
+    .faq-section {
+      .sec-1 {
+        .accordion_card {
+          transition: margin 4s cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+          transition: all 3s ease-in-out;
+        }
+        .sec {
+          text-align: start;
+        }
+        .accordion_details {
+          transition: all 3s ease-in-out;
+          .sec-text {
+            text-align: start;
+          }
+        }
+      }
+      .sec-2 {
+        img {
+          max-width: 100%;
+          max-height: 100%;
+          margin: auto 0;
+        }
+      }
+    }
+  }
+  
+  //image margin
+  .css-mhc70k-MuiGrid-root > .MuiGrid-item {
+    margin: auto 0;
+  }
+  
+  /* ################### Page Foooter    ########################### */
+  .page-footer .inside-sec-card-1 {
+    all: revert;
+  }
+  
+  .page-footer {
+    padding: 30px 0 0 0;
+    background-color: #008cba;
+    color: white;
+    .sec-card {
+      .inside-sec-card {
+        padding: 10px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        h1 {
+          font-size: 45px;
+        }
+        .address,
+        .contact {
+          display: flex;
+          .f-icon {
+            padding: 0 10px;
+            
+          }
+        }
+      }
+      .inside-sec-card-1 {
+        text-align: center;
+        padding: 20px 0;
+        display: flex !important;
+        flex-direction: column !important;
+        a {
+          color: white;
+          padding: 15px 20px 5px 20px;
+          display: inline-block;
+        }
+      }
+    }
+  }

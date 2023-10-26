@@ -1,0 +1,56 @@
+.supleft{
+    width: 100%;
+    .heading{
+        color: #008cffb4;
+        border-bottom:1px solid lightgrey;
+        padding: 20px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        gap: 5px;
+        .num{
+            background-color: #E8F0FE;
+            font-size: 13px;
+            width: 2.75rem;
+            height: 1.8rem;
+            padding: 0.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 2rem;
+            line-height: 20px;
+        }
+    }
+    .giveget{
+        padding: 20px;
+        border-bottom:1px solid lightgrey;
+        button{
+            border: 1px solid #109E5B;
+            color: #109E5B;
+            padding: 6px 7px;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 400ms ease-in;
+        }
+        button:hover{
+            background-color:#109E5B;
+            border: 1px solid transparent;
+            color: white;
+        }
+    }
+    .filters{
+        padding: 0.75rem;
+    }
+    .heading1{
+        padding: 0.75rem 2rem;
+        border-bottom: 1px solid lightgrey;
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        background-color: rgb(240, 240, 240);
+    }
+    .cards{
+        height: calc(100vh - 365px);
+        overflow-y: scroll;
+    }
+}
