@@ -9,7 +9,7 @@ import AddExpense from "../../components/expenses/exAdd/ExAdd";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { UserContext } from "../../context/UserIdContext";
 import NoSelected from "../../components/cashbook/noSelected/NoSelected";
-import EditExpenses from "../../components/expenses/editExpenses/editExpenses";
+import EditExpenses from "../../components/expenses/editExpenses/EditExpenses";
 
 const MyApp = () => {
   const { expId, change } = useContext(UserContext);
