@@ -34,7 +34,7 @@ const EditIn = (props) => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/cash/fetchDataid/${cashId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/cash/fetchDataid/${cashId}`)
       .then((res) => {
         setData({
           ...data,
@@ -57,7 +57,7 @@ const EditIn = (props) => {
       flag ? (data.cash_date = filteredDate) : "";
       console.log(data);
       await axios.put(
-        `http://localhost:8000/api/cash/updateData/${cashId}`,
+        import.meta.env.VITE_BACKEND + `/api/cash/updateData/${cashId}`,
         data
       );
       changeChange();
@@ -67,14 +67,15 @@ const EditIn = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (data.cash_receive !== "") {
+    if (data.cash_receive !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.cash_receive]);
+  }, [data.cash_receive , error]);
 
   return (
     <form className="block overflow-hidden" method="post">
@@ -99,9 +100,12 @@ const EditIn = (props) => {
                 variant="outlined"
                 className="w-full m-0"
                 size="small"
+                inputProps={{maxLength : 10}}
                 value={data.cash_receive}
                 onChange={(e) =>
-                  setData({ ...data, cash_receive: e.target.value })
+                  setData({ ...data, cash_receive: e.target.value.replace(/^\.|[^0-9.]/g, "")
+                  .replace(/(\.\d*\.)/, "$1")
+                  .replace(/^(\d*\.\d{0,2}).*$/, "$1") })
                 }
                 required
               />
@@ -175,6 +179,9 @@ const EditIn = (props) => {
                     value={dayjs(data.cash_date)}
                     onChange={(newValue) => {
                       setTransactionDate(newValue), setFlag(true);
+                    }}
+                    onError={(newError) => {
+                      setError(newError);
                     }}
                     format="LL"
                     className="w-full"

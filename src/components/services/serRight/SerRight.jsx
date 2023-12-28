@@ -5,25 +5,25 @@ import "./serright.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 const SerRight = (props) => {
-  const { serId, change } = useContext(UserContext);
+  const { serId, change} = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [data, setData] = useState([]);
 
-  const [serUnit , setSerUnit] = useState("")
+  const [serUnit, setSerUnit] = useState("");
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/ser/fetchDataid/${serId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchDataid/${serId}`)
       .then((res) => {
         setResult(res.data);
-        setSerUnit(res.data[0].ser_unit)
+        setSerUnit(res.data[0].ser_unit);
       });
     axios
-      .get(`http://localhost:8000/api/ser/fetchTranid/${serId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchTranid/${serId}`)
       .then((res) => {
         setData(res.data);
       });
   }, [change, serId]);
-  
+
   return (
     <div className="serright">
       <div className="service">
@@ -50,7 +50,7 @@ const SerRight = (props) => {
           <div className="grItems">
             <div className="flex flex-col items-center">
               <div className="font-semibold text-lg text-slate-800">
-                {item.ser_sac !== "" ? item.ser_sac : '-'}
+                {item.ser_sac !== "" ? item.ser_sac : "-"}
               </div>
               <div className="text-xs text-slate-600">SAC Code</div>
             </div>
@@ -58,7 +58,8 @@ const SerRight = (props) => {
           <div className="grItems">
             <div className="flex flex-col items-center">
               <div className="font-semibold text-lg text-slate-800">
-                  {item.ser_igst !== null ? "GST@" + item.ser_igst + "%" : '-'}
+                {item.ser_igst > 0 && item.ser_cess > 0 ? item.ser_igst + "%" + " +" + item.ser_cess + "%" : item.ser_igst> 0 ? "GST@ " + item.ser_igst + "%" : "-"}
+                
               </div>
               <div className="text-xs text-slate-600">GST %</div>
             </div>
@@ -71,7 +72,12 @@ const SerRight = (props) => {
       </div>
       <div className="transactions">
         {data.map((item, index) => (
-          <SerTran key={index} data={item} editSale={props.editSale} ser_unit={serUnit} />
+          <SerTran
+            key={index}
+            data={item}
+            editSale={props.editSale}
+            ser_unit={serUnit}
+          />
         ))}
       </div>
       <div className="btn shadow-lg">

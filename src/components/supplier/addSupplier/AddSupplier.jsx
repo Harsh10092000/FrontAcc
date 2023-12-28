@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 
 const AddSupplier = (props) => {
-  const { changeChange } = useContext(UserContext);
+  const { changeChange, accountId } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const handleOnChange = () => {
     setIsChecked(!isChecked);
@@ -32,9 +32,10 @@ const AddSupplier = (props) => {
     sup_bpin: "",
     sup_bcity: "",
     sup_bstate: "",
+    sup_date: "",
+    sup_acc_id: "",
   });
 
-  console.log("isChecked2 : " , isChecked2)
   if (isChecked2 === false) {
     (values.sup_bflat = values.sup_sflat),
       (values.sup_barea = values.sup_sarea),
@@ -43,13 +44,21 @@ const AddSupplier = (props) => {
       (values.sup_bstate = values.sup_sstate);
   }
 
+  const today = new Date();
+  var filteredDate = today.toString().slice(4, 16);
+  values.sup_date = filteredDate;
+  values.sup_acc_id = accountId;
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/sup/sendData", values);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/sup/sendData",
+        values
+      );
       changeChange();
       props.snack();
     } catch (err) {
@@ -95,7 +104,14 @@ const AddSupplier = (props) => {
                     className="w-full"
                     size="small"
                     name="sup_name"
-                    onChange={handleChange}
+                    inputProps={{ maxLength: 20 }}
+                    value={values.sup_name}
+                    onChange={(e) =>
+                      setValues({
+                        ...values,
+                        sup_name: e.target.value.replace(/[^A-Z a-z.]/g, ""),
+                      })
+                    }
                     required
                   />
                 </div>
@@ -132,11 +148,11 @@ const AddSupplier = (props) => {
                     className="sec-1"
                     size="small"
                     name="sup_amt"
-                    //onChange={handleChange}
+                    inputProps={{ maxLength: 10}}
                     onChange={(e) =>
                       setValues({
                         ...values,
-                        sup_amt: e.target.value.replace(/\D/g, ""),
+                        sup_amt: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                       })
                     }
                     value={values.sup_amt}
@@ -189,7 +205,14 @@ const AddSupplier = (props) => {
                         className="w-full"
                         size="small"
                         name="sup_gstin"
-                        onChange={handleChange}
+                        inputProps={{ maxLength: 15 }}
+                        value={values.sup_gstin}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_gstin: e.target.value.replace(/[^A-Z0-9]/g, ""),
+                          })
+                        }
                       />
                     </div>
                     <p className="text-xl font-semibold">Shipping Address</p>
@@ -201,7 +224,16 @@ const AddSupplier = (props) => {
                         className="w-full"
                         size="small"
                         name="sup_sflat"
-                        onChange={handleChange}
+                        value={values.sup_sflat}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_sflat: e.target.value.replace(
+                              /[^A-Z a-z 0-9 /]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                     <div className="box-sec">
@@ -212,7 +244,16 @@ const AddSupplier = (props) => {
                         className="w-full"
                         size="small"
                         name="sup_sarea"
-                        onChange={handleChange}
+                        value={values.sup_sarea}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_sarea: e.target.value.replace(
+                              /[^A-Z a-z 0-9 /]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                     <div className="box-sec">
@@ -223,7 +264,14 @@ const AddSupplier = (props) => {
                         className="w-full"
                         size="small"
                         name="sup_spin"
-                        onChange={handleChange}
+                        inputProps={{ maxLength: 6 }}
+                        value={values.sup_spin}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_spin: e.target.value.replace(/[^0-9]/g, ""),
+                          })
+                        }
                       />
                     </div>
                     <div className="box-sec">
@@ -234,7 +282,16 @@ const AddSupplier = (props) => {
                         className="sec-1 w-full"
                         size="small"
                         name="sup_scity"
-                        onChange={handleChange}
+                        value={values.sup_scity}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_scity: e.target.value.replace(
+                              /[^A-Z a-z]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
 
                       <TextField
@@ -244,7 +301,16 @@ const AddSupplier = (props) => {
                         className="sec-2"
                         size="small"
                         name="sup_sstate"
-                        onChange={handleChange}
+                        value={values.sup_sstate}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            sup_sstate: e.target.value.replace(
+                              /[^A-Z a-z]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -276,7 +342,16 @@ const AddSupplier = (props) => {
                           className="w-full"
                           size="small"
                           name="sup_bflat"
-                          onChange={handleChange}
+                          value={values.sup_bflat}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              sup_bflat: e.target.value.replace(
+                                /[^A-Z a-z 0-9 /]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -287,7 +362,16 @@ const AddSupplier = (props) => {
                           className="w-full"
                           size="small"
                           name="sup_barea"
-                          onChange={handleChange}
+                          value={values.sup_barea}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              sup_barea: e.target.value.replace(
+                                /[^A-Z a-z 0-9 /]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -298,7 +382,14 @@ const AddSupplier = (props) => {
                           className="w-full"
                           size="small"
                           name="sup_bpin"
-                          onChange={handleChange}
+                          inputProps={{ maxLength: 6 }}
+                          value={values.sup_bpin}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              sup_bpin: e.target.value.replace(/[^0-9]/g, ""),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -309,7 +400,16 @@ const AddSupplier = (props) => {
                           className="sec-1"
                           size="small"
                           name="sup_bcity"
-                          onChange={handleChange}
+                          value={values.sup_bcity}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              sup_bcity: e.target.value.replace(
+                                /[^A-Z a-z]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
 
                         <TextField
@@ -319,7 +419,16 @@ const AddSupplier = (props) => {
                           className="sec-2"
                           size="small"
                           name="sup_bstate"
-                          onChange={handleChange}
+                          value={values.sup_bstate}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              sup_bstate: e.target.value.replace(
+                                /[^A-Z a-z]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                     </div>

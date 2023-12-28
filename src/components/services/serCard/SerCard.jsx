@@ -6,15 +6,29 @@ import axios from "axios";
 const SerCard = (props) => {
   const { changeService, serId, change } = useContext(UserContext);
   const [data, setData] = useState([]);
+
+  // const pay = props.result
+  //   .filter((person) => person.cnct_id === props.users.cust_id)
+  //   .reduce(function (prev, current) {
+  //     return prev + +current.tran_pay;
+  //   }, 0);
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/ser/fetchTranid/${props.data.ser_id}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/ser/fetchTranid/${props.data.ser_id}`
+      )
       .then((res) => {
         setData(res.data);
       });
   }, [change]);
   const sum = data.reduce(function (prev, current) {
-    return prev + +current.ser_quantity;
+    if (current.ser_quantity) {
+      return prev + +current.ser_quantity;
+    } else {
+      return prev - +current.ser_return;
+    }
   }, 0);
   return (
     <div

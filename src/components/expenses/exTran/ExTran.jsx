@@ -1,4 +1,3 @@
-
 import { IconCash } from "@tabler/icons-react";
 import { UserContext } from "../../../context/UserIdContext";
 import { useContext } from "react";

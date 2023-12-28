@@ -1,13 +1,11 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Navbar from "../../components/navbar/Navbar";
 import "./account.scss";
 import { IconAlertOctagonFilled, IconX } from "@tabler/icons-react";
 import axios from "axios";
-import { useEffect } from "react";
-import { useContext } from "react";
 import { UserContext } from "../../context/UserIdContext";
 import {
   Dialog,
@@ -16,8 +14,22 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-export default function Account() {
-  const { changeChange, change } = useContext(UserContext);
+import { useNavigate } from "react-router-dom";
+
+export default function AddAccount() {
+  const {
+    changeChange,
+    change,
+    accountId,
+    changeAccountId,
+    changeUser,
+    changeParties,
+    changeInventory,
+    changeBills,
+    parties,
+    uId,
+  } = useContext(UserContext);
+  const navigate = useNavigate();
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const [fileSizeExceeded1, setFileSizeExceeded1] = useState(false);
   const maxFileSize1 = 2000000;
@@ -26,7 +38,7 @@ export default function Account() {
   const [file1, setFile1] = useState("Business Logo");
   const [file2, setFile2] = useState("Signature");
   const [filename, setFilename] = useState("Choose File");
-
+  const [staffData, setStaffData] = useState([]);
   // const onChange = (e) => {
   //   setFile(e.target.files[0]);
   //   setFilename(e.target.files[0].name);
@@ -40,10 +52,16 @@ export default function Account() {
     business_gst: "",
     business_type: "",
     business_nature: "",
+    business_bank_name: "",
+    business_payee_name: "",
+    business_acc_no: "",
+    business_ifsc_code: "",
+    user_id: "",
   });
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+  data.user_id = uId;
   // formData.append("signature", file1);
   const handleClick = async (e) => {
     e.preventDefault();
@@ -56,29 +74,69 @@ export default function Account() {
       formData.append("business_gst", data.business_gst);
       formData.append("business_type", data.business_type);
       formData.append("business_nature", data.business_nature);
-      await axios.post("http://localhost:8000/api/act/sendData", formData);
+
+      formData.append("business_bank_name", data.business_bank_name);
+      formData.append("business_payee_name", data.business_payee_name);
+      formData.append("business_acc_no", data.business_acc_no);
+      formData.append("business_ifsc_code", data.business_ifsc_code);
+      formData.append("user_id", data.user_id);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/act/sendData",
+        formData
+      );
       changeChange();
+      navigate("/settings/account");
     } catch (err) {
       console.log(err);
     }
   };
-  const [info, setInfo] = useState([]);
-  console.log("data : ", data)
-  useEffect(() => {
-    console.log("data : ", data)
-    axios.get("http://localhost:8000/api/act/fetchData").then((res) => {
-      setInfo(res.data);
-      console.log("info : ", info)
-    });
-  }, [change]);
+  //const uId = 5;
+  // const [info, setInfo] = useState([]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchStaffData/${uId}`)
+  //     .then((res) => {
+  //       setStaffData(res.data);
+  //     });
+  // }, [uId]);
+
+
+  // useEffect(() => {
+  //   if (staffData.length > 0) {
+  //     console.log(staffData , staffData[0].staff_acc_id);
+  //     changeParties(staffData[0].staff_parties);
+  //     changeInventory(staffData[0].staff_inventory);
+  //     changeBills(staffData[0].staff_bills);
+    
+  //   axios
+  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchData/${staffData[0].staff_acc_id}`)
+  //     .then((res) => {
+  //       setInfo(res.data);
+  //       changeAccountId(res.data[0].business_id);
+  //     });
+  //   } else {
+  //     axios
+  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetch/${uId}`)
+  //     .then((res) => {
+  //       setInfo(res.data);
+  //       changeAccountId(res.data[0].business_id);
+  //     });
+  //   }
+  // }, [staffData]);
+
+
   const deleteAc = async () => {
     try {
-      await axios.delete("http://localhost:8000/api/act/delData");
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
+      );
       changeChange();
     } catch (err) {
       console.log(err);
     }
   };
+
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -87,26 +145,39 @@ export default function Account() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const changeId = (id) => {
+    changeAccountId(id);
+    changeUser(0);
+  };
+
   return (
     <div className="b-form ">
       <Navbar />
       <div className="business_acc_section-wrapper">
-        {info.length > 0 ? (
+        {/* {info.length > 0 ? (
           <div>
             {info.map((item, index) => (
               <div
                 className="max-w-2xl mx-auto my-3 bg-white bg-opacity-50 rounded-lg shadow-md p-10"
                 key={index}
+                // onClick={() => changeAccountId(item.business_id)}
+                onClick={() => changeId(item.business_id)}
               >
                 <img
                   className="w-32 h-32 rounded-full mx-auto object-contain shadow-md shadow-slate-600 p-2"
-                  src={"http://localhost:8000/account/" + item.business_logo}
+                  src={
+                    import.meta.env.VITE_BACKEND +
+                    "/account/" +
+                    item.business_logo
+                  }
                   alt="Profile picture"
                 />
 
                 <h2 className="text-center text-3xl font-semibold mt-3">
                   {item.business_name}
                 </h2>
+
                 <p className="text-center text-gray-600 mt-1 capitalize">
                   {item.business_type.replaceAll("_", " ")}
                 </p>
@@ -182,7 +253,7 @@ export default function Account() {
               </Dialog>
             </div>
           </div>
-        ) : (
+        ) : ( */}
           <div className="section-1">
             <Box
               component="form"
@@ -266,6 +337,52 @@ export default function Account() {
                   <option value="wholesaler">Wholesaler</option>
                   <option value="other">Other nature</option>
                 </select>
+              </Box>
+
+              <Box className="flex w-full gap-2">
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  label="Bank Account Name"
+                  className="w-full"
+                  name="business_bank_name"
+                  onChange={handleChange}
+                  
+                />
+              
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  label="Payee Name"
+                  className="w-full"
+                  name="business_payee_name"
+                  onChange={handleChange}
+                />
+              </Box>
+
+              <Box className="flex w-full gap-2">
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  label="Account Number"
+                  className="w-full"
+                  name="business_acc_no"
+                  onChange={handleChange}
+                  
+                />
+              
+                <TextField
+                  id="outlined-basic"
+                  variant="outlined"
+                  size="small"
+                  label="IFSC Code"
+                  className="w-full"
+                  name="business_ifsc_code"
+                  onChange={handleChange}
+                />
               </Box>
 
               <div className="upload-img-sec">
@@ -374,7 +491,7 @@ export default function Account() {
               </div>
             </Box>
           </div>
-        )}
+        {/* )} */}
       </div>
     </div>
   );

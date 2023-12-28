@@ -3,9 +3,10 @@ import "./addcustomer.scss";
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
+import dayjs from "dayjs";
 
 const AddCustomer = (props) => {
-  const { changeChange } = useContext(UserContext);
+  const { changeChange, accountId } = useContext(UserContext);
   const [values, setValues] = useState({
     cust_name: "",
     cust_number: "",
@@ -22,26 +23,24 @@ const AddCustomer = (props) => {
     cust_bpin: "",
     cust_bcity: "",
     cust_bstate: "",
+    cust_date: "",
+    cust_acc_id: "",
   });
-  values.cust_bflat = values.cust_sflat,
-  values.cust_barea = values.cust_sarea,
-  values.cust_bpin = values.cust_spin,
-  values.cust_bcity = values.cust_scity,
-  values.cust_bstate = values.cust_sstate;
 
+  const today = new Date();
+  var filteredDate = today.toString().slice(4, 16);
+
+  
+ 
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-
-  
   const [err, setErr] = useState(null);
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      
-      
-      await axios.post("http://localhost:8000/api/auth/send", values);
+      await axios.post(import.meta.env.VITE_BACKEND + "/api/auth/send", values);
       changeChange();
       props.snack();
     } catch (err) {
@@ -58,12 +57,25 @@ const AddCustomer = (props) => {
   const handleOnChange2 = () => {
     setIsChecked2(!isChecked2);
   };
+
+  if (isChecked2 === false) {
+    
+    (values.cust_bflat = values.cust_sflat),
+    (values.cust_barea = values.cust_sarea),
+    (values.cust_bpin = values.cust_spin),
+    (values.cust_bcity = values.cust_scity),
+    (values.cust_bstate = values.cust_sstate);
+  }
+  values.cust_acc_id = accountId,
+  values.cust_date = filteredDate;
+
   const [select, setSelect] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
     if (
       values.cust_name !== "" &&
       values.cust_number !== "" &&
+      values.cust_number.length > 9 &&
       values.cust_amt !== "" &&
       values.amt_type !== ""
     ) {
@@ -72,8 +84,6 @@ const AddCustomer = (props) => {
       setSubmitDisabled(true);
     }
   }, [values.cust_name, values.cust_number, values.cust_amt, values.amt_type]);
-
-  
 
   return (
     <div>
@@ -88,13 +98,19 @@ const AddCustomer = (props) => {
                 <div className="box-sec">
                   <TextField
                     label="Full Name"
-                    name="cust_name"
                     id="outlined-basic"
                     variant="outlined"
-                    className="w-full"
+                    className="w-full m-0"
                     size="small"
-                    type="text"
-                    onChange={handleChange}
+                    name="cust_name"
+                    inputProps={{ maxLength: 20 }}
+                    value={values.cust_name}
+                    onChange={(e) =>
+                      setValues({
+                        ...values,
+                        cust_name: e.target.value.replace(/[^A-Z a-z.]/g, ""),
+                      })
+                    }
                     required
                   />
                 </div>
@@ -105,13 +121,24 @@ const AddCustomer = (props) => {
                     variant="outlined"
                     label="Phone Number"
                     name="cust_number"
-          
                     className="w-full"
                     size="small"
-                    inputProps={{ maxLength: 10}}
+                    inputProps={{ maxLength: 10 }}
                     onChange={(e) =>
-                      setValues({ ...values, cust_number : e.target.value.replace(/\D/g, "") })
+                      setValues({
+                        ...values,
+                        //cust_number: e.target.value.replace(/^\1|[^0-9]/g, ""),
+                        cust_number: e.target.value.replace(/^\+234[0-9]{10}$/g, ""),
+                      })
                     }
+                    // onChange={(e) =>
+                    //   setValues({
+                    //     ...values,
+                    //     //cust_number: e.target.value.replace(/^\1|[^0-9]/g, ""),
+                    //     cust_number: e.target.value,
+                    //   })
+                    // }
+                    //inputProps={{ pattern: "[7-9]{1,3}" }}
                     value={values.cust_number}
                     required
                   />
@@ -125,8 +152,12 @@ const AddCustomer = (props) => {
                     name="cust_amt"
                     className="sec-1"
                     size="small"
+                    inputProps={{ maxLength: 10 }}
                     onChange={(e) =>
-                      setValues({ ...values, cust_amt : e.target.value.replace(/\D/g, "") })
+                      setValues({
+                        ...values,
+                        cust_amt: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                      })
                     }
                     value={values.cust_amt}
                     required
@@ -173,7 +204,17 @@ const AddCustomer = (props) => {
                         className="w-full"
                         size="small"
                         name="cust_gstin"
-                        onChange={handleChange}
+                        inputProps={{ maxLength: 15 }}
+                        value={values.cust_gstin}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_gstin: e.target.value.replace(
+                              /[^A-Z0-9]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                     <p className="text-left mt-2">Shipping Address</p>
@@ -185,7 +226,16 @@ const AddCustomer = (props) => {
                         className="w-full"
                         size="small"
                         name="cust_sflat"
-                        onChange={handleChange}
+                        value={values.cust_sflat}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_sflat: e.target.value.replace(
+                              /[^A-Z a-z 0-9 /]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                     <div className="box-sec">
@@ -196,7 +246,16 @@ const AddCustomer = (props) => {
                         className="w-full"
                         size="small"
                         name="cust_sarea"
-                        onChange={handleChange}
+                        value={values.cust_sarea}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_sarea: e.target.value.replace(
+                              /[^A-Z a-z 0-9 /]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                     <div className="box-sec">
@@ -207,7 +266,16 @@ const AddCustomer = (props) => {
                         className="w-full"
                         size="small"
                         name="cust_spin"
-                        onChange={handleChange}
+                        inputProps={{ maxLength: 6 }}
+                        value={values.cust_spin}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_spin: e.target.value.replace(/[^0-9]/g, ""),
+                          })
+                        }
+                        error={values.cust_spin.length > 5 ?  false : true}
+
                       />
                     </div>
                     <div className="box-sec">
@@ -218,7 +286,16 @@ const AddCustomer = (props) => {
                         className="sec-1 w-full"
                         size="small"
                         name="cust_scity"
-                        onChange={handleChange}
+                        value={values.cust_scity}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_scity: e.target.value.replace(
+                              /[^A-Z a-z]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
 
                       <TextField
@@ -228,7 +305,16 @@ const AddCustomer = (props) => {
                         className="sec-2"
                         size="small"
                         name="cust_sstate"
-                        onChange={handleChange}
+                        value={values.cust_sstate}
+                        onChange={(e) =>
+                          setValues({
+                            ...values,
+                            cust_sstate: e.target.value.replace(
+                              /[^A-Z a-z]/g,
+                              ""
+                            ),
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -253,7 +339,16 @@ const AddCustomer = (props) => {
                           className="w-full"
                           size="small"
                           name="cust_bflat"
-                          onChange={handleChange}
+                          value={values.cust_bflat}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              cust_bflat: e.target.value.replace(
+                                /[^A-Z a-z 0-9 /]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -264,7 +359,16 @@ const AddCustomer = (props) => {
                           className="w-full"
                           size="small"
                           name="cust_barea"
-                          onChange={handleChange}
+                          value={values.cust_barea}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              cust_barea: e.target.value.replace(
+                                /[^A-Z a-z 0-9 /]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -275,7 +379,17 @@ const AddCustomer = (props) => {
                           className="w-full"
                           size="small"
                           name="cust_bpin"
-                          onChange={handleChange}
+                          InputProps={{ maxLength: 6}}
+                          value={values.cust_bpin}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              cust_bpin: e.target.value.replace(
+                                /[^0-9]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                       <div className="box-sec">
@@ -286,7 +400,16 @@ const AddCustomer = (props) => {
                           className="sec-1"
                           size="small"
                           name="cust_bcity"
-                          onChange={handleChange}
+                          value={values.cust_bcity}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              cust_bcity: e.target.value.replace(
+                                /[^A-Z a-z]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
 
                         <TextField
@@ -296,7 +419,16 @@ const AddCustomer = (props) => {
                           className="sec-2"
                           size="small"
                           name="cust_bstate"
-                          onChange={handleChange}
+                          value={values.cust_bstate}
+                          onChange={(e) =>
+                            setValues({
+                              ...values,
+                              cust_bstate: e.target.value.replace(
+                                /[^A-Z a-z]/g,
+                                ""
+                              ),
+                            })
+                          }
                         />
                       </div>
                     </div>

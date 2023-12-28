@@ -33,7 +33,7 @@ const ExRight = (props) => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpensesTran/${expId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpensesTran/${expId}`)
       .then((response) => {
         setData({
           ...data,
@@ -43,7 +43,10 @@ const ExRight = (props) => {
         });
       });
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpensesRightTran/${expId}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/fetchExpensesRightTran/${expId}`
+      )
       .then((response) => {
         setResult2(response.data);
       });
@@ -51,7 +54,9 @@ const ExRight = (props) => {
 
   const deleteExpenses = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/exp/delexpenses/${expId}`);
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/exp/delexpenses/${expId}`
+      );
       changeChange();
       changeExpId(0);
       props.snack();

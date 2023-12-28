@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { IconX } from "@tabler/icons-react";
-import { useContext, useState , useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 const ReceiveSup = (props) => {
@@ -13,16 +13,18 @@ const ReceiveSup = (props) => {
   const [supAmt, setSupAmt] = useState(0);
   const [supAmtType, setSupAmtType] = useState("");
   const [supBal, setSupBal] = useState(null);
-  
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/sup/fetchSupDataUsingId/${supId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/sup/fetchSupDataUsingId/${supId}`
+      )
       .then((response) => {
         setSupAmt(response.data[0].sup_amt);
         setSupAmtType(response.data[0].sup_amt_type);
       });
     axios
-      .get(`http://localhost:8000/api/sup/fetchSupLastTran/${supId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSupLastTran/${supId}`)
       .then((response) => {
         setSupBal(response.data[0].sup_balance);
       });
@@ -75,7 +77,10 @@ const ReceiveSup = (props) => {
       formData.append("sup_tran_cnct_id", values.sup_tran_cnct_id);
       formData.append("sup_tran_date", values.sup_tran_date);
       formData.append("sup_balance", values.sup_balance);
-      await axios.post("http://localhost:8000/api/sup/sendTran", formData);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/sup/sendTran",
+        formData
+      );
       changeChange();
       props.snack();
     } catch (err) {
@@ -83,16 +88,15 @@ const ReceiveSup = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (
-      values.sup_tran_receive !== "" 
-    ) {
+    if (values.sup_tran_receive !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.sup_tran_receive]);
+  }, [values.sup_tran_receive, error]);
 
   return (
     <form className="block overflow-hidden">
@@ -121,7 +125,7 @@ const ReceiveSup = (props) => {
                 onChange={(e) =>
                   setValues({
                     ...values,
-                    sup_tran_receive: e.target.value.replace(/\D/g, ""),
+                    sup_tran_receive: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                   })
                 }
                 required
@@ -155,6 +159,7 @@ const ReceiveSup = (props) => {
                     format="LL"
                     className="w-full"
                     maxDate={todaysDate}
+                    onError={(newError) => {setError(newError)}}
                   />
                 </DemoContainer>
               </LocalizationProvider>

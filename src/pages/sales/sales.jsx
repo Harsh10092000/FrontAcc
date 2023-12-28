@@ -1,60 +1,22 @@
-// import * as React from "react";
-// import { useState } from "react";
-// import Navbar from "../../components/navbar/Navbar";
-// import SelectCustomer from "../../components/mainpage/selectCustomer/SelectCustomer";
-// import { useEffect } from "react";
-// import { UserContext } from "../../context/UserIdContext";
-// import { useContext } from "react";
-// import { SnackbarProvider, useSnackbar } from "notistack";
-// import AddSales from "../../components/sales/addSales/addSales";
-// const Sales = () => {
-//   const { enqueueSnackbar } = useSnackbar();
-//   const [active, setActive] = useState(false);
-//   const { userId, change } = useContext(UserContext);
-//   const checkActive = () => {
-//     userId === 0 ? setActive(false) : setActive(true);
-//   };
-//   useEffect(() => {
-//     checkActive();
-//   }, [userId, change]);
-//   return (
-//     <React.Fragment>
-
-//       <div className="mainpage">
-//         <Navbar />
-//         <div className="content flex">
-//             <AddSales/>
-//         </div>
-//       </div>
-//     </React.Fragment>
-//   );
-// };
-//export default Sales;
-
-
 import * as React from "react";
 import Navbar from "../../components/navbar/Navbar";
-import SelectCustomer from "../../components/mainpage/selectCustomer/SelectCustomer";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Edit from "../../components/mainpage/edit/Edit";
-import {useState, useEffect , useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/UserIdContext";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import SaleLeft from "../../components/sales/saleLeft/SaleLeft";
 import SaleRight from "../../components/sales/saleRight/SaleRight";
-//import AddSales from "../../components/sales/addSales/addSales";
-import AddSales from "../../components/sales/addSales/addSales1";
-
+import SalesInvoice from "../../components/sales/salesInvoice/SalesInvoice";
+import PaymentIn from "../../components/sales/salesPaymentIn/SalesPaymenIn";
+import { IconBox, IconUsers } from "@tabler/icons-react";
+import SaleEditPayIn from "../../components/sales/saleEditPayIn/saleEditPayIn";
 const MyApp = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = useState({
-    add: false,
+    pdf: false,
+    addPayment: false,
     edit: false,
-    pay: false,
-    receive: false,
-    editPay: false,
-    editReceive: false,
   });
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -69,63 +31,35 @@ const MyApp = () => {
     setState({ ...state, [anchor]: open });
   };
   const handleClickVariant = (variant, anchor1, msg) => {
-    // variant could be success, error, warning, info, or default
     toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
   const list = (anchor) => (
-    <Box sx={{ width: 450 }} role="presentation">
-      {anchor === "add" ? (
-        <AddSales
+    <Box role="presentation">
+      {anchor === "pdf" ? (
+        <Box sx={{ width: 950 }}>
+          <SalesInvoice />
+        </Box>
+      ) : anchor === "edit" ? 
+      <Box sx={{ width: 450 }} >
+        <SaleEditPayIn
           snack={() =>
-            handleClickVariant("success", "add", "Sales Has been Added")
+            handleClickVariant(
+              "success",
+              "edit",
+              "Transaction Has been Updated"
+            )
           }
-        />
-      ) : anchor === "edit" ? (
-        <Edit
-          snack={() =>
-            handleClickVariant("success", "edit", "Deleted Successfully")
-          }
-          snacku={() =>
-            handleClickVariant("success", "edit", "Updated Successfully")
-          }
-        />
-      // ) : anchor === "pay" ? (
-      //   <Pay
-      //     snack={() =>
-      //       handleClickVariant("success", "pay", "Paid Entry has been entered")
-      //     }
-      //   />
-      // ) : anchor === "receive" ? (
-      //   <Receive
-      //     snack={() =>
-      //       handleClickVariant(
-      //         "success",
-      //         "receive",
-      //         "Received Entry has been entered"
-      //       )
-      //     }
-      //   />
-      // ) : anchor === "editPay" ? (
-      //   <EditPay
-      //     snackd={() =>
-      //       handleClickVariant("success", "editPay", "Deleted Successfully")
-      //     }
-      //     snacku={() =>
-      //       handleClickVariant("success", "editPay", "Updated Successfully")
-      //     }
-      //   />
-      // ) : anchor === "editReceive" ? (
-      //   <EditReceive
-      //     snackd={() =>
-      //       handleClickVariant("success", "editReceive", "Deleted Successfully")
-      //     }
-      //     snacku={() =>
-      //       handleClickVariant("success", "editReceive", "Updated Successfully")
-      //     }
-      //   />
-      // ) : (
-        ) : (
+        /> </Box> : anchor === "addPayment" ? (
+        <Box sx={{ width: 450 }}>
+          <PaymentIn
+            sx={{ width: 450 }}
+            snack={() =>
+              handleClickVariant("success", "add", "Product Has been Added")
+            }
+          />
+        </Box>
+      ) : (
         "-"
       )}
     </Box>
@@ -142,10 +76,10 @@ const MyApp = () => {
     <React.Fragment>
       <Drawer
         anchor="right"
-        open={state["add"]}
-        onClose={toggleDrawer("add", false)}
+        open={state["addPayment"]}
+        onClose={toggleDrawer("addPayment", false)}
       >
-        {list("add")}
+        {list("addPayment")}
       </Drawer>
       <Drawer
         anchor="right"
@@ -153,50 +87,33 @@ const MyApp = () => {
         onClose={toggleDrawer("edit", false)}
       >
         {list("edit")}
-       </Drawer>
-      {/*<Drawer
-        anchor="right"
-        open={state["pay"]}
-        onClose={toggleDrawer("pay", false)}
-      >
-        {list("pay")}
-      </Drawer>
+        </Drawer>
       <Drawer
         anchor="right"
-        open={state["receive"]}
-        onClose={toggleDrawer("receive", false)}
+        open={state["pdf"]}
+        onClose={toggleDrawer("pdf", false)}
       >
-        {list("receive")}
-      </Drawer> */}
-      {/* <Drawer
-        anchor="right"
-        open={state["editPay"]}
-        onClose={toggleDrawer("editPay", false)}
-      >
-        {list("editPay")}
+        {list("pdf")}
       </Drawer>
-      <Drawer
-        anchor="right"
-        open={state["editReceive"]}
-        onClose={toggleDrawer("editReceive", false)}
-      >
-        {list("editReceive")}
-      </Drawer> */}
+
       <div className="mainpage">
         <Navbar />
         <div className="content flex">
-          <SaleLeft  add={toggleDrawer("add", true)} />
+          <SaleLeft />
 
           {active ? (
             <SaleRight
-              //edit={toggleDrawer("edit", true)}
-              //pay={toggleDrawer("pay", true)}
-              //receive={toggleDrawer("receive", true)}
-              //editPay={toggleDrawer("editPay", true)}
-              //editReceive={toggleDrawer("editReceive", true)}
+              pdf={toggleDrawer("pdf", true)}
+              addPayment={toggleDrawer("addPayment", true)}
+              edit = {toggleDrawer("edit" , true)}
             />
           ) : (
-            <SelectCustomer />
+            <div className="selectCustomer h-[100vh - 87px] flex flex-col justify-center items-center w-full bg-slate-100">
+              <div>
+                <IconBox className=" w-36 h-36 text-slate-400" />
+                <p>No Transaction Selected</p>
+              </div>
+            </div>
           )}
         </div>
       </div>

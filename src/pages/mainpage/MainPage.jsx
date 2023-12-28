@@ -11,7 +11,6 @@ import Pay from "../../components/mainpage/pay/Pay";
 import Receive from "../../components/mainpage/receive/Receive";
 import Edit from "../../components/mainpage/edit/Edit";
 import { useEffect } from "react";
-import users from "./dummyData";
 import { UserContext } from "../../context/UserIdContext";
 import { useContext } from "react";
 import { SnackbarProvider, useSnackbar } from "notistack";
@@ -156,7 +155,7 @@ const MyApp = () => {
       <div className="mainpage">
         <Navbar />
         <div className="content flex">
-          <MainLeft users={users} add={toggleDrawer("add", true)} />
+          <MainLeft add={toggleDrawer("add", true)} />
 
           {active ? (
             <MainRight

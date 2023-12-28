@@ -95,18 +95,20 @@ const EditService = (props) => {
   ];
 
   const [productUnits, setProductUnits] = useState([]);
-  axios
-    .get(`http://localhost:8000/api/auth/fetchProductUnits`)
-    .then((response) => {
-      setProductUnits(response.data);
-    });
-
   const [productHsnCodes, setProductHsnCodes] = useState([]);
-  axios
-    .get(`http://localhost:8000/api/auth/fetchProductHsnCodes`)
-    .then((response) => {
-      setProductHsnCodes(response.data);
-    });
+  useEffect(() => {
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductUnits`)
+      .then((response) => {
+        setProductUnits(response.data);
+      });
+
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductHsnCodes`)
+      .then((response) => {
+        setProductHsnCodes(response.data);
+      });
+  }, []);
 
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -170,12 +172,11 @@ const EditService = (props) => {
     ser_igst: null,
     ser_cess: null,
     ser_cgst: null,
-    
   });
 
   const delData = async () => {
     try {
-      axios.delete(`http://localhost:8000/api/ser/delData/${serId}`);
+      axios.delete(import.meta.env.VITE_BACKEND + `/api/ser/delData/${serId}`);
       changeService(0);
       changeChange();
       props.snackd();
@@ -184,10 +185,10 @@ const EditService = (props) => {
     }
   };
   const [isTaxIncluded, setIsTaxIncluded] = useState("");
-  
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/ser/fetchDataid/${serId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchDataid/${serId}`)
       .then((res) => {
         setIsTaxIncluded(res.data[0].ser_tax_included);
         setInfo({
@@ -197,24 +198,22 @@ const EditService = (props) => {
           ser_price: res.data[0].ser_price,
           ser_tax_included: res.data[0].ser_tax_included,
           ser_sac:
-            res.data[0].ser_sac !== null
-              ? res.data[0].ser_sac
-              : "SAC Code",
+            res.data[0].ser_sac !== null ? res.data[0].ser_sac : "SAC Code",
           ser_sac_desc: res.data[0].ser_sac_desc,
           ser_sgst: res.data[0].ser_sgst,
           ser_igst: res.data[0].ser_igst,
           ser_cess: res.data[0].ser_cess,
           ser_cgst: res.data[0].ser_cgst,
         });
-        setFlag(res.data[0].ser_tax_included === 1 ? true : false)
+        setFlag(res.data[0].ser_tax_included === 1 ? true : false);
       });
   }, [serId]);
- 
+
   const updateData = async (e) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:8000/api/ser/updateData/${serId}`,
+        import.meta.env.VITE_BACKEND + `/api/ser/updateData/${serId}`,
         info
       );
       changeChange();
@@ -238,17 +237,13 @@ const EditService = (props) => {
       info.ser_unit !== null &&
       info.ser_unit !== "" &&
       info.ser_price !== null &&
-      info.ser_price !== "" 
+      info.ser_price !== ""
     ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [
-    info.ser_name,
-    info.ser_unit,
-    info.ser_price,
-  ]);
+  }, [info.ser_name, info.ser_unit, info.ser_price]);
 
   return (
     <div>
@@ -311,12 +306,14 @@ const EditService = (props) => {
                     size="small"
                     value={info.ser_price}
                     onChange={(e) =>
-                      setInfo({ ...info, ser_price: e.target.value.replace(/\D/g, "") })
+                      setInfo({
+                        ...info,
+                        ser_price: e.target.value.replace(/\D/g, ""),
+                      })
                     }
                   />
                 </Box>
 
-              
                 {isTaxIncluded === "1" ? (
                   <Box className="box-sec margin-top-zero ">
                     {""}
@@ -332,11 +329,7 @@ const EditService = (props) => {
                 ) : (
                   <Box className="box-sec margin-top-zero ">
                     <label className="pl-2">Tax included</label>
-                    <Switch
-                      {...label}
-                      color="success"
-                      onChange={checkFlag}
-                    />
+                    <Switch {...label} color="success" onChange={checkFlag} />
                   </Box>
                 )}
 
@@ -359,26 +352,32 @@ const EditService = (props) => {
                   <TextField
                     id="outlined-basic"
                     variant="outlined"
-                    value={info.ser_igst !== null ? info.ser_igst + " GST %" : "GST %"}
-                    helperText={info.ser_igst !== null
-                      ? info.ser_cess !== null
-                        ? "(" +
-                        info.ser_cgst +
-                          "% CGST + " +
-                          info.ser_sgst +
-                          "% SGST/UT GST ; " +
-                          info.ser_igst +
-                          "% IGST ; " +
-                          info.ser_cess +
-                          "% CESS )"
-                        : "(" +
-                        info.ser_cgst +
-                          "% CGST + " +
-                          info.ser_sgst +
-                          "% SGST/UT GST ; " +
-                          info.ser_igst +
-                          "% IGST ; )"
-                      : ""}
+                    value={
+                      info.ser_igst !== null
+                        ? info.ser_igst + " GST %"
+                        : "GST %"
+                    }
+                    helperText={
+                      info.ser_igst !== null
+                        ? info.ser_cess !== null
+                          ? "(" +
+                            info.ser_cgst +
+                            "% CGST + " +
+                            info.ser_sgst +
+                            "% SGST/UT GST ; " +
+                            info.ser_igst +
+                            "% IGST ; " +
+                            info.ser_cess +
+                            "% CESS )"
+                          : "(" +
+                            info.ser_cgst +
+                            "% CGST + " +
+                            info.ser_sgst +
+                            "% SGST/UT GST ; " +
+                            info.ser_igst +
+                            "% IGST ; )"
+                        : ""
+                    }
                     className="sec-2"
                     size="small"
                     InputProps={{
@@ -423,7 +422,7 @@ const EditService = (props) => {
                                 ser_cgst: filteredItem.cgst,
                                 ser_sgst: filteredItem.sgst,
                               }),
-                              setIsClicked(false);
+                                setIsClicked(false);
                               setSearchValue("0");
                             }}
                           >
@@ -448,8 +447,7 @@ const EditService = (props) => {
                 {isClicked2 ? (
                   <>
                     <Box className="box-sec">
-                      
-                        {/* <div className="gst-section">
+                      {/* <div className="gst-section">
                           {gst.map((item, index) => (
                             <div className="flex card-sec" key={index}>
                               <div className="gst-card-text">
@@ -473,7 +471,7 @@ const EditService = (props) => {
                             </div>
                           ))}
                         </div> */}
-                        <div className="gst-section-wrapper">
+                      <div className="gst-section-wrapper">
                         <div className="gst-section">
                           {gst.map((item, index) => (
                             <div className="flex card-sec" key={index}>
@@ -515,7 +513,6 @@ const EditService = (props) => {
                           ))}
                         </div>
                       </div>
-                      
                     </Box>
                     <div>Custom Tax %</div>
                     <Box className="box-sec">
@@ -546,13 +543,13 @@ const EditService = (props) => {
                       <button
                         onClick={(e) => {
                           e.preventDefault(),
-                          setInfo({
-                            ...info,
-                            ser_igst: customGst,
-                            ser_cgst: customGst / 2,
-                            ser_sgst: customGst / 2,
-                            ser_cess : customeCess,
-                          });
+                            setInfo({
+                              ...info,
+                              ser_igst: customGst,
+                              ser_cgst: customGst / 2,
+                              ser_sgst: customGst / 2,
+                              ser_cess: customeCess,
+                            });
                         }}
                       >
                         Add Custome Gst
@@ -609,20 +606,21 @@ const EditService = (props) => {
             </div>
           </div>
         </Dialog>
-        {submitDisabled ? 
+        {submitDisabled ? (
           <button
             disabled={submitDisabled}
             className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
           >
             Update Services
-          </button> : 
-        <button
-          className="text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"
-          onClick={updateData}
-        >
-          Update Services
-        </button>
-}
+          </button>
+        ) : (
+          <button
+            className="text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"
+            onClick={updateData}
+          >
+            Update Services
+          </button>
+        )}
       </div>
     </div>
   );

@@ -7,22 +7,20 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const ExLeft = (props) => {
-  const { change, expId } = useContext(UserContext);
+  const { change, expId , accountId } = useContext(UserContext);
   const [result, setResult] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/exp/fetchExpensesData")
+      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpensesData/${accountId}`)
       .then((response) => {
         setResult(response.data);
       });
   }, [change, expId]);
 
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("latestFirst");
   const [filterByValue, setFilterByValue] = useState("All");
-  //const [filter2, setFilter2] = useState("All");
   const [searchValue, setSearchValue] = useState("");
 
-  console.log("resulet : ", result);
   let sortedUsers = [...result];
 
   if (sortOption === "latestFirst") {
@@ -36,7 +34,7 @@ const ExLeft = (props) => {
   }
 
   let categories = [...new Set(result.map((item) => item.exp_category))];
- console.log("categories : ",categories)
+
   return (
     <div className="exleft">
       <div className="border-b border-slate-300 p-4 font-semibold text-blue-600 text-xl">
@@ -103,7 +101,6 @@ const ExLeft = (props) => {
 
           .filter((code) => {
             if (filterByValue !== "All") {
-             
               return code.exp_category === filterByValue;
             } else {
               return code;

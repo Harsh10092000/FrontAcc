@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 
 const SerCardTran = (props) => {
-  const { serId } = useContext(UserContext);
+  const { serId, inventory } = useContext(UserContext);
   return (
     <div className={"cardItem1 cursor-pointer"}>
       {props.data.map((people) => (
@@ -24,6 +24,7 @@ const SerCardTran = (props) => {
           <button
             className="flex gap-1 items-center editbtn text-blue-600"
             onClick={props.edit}
+            disabled={inventory === 2 ? false : true}
           >
             <IconEdit />
             Edit Service

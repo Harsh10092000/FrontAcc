@@ -1,41 +1,46 @@
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import "./proleft.scss";
 import { useLocation, Link } from "react-router-dom";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Skeleton,
+} from "@mui/material";
 import ProCard from "../proCard/ProCard";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
 
 const ProLeft = (props) => {
-  const { change, pId } = useContext(UserContext);
+  const [skeleton, setSkeleton] = useState(true);
+  const { change, pId, accountId  } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [result2, setResult2] = useState([]);
   const [data, setData] = useState([]);
+  
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/auth/fetchProductData")
-      .then((response) => {
-        setResult(response.data);
-      });
-
-    axios
-      .get(`http://localhost:8000/api/auth/fetchTotalStockValue`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchTotalStockValue/${accountId}`)
       .then((response) => {
         setResult2(response.data);
+        setSkeleton(false);
       });
-    axios.get("http://localhost:8000/api/ser/fetchData").then((res) => {
-      setData(res.data);
-    });
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
+      .then((res) => {
+        setData(res.data);
+      });
   }, [change]);
 
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("recent");
   const handleChange1 = (e) => {
     setSortOption(e.target.value);
   };
   const [filter2, setFilter2] = useState("All");
   const [searchValue, setSearchValue] = useState("");
-  let sortedUsers = [...result];
+  let sortedUsers = [...result2];
 
   if (sortOption === "recent") {
     sortedUsers.sort((a, b) => b.product_id - a.product_id);
@@ -44,15 +49,21 @@ const ProLeft = (props) => {
   } else if (sortOption === "name") {
     sortedUsers.sort((a, b) => a.product_name.localeCompare(b.product_name));
   } else if (sortOption === "stockHighToLow") {
-    sortedUsers.sort((a, b) => b.balance_stock  - a.balance_stock );
-  }
-  else if (sortOption === "stockLowToHigh") {
-    sortedUsers.sort((a, b) => a.balance_stock  - b.balance_stock );
+    sortedUsers.sort((a, b) => b.balStock - a.balStock);
+  } else if (sortOption === "stockLowToHigh") {
+    sortedUsers.sort((a, b) => a.balStock - b.balStock);
   }
 
-  
-  
   const location = useLocation();
+
+  const lowStock = result2.reduce(function (prev, current) {
+    return prev + +current.lowStockStatus;
+  }, 0);
+
+  const stockValue = result2.reduce(function (prev, current) {
+    return prev + +(current.balStock * current.sale_price);
+  }, 0);
+
 
   return (
     <div className="proleft">
@@ -65,7 +76,7 @@ const ProLeft = (props) => {
           }
         >
           Products
-          <p className=" text-sky-600 num font-semibold">{result.length}</p>
+          <p className=" text-sky-600 num font-semibold">{result2.length}</p>
         </div>
         <Link to="/services">
           <div
@@ -81,26 +92,42 @@ const ProLeft = (props) => {
         </Link>
       </div>
 
-      {result2.map((item, index) => (
-        <div className="info flex justify-between items-center" key={index}>
-          <div className="total text-slate-400 text-lg font-semibold">
-            Total Stock Value :
-            <span className="text-black font-semibold">
-              {item.stockValue ? item.stockValue.toFixed(2) : "0"}
-            </span>
+      <div className="info flex justify-between items-center">
+        {skeleton ? (
+          <div className="flex gap-20">
+            <div className="total text-slate-400 text-lg font-semibold flex items-center gap-2">
+              Total Stock Value :
+              <Skeleton variant="rectangular" width={50} height={20} />
+            </div>
+            <div className="low text-slate-400 text-lg font-semibold flex items-center gap-2">
+              Low Stock Products :
+              <Skeleton variant="rectangular" width={50} height={20} />
+            </div>
+            <button className="flex gap-1" onClick={props.add}>
+              <IconPlus className="w-5" />
+              Add Product
+            </button>
           </div>
-          <div className="low text-slate-400 text-lg font-semibold">
-            Low Stock Products :{" "}
-            <span className="text-red-600 font-semibold">
-              {item.lowStockProducts}
-            </span>
+        ) : (
+          <div className="flex gap-20">
+            <div className="total text-slate-400 text-lg font-semibold">
+              Total Stock Value :
+              <span className="text-black font-semibold">
+                {stockValue}
+              </span>
+            </div>
+            <div className="low text-slate-400 text-lg font-semibold">
+              Low Stock Products :
+              <span className="text-red-600 font-semibold">{lowStock}</span>
+            </div>
+            <button className="flex gap-1" onClick={props.add}>
+
+              <IconPlus className="w-5" />
+              Add Product
+            </button>
           </div>
-          <button className="flex gap-1" onClick={props.add}>
-            <IconPlus className="w-5" />
-            Add Product
-          </button>
-        </div>
-      ))}
+        )}
+      </div>
 
       <div className="filters flex items-center justify-between">
         <div className="searchbar1 flex h-10 rounded p-1 w-72 items-center gap-2 border border-slate-400 hover:border-black">
@@ -122,11 +149,8 @@ const ProLeft = (props) => {
               id="demo-select-small"
               //value={filter}
               label="Sort By"
-              
               onChange={handleChange1}
-
             >
-              
               <MenuItem value="recent">Most Recent</MenuItem>
               <MenuItem value="highestAmount">Highest Amount</MenuItem>
               <MenuItem value="name">By Name</MenuItem>
@@ -147,10 +171,9 @@ const ProLeft = (props) => {
                 setFilter2(e.target.value);
               }}
             >
-              
-               <MenuItem value="All">All</MenuItem>
+              <MenuItem value="All">All</MenuItem>
               <MenuItem value="lowStock">Low Stock</MenuItem>
-              </Select>
+            </Select>
           </FormControl>
         </div>
       </div>
@@ -159,25 +182,55 @@ const ProLeft = (props) => {
         <div className="sprice text-slate-600">Sales Price</div>
         <div className="qty text-slate-600">Stock Qty</div>
       </div>
-      
-      <div className="cards">
-        {console.log("searchValue : ",searchValue)}
-        {sortedUsers
 
-          .filter((code) => {
-            if (filter2 === "lowStock") {
-              return code.balance_stock <= code.low_stock;
-            } else if (filter2 === "All") {
-              return true;
-            }
-          })
-          .filter(
-            (code) =>
-              code.product_name.toLowerCase().startsWith(searchValue.toLowerCase())
-          )
-          .map((filteredItem, index) => (
-            <ProCard key={index} data={filteredItem} />
-          ))}
+      <div className="cards">
+        {skeleton ? (
+          <div className={"cardItem cursor-pointer"}>
+            <div
+              className="flex justify-between  items-center p-3 "
+              style={{ borderBottom: "1px solid rgb(245 245 245" }}
+            >
+              <div className="flex items-center gap-4 w-[200px]">
+                <Skeleton variant="circular" width={50} height={50} />
+                <div className="flex flex-col gap-1">
+                  <span className="text-lg text-slate-700">
+                    <Skeleton variant="rectangular" width={60} height={20} />
+                  </span>
+                </div>
+              </div>
+              <div className="w-[95px]">
+                <div className="text-slate-800 text-lg">
+                  
+                  <Skeleton variant="rectangular" width={100} height={20} />
+                </div>
+              </div>
+              <div className="w-[70px]">
+                <div className="qty text-slate-800 text-lg">
+                 
+                  <Skeleton variant="rectangular" width={60} height={20} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          sortedUsers
+
+            .filter((code) => {
+              if (filter2 === "lowStock") {
+                return code.balStock <= code.low_stock;
+              } else if (filter2 === "All") {
+                return true;
+              }
+            })
+            .filter((code) =>
+              code.product_name
+                .toLowerCase()
+                .startsWith(searchValue.toLowerCase())
+            )
+            .map((filteredItem, index) => (
+              <ProCard key={index} data={filteredItem}  />
+            ))
+        )}
       </div>
     </div>
   );

@@ -16,10 +16,13 @@ const CardItem = (props) => {
       return prev + +current.tran_receive;
     }, 0);
   const total = receive - pay;
-  const final =
-    props.users.amt_type === "receive"
-      ? props.users.cust_amt + total
-      : -props.users.cust_amt + total;
+  // const final =
+  //   props.users.amt_type === "receive"
+  //     ? props.users.cust_amt + total
+  //     : -props.users.cust_amt + total;
+  // props.skeleton
+  //   ? console.log("Skeletion is true")
+  //   : console.log("skeleton is false");
   return (
     <div
       className={
@@ -50,15 +53,15 @@ const CardItem = (props) => {
           <div className="flex flex-col items-end gap-1">
             <div
               className={
-                final < 0
+                total < 0
                   ? "text-green-600 font-semibold text-lg"
                   : "text-red-600 font-semibold text-lg"
               }
             >
-              {final > 0 ? "₹ " + final : "₹ " + final * -1}
+              {total > 0 ? "₹ " + total.toFixed(2) : "₹ " + total.toFixed(2) * -1}
             </div>
             <div className="text-slate-700 text-xs">
-              {final > 0 ? "You'll Pay" : "You'll Receive"}
+              {total > 0 ? "You'll Pay" : "You'll Receive"}
             </div>
           </div>
         </div>

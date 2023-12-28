@@ -38,7 +38,7 @@ const EditPay = (props) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/auth/fetchTranid/${tranId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchTranid/${tranId}`)
       .then((response) => {
         setResult(response.data);
         setData({
@@ -50,13 +50,13 @@ const EditPay = (props) => {
       });
 
     axios
-      .get(`http://localhost:8000/api/auth/fetchDataUsingId/${userId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
+      )
       .then((response) => {
         setResult2(response.data);
       });
   }, [tranId]);
-
-  console.log(result);
 
   const today = new Date();
   const month = today.getMonth() + 1;
@@ -93,7 +93,9 @@ const EditPay = (props) => {
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`http://localhost:8000/api/auth/deleteTran/${tranId}`);
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/auth/deleteTran/${tranId}`
+      );
       changeChange();
       props.snackd();
     } catch (err) {
@@ -107,7 +109,7 @@ const EditPay = (props) => {
       data.tran_date = filteredDate;
       console.log(data);
       await axios.put(
-        `http://localhost:8000/api/auth/updateTran/${tranId}`,
+        import.meta.env.VITE_BACKEND + `/api/auth/updateTran/${tranId}`,
         data
       );
       changeChange();
@@ -203,7 +205,9 @@ const EditPay = (props) => {
                           {item.tran_bill ? (
                             <img
                               src={
-                                "http://localhost:8000/images/" + item.tran_bill
+                                import.meta.env.VITE_BACKEND +
+                                "/images/" +
+                                item.tran_bill
                               }
                               target="_blank"
                               width={50}
@@ -215,35 +219,34 @@ const EditPay = (props) => {
                           )}
                         </p>
                         <Dialog
-                            open={imgOpen}
-                            onClose={handleImgClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                            maxWidth="xl"          
-                          >
-                            <div>
-                              <DialogActions>
-                                <button
-                                  className="p-3"
-                                  onClick={handleImgClose}
-                                >
-                                  <IconX className=" text-white" size={30}/>
-                                </button>
-                              </DialogActions>
+                          open={imgOpen}
+                          onClose={handleImgClose}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                          maxWidth="xl"
+                        >
+                          <div>
+                            <DialogActions>
+                              <button className="p-3" onClick={handleImgClose}>
+                                <IconX className=" text-white" size={30} />
+                              </button>
+                            </DialogActions>
 
-                              <DialogContent>
-                                <img
-                                  className="image"
-                                  src={
-                                    "http://localhost:8000/images/" + item.tran_bill
-                                  }
-                                  alt="no image"
-                                  width={1000}
-                              height={1000}
-                                />
-                              </DialogContent>
-                            </div>
-                          </Dialog>
+                            <DialogContent>
+                              <img
+                                className="image"
+                                src={
+                                  import.meta.env.VITE_BACKEND +
+                                  "/images/" +
+                                  item.tran_bill
+                                }
+                                alt="no image"
+                                width={1000}
+                                height={1000}
+                              />
+                            </DialogContent>
+                          </div>
+                        </Dialog>
                       </div>
                     </div>
 

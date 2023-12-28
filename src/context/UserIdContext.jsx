@@ -1,5 +1,5 @@
-import { createContext, useState } from "react";
-
+import { createContext, useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 export const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
@@ -39,6 +39,74 @@ export const UserContextProvider = ({ children }) => {
   const changeSaleId = (saleid) => {
     setSaleId(saleid);
   };
+
+  const [purchaseId, setPurchaseId] = useState(0);
+  const changePurchaseId = (purchaseid) => {
+    setPurchaseId(purchaseid);
+  };
+  const [accountId, setAccountId] = useState(0);
+  const changeAccountId = (accountId) => {
+    setAccountId(accountId);
+  };
+
+  const [parties, setParties] = useState(3);
+  const changeParties = (parties) => {
+    setParties(parties);
+  };
+  const [inventory, setInventory] = useState(2);
+  const changeInventory = (inventory) => {
+    setInventory(inventory);
+  };
+  const [bills, setBills] = useState(2);
+  const changeBills = (bills) => {
+    setBills(bills);
+  };
+
+  const [staffId, setStaffId] = useState(0);
+  const changeStaffId = (staffId) => {
+    setStaffId(staffId);
+  };
+
+  const [uId, setUId] = useState(1);
+  const changeUId = (uId) => {
+    setUId(uId);
+  };
+
+  const [testId, setTestId] = useState(0);
+  const changeTestId = (uId) => {
+    setTestId(uId);
+  };
+
+  //  const { currentUser } = useContext(AuthContext);
+
+  //  useEffect(() => {
+  //   if (currentUser) {
+  //     setAccountId(currentUser[0].business_id);
+  //     changeUId(userData[0].log_id)
+  //     if (currentUser[0].log_user === 0) {
+  //       changeParties(currentUser[0].staff_parties);
+  //       changeBills(currentUser[0].staff_bills);
+  //       changeInventory(currentUser[0].staff_inventory);
+  //     }
+  //   }
+  //  } , []);
+
+  const { currentUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (currentUser) {
+      setAccountId(currentUser[0].business_id);
+      changeUId(currentUser[0].log_id);
+      if (currentUser[0].log_user === 0) {
+        changeParties(currentUser[0].staff_parties);
+        changeBills(currentUser[0].staff_bills);
+        changeInventory(currentUser[0].staff_inventory);
+      }
+    }
+  }, []);
+
+  console.log("currentUser : ", currentUser, accountId);
+
   return (
     <UserContext.Provider
       value={{
@@ -60,6 +128,22 @@ export const UserContextProvider = ({ children }) => {
         changeExpId,
         saleId,
         changeSaleId,
+        purchaseId,
+        changePurchaseId,
+        accountId,
+        changeAccountId,
+        parties,
+        changeParties,
+        inventory,
+        changeInventory,
+        bills,
+        changeBills,
+        staffId,
+        changeStaffId,
+        uId,
+        changeUId,
+        testId,
+        changeTestId,
       }}
     >
       {children}

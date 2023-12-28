@@ -119,26 +119,31 @@ const EditProduct = (props) => {
   };
 
   const [result, setResult] = useState([]);
-  axios
-    .get(`http://localhost:8000/api/auth/fetchProductUnits`)
+  const [result2, setResult2] = useState([]);
+
+  useEffect(() => {
+    axios
+    .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductUnits`)
     .then((response) => {
       setResult(response.data);
     });
 
-  const [result2, setResult2] = useState([]);
+  ;
   axios
-    .get(`http://localhost:8000/api/auth/fetchProductHsnCodes`)
+    .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductHsnCodes`)
     .then((response) => {
       setResult2(response.data);
     });
+  }, [])
+  
 
   const { pId, change, changeChange, changeProduct } = useContext(UserContext);
   const [data, setData] = useState({
     product_name: "",
     primary_unit: null,
     secondary_unit: "",
-    sale_price: 0,
-    purchase_price: 0,
+    sale_price: null,
+    purchase_price: null,
     tax: "",
     opening_stock: 0,
     low_stock: 0,
@@ -152,10 +157,10 @@ const EditProduct = (props) => {
     conversion: null,
     cgst: null,
   });
-  const [isTaxIncluded, setIsTaxIncluded] = useState("");
+  const [isTaxIncluded, setIsTaxIncluded] = useState("0");
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/auth/fetchProductTran/${pId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductTran/${pId}`)
       .then((response) => {
         setIsTaxIncluded(response.data[0].tax);
         setData({
@@ -182,7 +187,7 @@ const EditProduct = (props) => {
           cgst: response.data[0].cgst,
         });
         setIsOn(response.data[0].secondary_unit !== "" ? true : false);
-        setIsOn2(response.data[0].tax === "yes" ? true : false);
+        setIsOn2(response.data[0].tax === "1" ? true : false);
       });
   }, [change, pId]);
 
@@ -192,7 +197,9 @@ const EditProduct = (props) => {
 
   const deleteProduct = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/auth/delproduct/${pId}`);
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/auth/delproduct/${pId}`
+      );
       changeChange();
       props.snackd();
       changeProduct(0);
@@ -236,7 +243,7 @@ const EditProduct = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      data.tax = isOn2 ? "yes" : "no";
+      data.tax = isOn2 ? 1 : 0;
       console.log("data.tax : ", data.tax);
       const formData = new FormData();
       formData.append("image", file);
@@ -257,7 +264,7 @@ const EditProduct = (props) => {
       formData.append("conversion", data.conversion);
       formData.append("cgst", data.cgst);
       axios.put(
-        `http://localhost:8000/api/auth/updateProduct/${pId}`,
+        import.meta.env.VITE_BACKEND + `/api/auth/updateProduct/${pId}`,
         formData
       );
       changeChange();
@@ -268,7 +275,6 @@ const EditProduct = (props) => {
   };
 
   const [searchValue, setSearchValue] = useState("0");
-  //console.log(searchValue);
 
   const [customGst, setcustomGst] = useState("");
   const [customeCess, setCustomeCess] = useState("");
@@ -278,6 +284,7 @@ const EditProduct = (props) => {
   const [file, setFile] = useState("File Name");
   const [fileExists, setFileExists] = useState(false);
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   useEffect(() => {
     if (
@@ -286,13 +293,14 @@ const EditProduct = (props) => {
       data.sale_price > 0 &&
       data.purchase_price !== null &&
       data.purchase_price > 0 &&
-      data.low_stock < data.opening_stock
+      data.low_stock < data.opening_stock &&
+      error === null
     ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.product_name, data.sale_price, data.purchase_price, data.low_stock]);
+  }, [data.product_name, data.sale_price, data.purchase_price, data.low_stock , error]);
 
   return (
     <div>
@@ -322,9 +330,18 @@ const EditProduct = (props) => {
                     className="w-full"
                     size="small"
                     required
-                    onChange={handleChange}
                     name="product_name"
                     value={data.product_name}
+                    inputProps={{ maxLength: 20 }}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        product_name: e.target.value.replace(
+                          /[^A-Z a-z.]/g,
+                          ""
+                        ),
+                      })
+                    }
                   />
                 </Box>
 
@@ -419,7 +436,7 @@ const EditProduct = (props) => {
 
                 {isOn ? (
                   <Box className="box-sec margin-top-zero margin-bottom-zero">
-                    {""}
+                    
                     <label className="pl-3">Add Secondary Unit</label>
                     <Switch
                       {...label}
@@ -468,9 +485,16 @@ const EditProduct = (props) => {
                         label="Conversion"
                         className="sec-2 w-full pr-3 pb-3"
                         size="small"
-                        onChange={handleChange}
+                        
                         name="conversion"
                         value={data.conversion}
+                        inputProps={{ maxLength: 10}}
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            conversion: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                          })
+                        }
                       />
                     </div>
                   </Box>
@@ -485,9 +509,16 @@ const EditProduct = (props) => {
                     label="Sale Price"
                     className="sec-1 w-full"
                     size="small"
-                    onChange={handleChange}
-                    name="sale_price"
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        sale_price: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                      })
+                    }
+                    inputProps={{ maxLength: 10}}
                     value={data.sale_price}
+                    name="sale_price"
+                    
                   />
 
                   <TextField
@@ -496,14 +527,20 @@ const EditProduct = (props) => {
                     label="Purchase Price"
                     className="sec-2 w-full"
                     size="small"
-                    onChange={handleChange}
+                    
                     name="purchase_price"
                     value={data.purchase_price}
-                    //value={2}
+                    inputProps={{ maxLength: 10}}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        purchase_price: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                      })
+                    }
                   />
                 </Box>
 
-                {isTaxIncluded === "yes" ? (
+                {isTaxIncluded === "1" ? (
                   <Box className="box-sec margin-top-zero ">
                     {""}
                     <label className="pl-2">Tax included</label>
@@ -534,9 +571,17 @@ const EditProduct = (props) => {
                     label="Opening stock"
                     className="sec-1 w-full"
                     size="small"
-                    onChange={handleChange}
+                   
                     name="opening_stock"
                     value={data.opening_stock}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        opening_stock: e.target.value.replace(/\D/g, ""),
+                      })
+                    }
+                    inputProps={{ maxLength: 5}}
+                    
                   />
 
                   <TextField
@@ -545,7 +590,13 @@ const EditProduct = (props) => {
                     label="Low stock"
                     className="sec-2 w-full"
                     size="small"
-                    onChange={handleChange}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        low_stock: e.target.value.replace(/\D/g, ""),
+                      })
+                    }
+                    inputProps={{ maxLength: 5}}
                     name="low_stock"
                     value={data.low_stock}
                   />
@@ -563,6 +614,9 @@ const EditProduct = (props) => {
                         maxDate={todaysDate}
                         onChange={(newValue) => {
                           setTransactionDate(newValue), setFlag(true);
+                        }}
+                        onError={(newError) => {
+                          setSubmitDisabled(true), setError(newError);
                         }}
                       />
                     </DemoContainer>
@@ -638,21 +692,23 @@ const EditProduct = (props) => {
                         }}
                       />
 
-                      {result2
+                      {searchValue !== null && (searchValue !== "") === true &&
+                      result2
                         .filter(
                           (code) =>
                             code.hsn_code.toString().startsWith(searchValue) ||
-                            code.hsn_desc.startsWith(searchValue)
+                            code.hsn_desc.toString()
+                            .toLowerCase().startsWith(searchValue.toString().toLowerCase())
                         )
                         .map((filteredItem) => (
                           <div
                             className="flex card-sec"
                             onClick={() => {
-                              
+                              console.log(filteredItem.hsn_code);
 
                               setIsClicked(false);
                               setSearchValue("0");
-                              setCustomeCess(0);
+                              //setCustomeCess(0);
                               setData({
                                 ...data,
                                 igst: filteredItem.igst,
@@ -709,7 +765,7 @@ const EditProduct = (props) => {
                                   name="gst"
                                   onChange={() => {
                                     setIsClicked2(false);
-                                    setCustomeCess(0);
+                                    //setCustomeCess(0);
                                     setData({
                                       ...data,
                                       igst: item.label1,
@@ -733,8 +789,17 @@ const EditProduct = (props) => {
                         className="sec-1 w-full"
                         size="small"
                         required
+                        
+                        inputProps={{maxLength: 10}}
+                        value= {data.igst}
                         onChange={(e) => {
-                          setcustomGst(e.target.value);
+                          setData({
+                            ...data,
+                            igst: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            cgst: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                            sgst: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                           
+                          });
                         }}
                       />
                       <TextField
@@ -744,27 +809,18 @@ const EditProduct = (props) => {
                         className="sec-2 w-full"
                         size="small"
                         required
+                        
+                        inputProps={{maxLength: 10}}
+                        value={data.cess}
                         onChange={(e) => {
-                          setCustomeCess(e.target.value);
+                          setData({
+                            ...data,
+                            cess: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1")
+                          });
                         }}
                       />
                     </Box>
-                    <Box className="box-sec">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault(), setIsClicked2(false);
-                          setData({
-                            ...data,
-                            igst: customGst,
-                            cgst: customGst / 2,
-                            sgst: customGst / 2,
-                            cess: customeCess,
-                          });
-                        }}
-                      >
-                        Add Custome Gst
-                      </button>
-                    </Box>
+                    
                   </>
                 ) : (
                   <div></div>

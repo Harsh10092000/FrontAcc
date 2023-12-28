@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, TextField } from "@mui/material";
+import { Box, Skeleton, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,6 +20,8 @@ import {
   IconPhoto,
   IconCurrencyRupee,
   IconAlertOctagonFilled,
+  IconUser,
+  IconCash,
 } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { useContext } from "react";
@@ -27,6 +29,7 @@ import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 
 const EditReceive = (props) => {
+  const [skeleton, setSkeleton] = useState(true);
   const { supId, tranId, changeChange } = useContext(UserContext);
   const today = new Date();
   const month = today.getMonth() + 1;
@@ -58,8 +61,8 @@ const EditReceive = (props) => {
   const [flag, setFlag] = useState(false);
   const [data, setData] = useState([]);
   const [subAmtType, setSubAmtType] = useState("");
-  const [prevSubTranReceive , setPrevSubTranReceive] = useState(0);
-  const [prevSubBalance , setPrevSubBalance] = useState(0);
+  const [prevSubTranReceive, setPrevSubTranReceive] = useState(0);
+  const [prevSubBalance, setPrevSubBalance] = useState(0);
   const [tran, setTran] = useState([]);
   const [update, setUpdate] = useState({
     sup_tran_receive: "",
@@ -67,12 +70,14 @@ const EditReceive = (props) => {
     sup_tran_description: "",
   });
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/sup/fetchSup/${supId}`).then((res) => {
-      setData(res.data);
-      setSubAmtType(res.data[0].sup_amt_type);
-    });
     axios
-      .get(`http://localhost:8000/api/sup/fetchTranid/${tranId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSup/${supId}`)
+      .then((res) => {
+        setData(res.data);
+        setSubAmtType(res.data[0].sup_amt_type);
+      });
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchTranid/${tranId}`)
       .then((res) => {
         setTran(res.data);
         setUpdate({
@@ -82,9 +87,10 @@ const EditReceive = (props) => {
           sup_tran_description: res.data[0].sup_tran_description,
           sup_balance: res.data[0].sup_balance,
         });
+        setSkeleton(false);
       });
     axios
-      .get(`http://localhost:8000/api/sup/fetchSupLastTran/${supId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSupLastTran/${supId}`)
       .then((response) => {
         setPrevSubTranReceive(response.data[0].sup_tran_receive);
         setPrevSubBalance(response.data[0].sup_balance);
@@ -92,7 +98,9 @@ const EditReceive = (props) => {
   }, [tranId]);
   const delTran = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/sup/delTran/${tranId}`);
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/sup/delTran/${tranId}`
+      );
       changeChange();
       props.snackd();
     } catch (err) {
@@ -129,7 +137,7 @@ const EditReceive = (props) => {
       formData.append("sup_balance", update.sup_balance);
       console.log("filr : ", file, formData);
       await axios.put(
-        `http://localhost:8000/api/sup/updateTran/${tranId}`,
+        import.meta.env.VITE_BACKEND + `/api/sup/updateTran/${tranId}`,
         formData
       );
       changeChange();
@@ -146,180 +154,300 @@ const EditReceive = (props) => {
   const handleImgClose = () => {
     setImgOpen(false);
   };
-  //console.log("file : " , file , formData)
+
+  const [error , setError] = useState(null)
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  useEffect(() => {
+    if (update.sup_tran_receive !== "" && error === null) {
+      setSubmitDisabled(false);
+    } else {
+      setSubmitDisabled(true);
+    }
+  }, [update.sup_tran_receive, error]);
+
+  
   return (
     <Box sx={{ width: 400 }} role="presentation">
       {openEntryDetails ? (
-        tran.map((item, index) => (
-          <div key={index}>
-            <Box sx={{ width: 400 }} className="w-full">
-              <h1 className="text_left heading">Receive Entry Details</h1>
-              <div className="customer-profile flex items-start px-4 py-6">
-                <img
-                  className="w-12 h-12 rounded-full object-cover mr-4 shadow"
-                  src="https://images.unsplash.com/photo-1542156822-6924d1a71ace?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
-                  alt="avatar"
-                />
-                <div className="">
-                  <div className="flex items-center justify-between">
-                    {data.map((item, index) => (
-                      <h2
-                        key={index}
-                        className="text-lg font-normal text-gray-700 -mt-1"
-                      >
-                        {item.sup_name}
+        skeleton ? (
+          <Box sx={{ width: 400 }} role="presentation">
+            <div>
+              <Box sx={{ width: 400 }} className="w-full">
+                <h1 className="text_left heading">Receive Entry Details</h1>
+                <div className="customer-profile flex items-start px-4 py-6 gap-2">
+                  <Skeleton variant="circular" width={50} height={50} />
+                  <div className="flex flex-col gap-2 mt-2">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-normal text-gray-700 -mt-1">
+                        <Skeleton
+                          variant="rectangular"
+                          width={50}
+                          height={15}
+                        />
                       </h2>
-                    ))}
+                    </div>
+                    <p className="text-gray-500  bg-slate-200 rounded-full text-center">
+                      <Skeleton variant="rectangular" width={50} height={15} />
+                    </p>
                   </div>
-                  <p className="text-gray-500  bg-slate-200 rounded-full text-center">
-                    {item.sup_tran_date}
-                  </p>
                 </div>
-              </div>
 
-              <div className="pay-edit-entry-btn-wrapper flex justify-center">
-                <button
-                  className="edit-entry-btn flex gap-1 justify-center text-gray-600 bg-gray-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-gray-600 transition-all ease-in"
-                  type="submit"
-                  onClick={handleClick}
-                >
-                  <IconEdit />
-                  Edit Entry
-                </button>
-              </div>
+                <div className="pay-edit-entry-btn-wrapper flex justify-center">
+                  <Skeleton variant="rounded" width={350} height={45} />
+                </div>
 
-              <div className="supplier-pay-edit-section-wrapper">
-                <div className="edit-section">
-                  <div className="flex card-sec">
-                    <div className="customer-info-icon-wrapper ">
-                      <IconPhoneCall />
-                    </div>
-                    <div className="customer-info-text">
-                      <h2>You Receive</h2>
-                      <p className=" font-medium">₹{item.sup_tran_receive}</p>
-                    </div>
-                  </div>
+                <div className="pay-edit-section-wrapper">
+                  <div className="edit-section">
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconCash />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>You Receive</h2>
 
-                  <div className="flex card-sec">
-                    <div className="customer-info-icon-wrapper ">
-                      <IconReceipt />
-                    </div>
-                    <div className="customer-info-text">
-                      <h2>Description</h2>
-                      <p className=" font-medium">
-                        {item.sup_tran_description
-                          ? item.sup_tran_description
-                          : "-"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex card-sec">
-                    <div className="customer-info-icon-wrapper ">
-                      <IconPhoto />
-                    </div>
-                    <div className="customer-info-text">
-                      <h2>Photo Attachment</h2>
-                      <p className=" font-medium">
-                        {item.sup_tran_bill ? (
-                          <img
-                            src={
-                              "http://localhost:8000/sup/" + item.sup_tran_bill
-                            }
+                        <p className=" font-medium">
+                          {" "}
+                          <Skeleton
+                            variant="rectangular"
                             width={50}
-                            height={50}
-                            onClick={handleImgOpen}
+                            height={15}
                           />
-                        ) : (
-                          "-"
-                        )}
-                      </p>
-                      <Dialog
-                        open={imgOpen}
-                        onClose={handleImgClose}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        maxWidth="xl"
-                      >
-                        <div>
-                          <DialogContent>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconReceipt />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Description</h2>
+                        <p className=" font-medium">
+                          {" "}
+                          <Skeleton
+                            variant="rectangular"
+                            width={50}
+                            height={15}
+                          />
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconPhoto />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Photo Attachment</h2>
+                        <p className=" font-medium">
+                          {" "}
+                          <Skeleton
+                            variant="rectangular"
+                            width={50}
+                            height={15}
+                          />
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconCurrencyRupee />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Running Balance</h2>
+                        <p className=" font-medium">
+                          {" "}
+                          <Skeleton
+                            variant="rectangular"
+                            width={50}
+                            height={15}
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Box>
+
+              <div className="add-customer-btn-wrapper flex justify-center">
+                <Skeleton variant="rounded" width={350} height={45} />
+              </div>
+            </div>
+          </Box>
+        ) : (
+          tran.map((item, index) => (
+            <div key={index}>
+              <Box sx={{ width: 400 }} className="w-full">
+                <h1 className="text_left heading">Receive Entry Details</h1>
+                <div className="customer-profile flex items-start px-4 py-6">
+                  <div className="bg-sky-600/25 p-3 rounded-full text-blue-600">
+                    <IconUser />
+                  </div>
+                  <div className="">
+                    <div className="flex items-center justify-between">
+                      {data.map((item, index) => (
+                        <h2
+                          key={index}
+                          className="text-lg font-normal text-gray-700 -mt-1"
+                        >
+                          {item.sup_name}
+                        </h2>
+                      ))}
+                    </div>
+                    <p className="text-gray-500  bg-slate-200 rounded-full text-center">
+                      {item.sup_tran_date}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pay-edit-entry-btn-wrapper flex justify-center">
+                  <button
+                    className="edit-entry-btn flex gap-1 justify-center text-gray-600 bg-gray-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-gray-600 transition-all ease-in"
+                    type="submit"
+                    onClick={handleClick}
+                  >
+                    <IconEdit />
+                    Edit Entry
+                  </button>
+                </div>
+
+                <div className="supplier-pay-edit-section-wrapper">
+                  <div className="edit-section">
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconCash />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>You Receive</h2>
+                        <p className=" font-medium">₹{parseFloat(item.sup_tran_receive).toFixed(2)}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconReceipt />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Description</h2>
+                        <p className=" font-medium">
+                          {item.sup_tran_description
+                            ? item.sup_tran_description
+                            : "-"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconPhoto />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Photo Attachment</h2>
+                        <p className=" font-medium">
+                          {item.sup_tran_bill ? (
                             <img
-                              className="image"
                               src={
-                                "http://localhost:8000/sup/" +
+                                import.meta.env.VITE_BACKEND +
+                                "/sup/" +
                                 item.sup_tran_bill
                               }
-                              alt="no image"
+                              width={50}
+                              height={50}
+                              onClick={handleImgOpen}
                             />
-                          </DialogContent>
-                        </div>
-                      </Dialog>
+                          ) : (
+                            "-"
+                          )}
+                        </p>
+                        <Dialog
+                          open={imgOpen}
+                          onClose={handleImgClose}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                          maxWidth="xl"
+                        >
+                          <div>
+                            <DialogContent>
+                              <img
+                                className="image"
+                                src={
+                                  import.meta.env.VITE_BACKEND +
+                                  "/sup/" +
+                                  item.sup_tran_bill
+                                }
+                                alt="no image"
+                              />
+                            </DialogContent>
+                          </div>
+                        </Dialog>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex card-sec">
-                    <div className="customer-info-icon-wrapper ">
-                      <IconCurrencyRupee />
-                    </div>
-                    <div className="customer-info-text">
-                      <h2>Running Balance</h2>
-                      <p className=" font-medium">₹422.05</p>
+                    <div className="flex card-sec">
+                      <div className="customer-info-icon-wrapper ">
+                        <IconCurrencyRupee />
+                      </div>
+                      <div className="customer-info-text">
+                        <h2>Running Balance</h2>
+                        <p className=" font-medium">₹422.05</p>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </Box>
+
+              <div className="add-customer-btn-wrapper flex justify-center">
+                <button
+                  className="delete-btn text-red-600 flex gap-1 justify-center"
+                  type="submit"
+                  onClick={handleClickOpen}
+                >
+                  <IconTrash />
+                  Delete Entry
+                </button>
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <div className="flex">
+                    <div className="pt-5 pl-3">
+                      <IconAlertOctagonFilled
+                        size={60}
+                        className="text-red-600"
+                      />
+                    </div>
+                    <div>
+                      <DialogTitle id="alert-dialog-title">
+                        Are You Sure ?
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          You are about to delete this Entry . This action
+                          cannot be undone.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions className="flex gap-4">
+                        <button className="pb-3" onClick={handleClose}>
+                          Cancel
+                        </button>
+                        <button
+                          className="delete-btn text-red-600 pb-3 pr-3"
+                          onClick={delTran}
+                          autoFocus
+                        >
+                          Delete Entry
+                        </button>
+                      </DialogActions>
+                    </div>
+                  </div>
+                </Dialog>
               </div>
-            </Box>
-
-            <div className="add-customer-btn-wrapper flex justify-center">
-              <button
-                className="delete-btn text-red-600 flex gap-1 justify-center"
-                type="submit"
-                onClick={handleClickOpen}
-              >
-                <IconTrash />
-                Delete Entry
-              </button>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <div className="flex">
-                  <div className="pt-5 pl-3">
-                    <IconAlertOctagonFilled
-                      size={60}
-                      className="text-red-600"
-                    />
-                  </div>
-                  <div>
-                    <DialogTitle id="alert-dialog-title">
-                      Are You Sure ?
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        You are about to delete this Entry . This action cannot
-                        be undone.
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions className="flex gap-4">
-                      <button className="pb-3" onClick={handleClose}>
-                        Cancel
-                      </button>
-                      <button
-                        className="delete-btn text-red-600 pb-3 pr-3"
-                        onClick={delTran}
-                        autoFocus
-                      >
-                        Delete Entry
-                      </button>
-                    </DialogActions>
-                  </div>
-                </div>
-              </Dialog>
             </div>
-          </div>
-        ))
+          ))
+        )
       ) : (
         <div></div>
       )}
@@ -355,11 +483,12 @@ const EditReceive = (props) => {
                       variant="outlined"
                       className="w-full m-0"
                       size="small"
+                      //inputProps={{  }}
                       value={update.sup_tran_receive}
                       onChange={(e) =>
                         setUpdate({
                           ...update,
-                          sup_tran_receive: e.target.value.replace(/\D/g, ""),
+                          sup_tran_receive: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                         })
                       }
                       required
@@ -401,6 +530,7 @@ const EditReceive = (props) => {
                           onChange={(newValue) => {
                             setTransactionDate(newValue), setFlag(true);
                           }}
+                          onError={(newError) => {setSubmitDisabled(true) , setError(newError)}}
                         />
                       </DemoContainer>
                     </LocalizationProvider>
@@ -479,7 +609,7 @@ const EditReceive = (props) => {
 
             <div className="supplier-pay-btn-wrapper bg-white">
               <button
-                className="text-green-600 bg-green-200 w-[100%] p-3 rounded-md hover:bg-green-600 hover:text-white transition-all duration-300"
+                className={submitDisabled ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in" : "text-green-600 bg-green-200 w-[100%] p-3 rounded-md hover:bg-green-600 hover:text-white transition-all duration-300"}
                 onClick={updateTran}
               >
                 Save

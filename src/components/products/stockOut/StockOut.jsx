@@ -18,8 +18,8 @@ const StockOut = (props) => {
   const [isActive, setIsActive] = useState(true);
   const [conversion, setConversion] = useState(0);
   const [currentStock, setCurrentStock] = useState(0);
-  const [result , setResult] = useState([])
-  const [result2 , setResult2] = useState([])
+  const [result, setResult] = useState([]);
+  const [result2, setResult2] = useState([]);
   const [values, setValues] = useState({
     product_stock_out: null,
     balance_stock: null,
@@ -29,43 +29,49 @@ const StockOut = (props) => {
     product_desc: "",
     entry_date: "",
     cnct_id: pId,
-    
+
     total_profit: null,
   });
 
-  const [price1 , setPrice1] = useState("hgfh")
+  const [price1, setPrice1] = useState("hgfh");
   const [convertedPrice, setConvertedPrice] = useState(null);
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/auth/fetchProductTran/${pId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductTran/${pId}`)
       .then((response) => {
-        setResult(response.data)
+        setResult(response.data);
         setPrimaryUnit(response.data[0].primary_unit);
         setSecondaryUnit(response.data[0].secondary_unit);
         setUnit(response.data[0].primary_unit);
         setConversion(response.data[0].conversion);
         setCurrentStock(response.data[0].balance_stock);
-        setPrice1(response.data[0].sale_price)
+        setPrice1(response.data[0].sale_price);
         setValues({
           ...values,
           primary_unit: response.data[0].primary_unit,
           secondary_unit: response.data[0].secondary_unit,
           sale_price: response.data[0].sale_price,
         });
-        
+
         setConvertedPrice(
           parseFloat(response.data[0].sale_price / response.data[0].conversion)
         );
       });
     axios
-      .get(`http://localhost:8000/api/auth/fetchStockInTran/${pId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchStockInTran/${pId}`)
       .then((response) => {
         setResult2(response.data);
       });
   }, [pId]);
 
-
-  console.log("values.sale price : ", values.sale_price, price1 , result, values.primary_unit , currentStock );
+  console.log(
+    "values.sale price : ",
+    values.sale_price,
+    price1,
+    result,
+    values.primary_unit,
+    currentStock
+  );
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
@@ -107,9 +113,12 @@ const StockOut = (props) => {
         : convertedPrice;
       values.selected_unit = unit ? unit : primaryUnit;
       values.balance_stock = currentStock - coverted_qty;
-      await axios.post("http://localhost:8000/api/auth/addStockIn", values);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/auth/addStockIn",
+        values
+      );
       await axios.put(
-        `http://localhost:8000/api/auth/updateStockQty/${pId}`,
+        import.meta.env.VITE_BACKEND + `/api/auth/updateStockQty/${pId}`,
         values2
       );
       changeChange();
@@ -119,6 +128,7 @@ const StockOut = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   if (convertedPrice !== null) {
     useEffect(() => {
@@ -129,13 +139,14 @@ const StockOut = (props) => {
         //values.purchase_price > 0 &&
         values.product_stock_out !== null &&
         values.product_stock_out !== "" &&
-        coverted_qty <= currentStock
+        coverted_qty <= currentStock &&
+        error === null
       ) {
         setSubmitDisabled(false);
       } else {
         setSubmitDisabled(true);
       }
-    }, [values.product_stock_out, convertedPrice]);
+    }, [values.product_stock_out, convertedPrice, error]);
   } else {
     useEffect(() => {
       if (
@@ -143,13 +154,14 @@ const StockOut = (props) => {
         values.product_stock_out !== "" &&
         values.purchase_price !== "" &&
         values.purchase_price > 0 &&
-        coverted_qty <= currentStock
+        coverted_qty <= currentStock &&
+        error === null
       ) {
         setSubmitDisabled(false);
       } else {
         setSubmitDisabled(true);
       }
-    }, [values.product_stock_out, values.purchase_price]);
+    }, [values.product_stock_out, values.purchase_price, error]);
   }
 
   return (
@@ -213,7 +225,17 @@ const StockOut = (props) => {
                   size="small"
                   required
                   name="product_stock_out"
-                  onChange={handleChange}
+                  inputProps={{ maxLength: 10 }}
+                  value={values.product_stock_out}
+                  onChange={(e) =>
+                    setValues({
+                      ...values,
+                      product_stock_out: e.target.value
+                        .replace(/^\.|[^0-9.]/g, "")
+                        .replace(/(\.\d*\.)/, "$1")
+                        .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                    })
+                  }
                 />
               </Box>
               <span>{valueErr ? "error" : ""}</span>
@@ -226,11 +248,24 @@ const StockOut = (props) => {
                   size="small"
                   required
                   value={isActive ? values.sale_price : convertedPrice}
+                  inputProps={{maxLength : 10}}
                   name="sale_price"
                   onChange={
                     isActive
-                      ? handleChange || 0
-                      : (e) => setConvertedPrice(e.target.value)
+                      ? (e) => setValues({
+                          ...values,
+                          sale_price: e.target.value
+                            .replace(/^\.|[^0-9.]/g, "")
+                            .replace(/(\.\d*\.)/, "$1")
+                            .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                        }) || 0
+                      : (e) =>
+                          setConvertedPrice(
+                            e.target.value
+                              .replace(/^\.|[^0-9.]/g, "")
+                              .replace(/(\.\d*\.)/, "$1")
+                              .replace(/^(\d*\.\d{0,2}).*$/, "$1")
+                          )
                   }
                 />
               </Box>
@@ -245,6 +280,9 @@ const StockOut = (props) => {
                       className="w-full"
                       maxDate={todaysDate}
                       onChange={(newValue) => setTransactionDate(newValue)}
+                      onError={(newError) => {
+                        setError(newError);
+                      }}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -272,12 +310,7 @@ const StockOut = (props) => {
         </div>
 
         <div className="product-stock-in-btn-wrapper">
-          {/* <button
-            className=" text-red-600 bg-red-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-red-600 transition-all ease-in"
-            onClick={handleClick}
-          >
-            Stock Out
-          </button> */}
+          
           {submitDisabled ? (
             <button
               disabled={submitDisabled}

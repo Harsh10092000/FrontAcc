@@ -4,11 +4,11 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { useContext, useState , useEffect} from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 const CashOut = (props) => {
-  const { changeChange } = useContext(UserContext);
+  const { changeChange, accountId } = useContext(UserContext);
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
@@ -33,7 +33,7 @@ const CashOut = (props) => {
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  
+
   const handleClick = (e) => {
     e.preventDefault();
     try {
@@ -45,7 +45,8 @@ const CashOut = (props) => {
       formData.append("cash_description", values.cash_description);
       formData.append("cash_date", values.cash_date);
       formData.append("cash_mode", values.cash_mode);
-      axios.post("http://localhost:8000/api/cash/sendData", formData);
+      formData.append("cash_acc_id", accountId);
+      axios.post(import.meta.env.VITE_BACKEND + "/api/cash/sendData", formData);
       changeChange();
       props.snack();
     } catch (err) {
@@ -53,14 +54,15 @@ const CashOut = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (values.cash_pay !== "") {
+    if (values.cash_pay !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.cash_pay]);
+  }, [values.cash_pay, error]);
 
   return (
     <form className="block overflow-hidden" method="post">
@@ -86,9 +88,14 @@ const CashOut = (props) => {
                 className="w-full m-0"
                 size="small"
                 name="cash_pay"
-                //onChange={handleChange}
+                inputProps={{maxLength : 10}}
                 onChange={(e) =>
-                  setValues({ ...values, cash_pay: e.target.value.replace(/\D/g, "") })
+                  setValues({
+                    ...values,
+                    cash_pay: e.target.value.replace(/^\.|[^0-9.]/g, "")
+                    .replace(/(\.\d*\.)/, "$1")
+                    .replace(/^(\d*\.\d{0,2}).*$/, "$1")
+                  })
                 }
                 value={values.cash_pay}
                 required
@@ -123,7 +130,7 @@ const CashOut = (props) => {
                   name="cash_mode"
                   className="cursor-pointer"
                   checked
-                  onChange={(e) => setPayMode("cash")}
+                  onChange={() => setPayMode("cash")}
                 />
                 <label htmlFor="cash">Cash</label>
                 <input
@@ -131,7 +138,7 @@ const CashOut = (props) => {
                   id="online"
                   name="cash_mode"
                   className="cursor-pointer"
-                  onClick={(e) => setPayMode("online")}
+                  onClick={() => setPayMode("online")}
                 />
                 <label htmlFor="online">Online</label>
               </div>
@@ -146,6 +153,9 @@ const CashOut = (props) => {
                     format="LL"
                     className="w-full"
                     maxDate={todaysDate}
+                    onError={(newError) => {
+                      setError(newError);
+                    }}
                   />
                 </DemoContainer>
               </LocalizationProvider>

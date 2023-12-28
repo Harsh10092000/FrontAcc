@@ -47,47 +47,47 @@ const RecordSale = (props) => {
   });
 
   const [unit, setUnit] = useState("");
-  const [totalSales , setTotalSales] = useState();
-  
+  const [totalSales, setTotalSales] = useState();
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/ser/fetchDataid/${serId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchDataid/${serId}`)
       .then((res) => {
         setData({ ...data, ser_tran_price: res.data[0].ser_price }),
           setUnit(res.data[0].ser_unit);
-          //setTotalSales(res.data[0].ser_sales)
-          setInfo({
-            ...info,
-            ser_unit: res.data[0].ser_unit,
-            ser_name: res.data[0].ser_name,
-            ser_price: res.data[0].ser_price,
-            ser_tax_included: res.data[0].ser_tax_included,
-            ser_sac:
-              res.data[0].ser_sac !== null
-                ? res.data[0].ser_sac
-                : "SAC Code",
-            ser_sac_desc: res.data[0].ser_sac_desc,
-            ser_sgst: res.data[0].ser_sgst,
-            ser_igst: res.data[0].ser_igst,
-            ser_cess: res.data[0].ser_cess,
-            ser_cgst: res.data[0].ser_cgst,
-            ser_sales: res.data[0].ser_sales
-          });
+        //setTotalSales(res.data[0].ser_sales)
+        setInfo({
+          ...info,
+          ser_unit: res.data[0].ser_unit,
+          ser_name: res.data[0].ser_name,
+          ser_price: res.data[0].ser_price,
+          ser_tax_included: res.data[0].ser_tax_included,
+          ser_sac:
+            res.data[0].ser_sac !== null ? res.data[0].ser_sac : "SAC Code",
+          ser_sac_desc: res.data[0].ser_sac_desc,
+          ser_sgst: res.data[0].ser_sgst,
+          ser_igst: res.data[0].ser_igst,
+          ser_cess: res.data[0].ser_cess,
+          ser_cgst: res.data[0].ser_cgst,
+          ser_sales: res.data[0].ser_sales,
+        });
       });
   }, [change, serId]);
 
-  const total = parseInt(data.ser_quantity) + parseInt(info.ser_sales === null ? 0 : info.ser_sales);
-  
-  console.log("info : " , info , total , data.ser_quantity , info.ser_sales)
+  const total =
+    parseInt(data.ser_quantity) +
+    parseInt(info.ser_sales === null ? 0 : info.ser_sales);
+
+  console.log("info : ", info, total, data.ser_quantity, info.ser_sales);
 
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       data.ser_date = filteredDate;
       info.ser_sales = total;
-      axios.post("http://localhost:8000/api/ser/sendTran", data);
+      axios.post(import.meta.env.VITE_BACKEND + "/api/ser/sendTran", data);
       await axios.put(
-        `http://localhost:8000/api/ser/updateData/${serId}`,
+        import.meta.env.VITE_BACKEND + `/api/ser/updateData/${serId}`,
         info
       );
       changeChange();
@@ -103,17 +103,13 @@ const RecordSale = (props) => {
       data.ser_tran_price !== "" &&
       data.ser_tran_price !== null &&
       data.ser_quantity !== "" &&
-      data.ser_quantity !== null 
-      
+      data.ser_quantity !== null
     ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [
-    data.ser_tran_price,
-    data.ser_quantity
-  ]);
+  }, [data.ser_tran_price, data.ser_quantity]);
 
   return (
     <Box sx={{ width: 400 }} role="presentation">
@@ -125,7 +121,7 @@ const RecordSale = (props) => {
         <div className="services-record-sale-section-wrapper">
           <div className="section-2">
             <Box
-            component="form"
+              component="form"
               sx={{
                 "& > :not(style)": { m: 1, width: "95%" },
               }}
@@ -144,12 +140,15 @@ const RecordSale = (props) => {
                   className="w-full m-0"
                   size="small"
                   onChange={(e) =>
-                    setData({ ...data, ser_quantity: e.target.value.replace(/\D/g, "") })
+                    setData({
+                      ...data,
+                      ser_quantity: e.target.value.replace(/\D/g, ""),
+                    })
                   }
                   value={data.ser_quantity}
                   required
                   type="text"
-                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                 />
               </Box>
 
@@ -162,11 +161,18 @@ const RecordSale = (props) => {
                   size="small"
                   value={data.ser_tran_price}
                   onChange={(e) =>
-                    setData({ ...data, ser_tran_price: e.target.value.replace(/\D/g, "") })
+                    setData({
+                      ...data,
+                      ser_tran_price: e.target.value.replace(/\D/g, ""),
+                    })
                   }
                   required
                   type="text"
-                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' , min: "0" }}
+                  inputProps={{
+                    inputMode: "numeric",
+                    pattern: "[0-9]*",
+                    min: "0",
+                  }}
                 />
               </Box>
 
@@ -208,20 +214,21 @@ const RecordSale = (props) => {
         </div>
 
         <div className="services-record-sale-btn-wrapper p-3">
-        {submitDisabled ? 
-        <button
-            disabled={submitDisabled}
-            className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
-          >
-            Add Services
-          </button> :
-          <button
-            className=" text-blue-600 bg-blue-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-blue-600 transition-all ease-in"
-            onClick={handleClick}
-          >
-            Record Sale
-          </button>
-}
+          {submitDisabled ? (
+            <button
+              disabled={submitDisabled}
+              className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
+            >
+              Add Services
+            </button>
+          ) : (
+            <button
+              className=" text-blue-600 bg-blue-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-blue-600 transition-all ease-in"
+              onClick={handleClick}
+            >
+              Record Sale
+            </button>
+          )}
         </div>
       </div>
     </Box>

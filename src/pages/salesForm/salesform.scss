@@ -1,0 +1,126 @@
+.heading {
+    padding: 10px;
+    border-bottom: 1px solid rgb(214, 214, 214);
+  }
+  .add-sales-section-wrapper {
+    background-color: white;
+    margin: 0 auto;
+    overflow-y: scroll;
+    height: calc(100vh - 100px - 88px);
+    .section-2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      form {
+        flex-direction: column;
+        padding: 30px 20px;
+        padding-bottom: 0;
+  
+        .icon_check,
+        .icon_back {
+          fill: none !important;
+          svg {
+            height: 30px !important;
+            position: inherit !important;
+          }
+        }
+  
+        .box-sec {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 22px;
+          .date {
+            overflow: inherit !important;
+            padding-top: 0 !important;
+          }
+          .sec-1 {
+            margin-right: 10px;
+          }
+          .sec-2 {
+            margin-left: 10px;
+          }
+  
+          .gst-section-wrapper {
+            background-color: white;
+            margin: 0 auto;
+            padding: 10px 10px 0px 5px;
+            .gst-section {
+              .card-sec {
+                padding: 20px 0;
+                border-bottom: 1px solid rgb(214, 214, 214);
+                justify-content: space-between;
+  
+                .gst-card-text {
+                  padding: 0px 5px;
+                }
+              }
+            }
+          }
+        }
+  
+        .category {
+          margin-bottom: 0;
+          margin-top: 0 !important;
+          .selected_prefix {
+            background-color: rgb(37 99 235);
+            color: white;
+          }
+        }
+        .add-sales-btn {
+          border: 1px solid blue;
+        }
+        .remove-left-border {
+          border-left-width: 0;
+        }
+        .box-sex-1 {
+          position: sticky;
+          top: 0;
+          background-color: white;
+          align-items: flex-start;
+          padding-bottom: 20px;
+          z-index: 999;
+        }
+        .margin-top-zero {
+          margin-top: 0;
+          background-color: rgb(241 245 249);
+          padding-top: 5px;
+        }
+        .margin-bottom-zero {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  .add-product-btn-wrapper {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    position: fixed;
+    bottom: 10px;
+    button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #d1fadf;
+      transition: all 400ms ease-in;
+    }
+    button:hover {
+      background-color: #39b366;
+      color: white;
+    }
+  }
+  .css-wb57ya-MuiFormControl-root-MuiTextField-root {
+    margin-top: 0 !important;
+  }
+  .css-i4bv87-MuiSvgIcon-root {
+    position: inherit;
+  }
+  
+  .selected_prefix {
+    background-color: rgb(37 99 235);
+    color: white;
+  }

@@ -26,17 +26,19 @@ const Receive = (props) => {
 
   const [res, setRes] = useState([]);
   const [bal, setBal] = useState(null);
-  const [amtType , setAmtType] = useState("");
+  const [amtType, setAmtType] = useState("");
   const [custAmt, setCustAmt] = useState(0);
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/auth/fetchDataUsingId/${userId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
+      )
       .then((response) => {
         setCustAmt(response.data[0].cust_amt);
         setAmtType(response.data[0].amt_type);
       });
     axios
-      .get(`http://localhost:8000/api/auth/fetchLastTran/${userId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchLastTran/${userId}`)
       .then((response) => {
         setRes(response.data);
         setBal(response.data[0].balance);
@@ -69,7 +71,7 @@ const Receive = (props) => {
           values.balance = bal + parseInt(values.tran_receive);
         }
       }
-      
+
       const formData = new FormData();
       values.tran_date = filteredDate;
       formData.append("image", file);
@@ -78,7 +80,10 @@ const Receive = (props) => {
       formData.append("cnct_id", values.cnct_id);
       formData.append("tran_date", values.tran_date);
       formData.append("balance", values.balance);
-      await axios.post("http://localhost:8000/api/auth/sendTran", formData);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/auth/sendTran",
+        formData
+      );
       changeChange();
       props.snack();
     } catch (err) {
@@ -86,14 +91,15 @@ const Receive = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (values.tran_receive !== "") {
+    if (values.tran_receive !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.tran_receive]);
+  }, [values.tran_receive, error]);
 
   return (
     <form className="block overflow-hidden">
@@ -123,10 +129,9 @@ const Receive = (props) => {
                 onChange={(e) =>
                   setValues({
                     ...values,
-                    tran_receive: e.target.value.replace(/\D/g, ""),
+                    tran_receive: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                   })
                 }
-                //onChange={handleChange}
                 required
               />
             </Box>
@@ -159,6 +164,7 @@ const Receive = (props) => {
                     onChange={(newValue) => setTransactionDate(newValue)}
                     className="w-full"
                     maxDate={todaysDate}
+                    onError={(newError) => {setSubmitDisabled(true) , setError(newError)}}
                   />
                 </DemoContainer>
               </LocalizationProvider>

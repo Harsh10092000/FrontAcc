@@ -1,7 +1,9 @@
-.cover{
-  background: linear-gradient(180deg,rgba(0, 0, 0,0.3) 0%,rgba(0, 0, 0,0.3) 100%),url("../../assets/LoginRegister.avif");
+.back {
+  background: url("https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1951&amp;q=80");
   background-size: cover;
-  background-position: center center;
 }
-
-
+.front {
+  background: url("../../assets/Money.jpg");
+  background-size: 100%;
+  // background-position: 100px 100px;
+}

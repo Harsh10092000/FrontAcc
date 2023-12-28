@@ -9,15 +9,17 @@ const AddInvoiceItems = (props) => {
   const [productList, setProductList] = useState([]);
   const [servicesList, setServicesList] = useState([]);
   axios
-    .get(`http://localhost:8000/api/auth/fetchProductData`)
+    .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData`)
     .then((response) => {
       setProductList(response.data);
     });
 
   const [result2, setResult2] = useState([]);
-  axios.get(`http://localhost:8000/api/ser/fetchData`).then((response) => {
-    setResult2(response.data);
-  });
+  axios
+    .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData`)
+    .then((response) => {
+      setResult2(response.data);
+    });
 
   return (
     <div>
@@ -32,17 +34,16 @@ const AddInvoiceItems = (props) => {
           <div key={index} className="border p-3 ">
             <div>{item.product_name}</div>
             <div className="flex justify-between">
-                <div>
-                    <div>Selling Price</div>
-                    <div>{item.sale_price}</div>
-                </div>
-                <div>
-                    <div>Stock</div>
-                    <div>{item.balance_stock}</div>
-                </div>
-                <div>Add</div>
+              <div>
+                <div>Selling Price</div>
+                <div>{item.sale_price}</div>
+              </div>
+              <div>
+                <div>Stock</div>
+                <div>{item.balance_stock}</div>
+              </div>
+              <div>Add</div>
             </div>
-
           </div>
         ))}
       </div>

@@ -60,7 +60,7 @@ const EditSale = (props) => {
   });
   const delTran = () => {
     try {
-      axios.delete(`http://localhost:8000/api/ser/delTran/${tranId}`);
+      axios.delete(import.meta.env.VITE_BACKEND + `/api/ser/delTran/${tranId}`);
       changeChange();
       props.snackd();
     } catch (err) {
@@ -73,7 +73,7 @@ const EditSale = (props) => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/ser/fetchTranData/${tranId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchTranData/${tranId}`)
       .then((res) => {
         setData({
           ...data,
@@ -84,7 +84,7 @@ const EditSale = (props) => {
         });
       });
     axios
-      .get(`http://localhost:8000/api/ser/fetchDataid/${serId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchDataid/${serId}`)
       .then((res) => {
         setInfo({
           ...info,
@@ -98,7 +98,7 @@ const EditSale = (props) => {
       flag ? (data.ser_date = filteredDate) : "";
       console.log(data);
       await axios.put(
-        `http://localhost:8000/api/ser/updateTran/${tranId}`,
+        import.meta.env.VITE_BACKEND + `/api/ser/updateTran/${tranId}`,
         data
       );
       changeChange();

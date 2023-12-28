@@ -29,7 +29,7 @@ const EditOut = (props) => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/cash/fetchDataid/${cashId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/cash/fetchDataid/${cashId}`)
       .then((res) => {
         setData({
           ...data,
@@ -52,7 +52,7 @@ const EditOut = (props) => {
       flag ? (data.cash_date = filteredDate) : "";
       console.log(data);
       await axios.put(
-        `http://localhost:8000/api/cash/updateData/${cashId}`,
+        import.meta.env.VITE_BACKEND + `/api/cash/updateData/${cashId}`,
         data
       );
       changeChange();
@@ -62,14 +62,15 @@ const EditOut = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (data.cash_pay !== "") {
+    if (data.cash_pay !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.cash_pay]);
+  }, [data.cash_pay , error]);
 
   return (
     <form className="block overflow-hidden" method="post">
@@ -95,7 +96,9 @@ const EditOut = (props) => {
                 className="w-full m-0"
                 size="small"
                 value={data.cash_pay}
-                onChange={(e) => setData({ ...data, cash_pay: e.target.value })}
+                onChange={(e) => setData({ ...data, cash_pay: e.target.value.replace(/^\.|[^0-9.]/g, "")
+                .replace(/(\.\d*\.)/, "$1")
+                .replace(/^(\d*\.\d{0,2}).*$/, "$1") })}
                 required
               />
             </Box>
@@ -168,6 +171,9 @@ const EditOut = (props) => {
                     value={dayjs(data.cash_date)}
                     onChange={(newValue) => {
                       setTransactionDate(newValue), setFlag(true);
+                    }}
+                    onError={(newError) => {
+                      setError(newError);
                     }}
                     format="LL"
                     className="w-full"

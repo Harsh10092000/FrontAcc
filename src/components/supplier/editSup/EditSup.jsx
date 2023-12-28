@@ -23,7 +23,10 @@ import { useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import { Skeleton } from "@mui/material";
 const EditSup = (props) => {
+  const [skeleton, setSkeleton] = useState(true);
+
   const { supId, change, changeChange, changeSup } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
   const handleOnChange = () => {
@@ -69,7 +72,7 @@ const EditSup = (props) => {
   });
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/sup/fetchSup/${supId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSup/${supId}`)
       .then((response) => {
         setData(response.data);
         setInfo({
@@ -90,10 +93,13 @@ const EditSup = (props) => {
           sup_bcity: response.data[0].sup_bcity,
           sup_bstate: response.data[0].sup_bstate,
         });
+        setSkeleton(false);
       });
   }, [supId, change]);
   const delSup = async () => {
-    await axios.delete(`http://localhost:8000/api/sup/delSup/${supId}`);
+    await axios.delete(
+      import.meta.env.VITE_BACKEND + `/api/sup/delSup/${supId}`
+    );
     changeSup(0);
     changeChange();
     props.snack();
@@ -101,7 +107,10 @@ const EditSup = (props) => {
   const updateSup = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8000/api/sup/updateSup/${supId}`, info);
+      await axios.put(
+        import.meta.env.VITE_BACKEND + `/api/sup/updateSup/${supId}`,
+        info
+      );
       changeChange();
       props.snacku();
     } catch (err) {
@@ -121,159 +130,276 @@ const EditSup = (props) => {
   return (
     <div>
       {openEntryDetails ? (
-        data.map((item, index) => (
-          <div key={index}>
-            <div>
-              <Box sx={{ width: 400 }} className="w-full">
-                <h1 className="text_left heading">Edit Supplier</h1>
-                <div className="customer-profile flex items-start px-4 py-6 gap-4">
-                  <div className="icon2 p-3 rounded-full">
-                    <IconUser className="text-blue-500" />
-                  </div>
-                  <div className="">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-normal text-gray-700 -mt-1">
-                        {item.sup_name}
-                      </h2>
-                    </div>
-                    <p className="text-gray-500  bg-slate-200 rounded text-center">
-                      Supplier
-                    </p>
-                  </div>
-                </div>
-                <div className="supplier-edit-btn-wrapper flex justify-center">
-                  <button
-                    className="supplier-edit-btn flex gap-1 justify-center text-gray-600 bg-gray-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-gray-600 transition-all ease-in"
-                    type="submit"
-                    onClick={handleClick}
-                  >
-                    <IconEdit />
-                    Edit Entry
-                  </button>
-                </div>
-                <div className="supplier-edit-section-wrapper">
-                  <div className="edit-section">
-                    <div className="flex card-sec">
-                      <div className="customer-info-icon-wrapper ">
-                        <IconCash />
-                      </div>
-                      <div className="customer-info-text">
-                        <h2>Opening Balance</h2>
-                        <p className=" font-medium flex gap-2">
-                          ₹ {item.sup_amt}
-                          <span className=" capitalize">
-                            {item.sup_amt_type}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex card-sec">
-                      <div className="customer-info-icon-wrapper ">
-                        <IconPhoneCall />
-                      </div>
-                      <div className="customer-info-text">
-                        <h2>Phone Number</h2>
-                        <p className=" font-medium">{item.sup_number}</p>
-                      </div>
-                    </div>
+        skeleton ? (
+          <div>
+            <Box sx={{ width: 400 }} className="w-full">
+              <h1 className="text_left heading">Pay Entry Details</h1>
+              <div className="customer-profile flex items-start px-4 py-6 gap-4">
+                <Skeleton variant="circular" width={45} height={45} />
 
-                    <div className="flex card-sec">
-                      <div className="customer-info-icon-wrapper ">
-                        <IconReceipt />
-                      </div>
-                      <div className="customer-info-text">
-                        <h2>GST Number</h2>
-                        <p className=" font-medium">
-                          {item.sup_gstin ? item.sup_gstin : "-"}
-                        </p>
-                      </div>
-                    </div>
+                <div className="flex flex-col gap-1 mt-2">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-normal text-gray-700 -mt-1">
+                      <Skeleton variant="rectangular" width={60} height={15} />
+                    </h2>
+                  </div>
+                  <p className="text-gray-500  bg-slate-200 rounded text-center">
+                    <Skeleton variant="rectangular" width={60} height={15} />
+                  </p>
+                </div>
+              </div>
 
-                    <div className="flex card-sec">
-                      <div className="customer-info-icon-wrapper ">
-                        <IconMapPin />
-                      </div>
-                      <div className="customer-info-text">
-                        <h2>Shipping Address</h2>
-                        <p className=" font-medium">
-                          {item.sup_sflat ? item.sup_sflat + "," : ""}
-                          {item.sup_sarea ? " " + item.sup_sarea + "," : ""}
-                          {item.sup_scity ? " " + item.sup_scity + "," : ""}
-                          {item.sup_sstate ? " " + item.sup_sstate + "," : ""}
-                          {item.sup_spin ? " " + item.sup_spin : ""}
-                        </p>
-                      </div>
-                    </div>
+              <div className="pay-edit-entry-btn-wrapper flex justify-center">
+                <Skeleton variant="rounded" width={370} height={45} />
+              </div>
 
-                    <div className="flex card-sec">
-                      <div className="customer-info-icon-wrapper ">
-                        <IconMapPin />
-                      </div>
-                      <div className="customer-info-text">
-                        <h2>Billing Address</h2>
-                        <p className=" font-medium">
-                          {item.sup_bflat ? item.sup_bflat + "," : ""}
-                          {item.sup_barea ? " " + item.sup_barea + "," : ""}
-                          {item.sup_bcity ? " " + item.sup_bcity + "," : ""}
-                          {item.sup_bstate ? " " + item.sup_bstate + "," : ""}
-                          {item.sup_bpin ? " " + item.sup_bpin : ""}
-                        </p>
-                      </div>
+              <div className="customer-edit-section-wrapper">
+                <div className="edit-section">
+                  <div className="flex card-sec">
+                    <div className="customer-info-icon-wrapper ">
+                      <IconCash />
+                    </div>
+                    <div className="customer-info-text">
+                      <h2>Opening Balance</h2>
+                      <p className=" font-medium flex gap-2 mt-2">
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={18}
+                        />
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex card-sec">
+                    <div className="customer-info-icon-wrapper ">
+                      <IconPhoneCall />
+                    </div>
+                    <div className="customer-info-text">
+                      <h2>Phone Number</h2>
+                      <p className=" font-medium">
+                        {" "}
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={18}
+                        />
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex card-sec">
+                    <div className="customer-info-icon-wrapper ">
+                      <IconReceipt />
+                    </div>
+                    <div className="customer-info-text">
+                      <h2>GST Number</h2>
+                      <p className=" font-medium">
+                        {" "}
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={18}
+                        />
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex card-sec">
+                    <div className="customer-info-icon-wrapper ">
+                      <IconMapPin />
+                    </div>
+                    <div className="customer-info-text">
+                      <h2>Shipping Address</h2>
+                      <p className=" font-medium">
+                        {" "}
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={18}
+                        />
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex card-sec">
+                    <div className="customer-info-icon-wrapper ">
+                      <IconMapPin />
+                    </div>
+                    <div className="customer-info-text">
+                      <h2>Billing Address</h2>
+                      <p className=" font-medium">
+                        {" "}
+                        <Skeleton
+                          variant="rectangular"
+                          width={80}
+                          height={18}
+                        />
+                      </p>
                     </div>
                   </div>
                 </div>
-              </Box>
-            </div>
-            <div className="add-customer-btn-wrapper flex justify-center">
-              <button
-                className="delete-btn text-red-600 flex gap-1 justify-center"
-                type="submit"
-                onClick={handleClickOpen}
-              >
-                <IconTrash />
-                Delete Customer
-              </button>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <div className="flex">
-                  <div className="pt-5 pl-3">
-                    <IconAlertOctagonFilled
-                      size={60}
-                      className="text-red-600"
-                    />
-                  </div>
-                  <div>
-                    <DialogTitle id="alert-dialog-title">
-                      Are You Sure ?
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        You are about to delete this supplier This action cannot
-                        be undone.
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions className="flex gap-4">
-                      <button className="pb-3" onClick={handleClose}>
-                        Cancel
-                      </button>
-                      <button
-                        className="delete-btn text-red-600 pb-3 pr-3"
-                        onClick={delSup}
-                        autoFocus
-                      >
-                        Delete Customer
-                      </button>
-                    </DialogActions>
-                  </div>
-                </div>
-              </Dialog>
+              </div>
+            </Box>
+
+            <div className="delete-customer-btn-wrapper flex justify-center">
+              <Skeleton variant="rounded" width={370} height={45} />
             </div>
           </div>
-        ))
+        ) : (
+          data.map((item, index) => (
+            <div key={index}>
+              <div>
+                <Box sx={{ width: 400 }} className="w-full">
+                  <h1 className="text_left heading">Edit Supplier</h1>
+                  <div className="customer-profile flex items-start px-4 py-6 gap-4">
+                    <div className="icon2 p-3 rounded-full">
+                      <IconUser className="text-blue-500" />
+                    </div>
+                    <div className="">
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-normal text-gray-700 -mt-1">
+                          {item.sup_name}
+                        </h2>
+                      </div>
+                      <p className="text-gray-500  bg-slate-200 rounded text-center">
+                        Supplier
+                      </p>
+                    </div>
+                  </div>
+                  <div className="supplier-edit-btn-wrapper flex justify-center">
+                    <button
+                      className="supplier-edit-btn flex gap-1 justify-center text-gray-600 bg-gray-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-gray-600 transition-all ease-in"
+                      type="submit"
+                      onClick={handleClick}
+                    >
+                      <IconEdit />
+                      Edit Entry
+                    </button>
+                  </div>
+                  <div className="supplier-edit-section-wrapper">
+                    <div className="edit-section">
+                      <div className="flex card-sec">
+                        <div className="customer-info-icon-wrapper ">
+                          <IconCash />
+                        </div>
+                        <div className="customer-info-text">
+                          <h2>Opening Balance</h2>
+                          <p className=" font-medium flex gap-2">
+                            ₹ {item.sup_amt}
+                            <span className=" capitalize">
+                              {item.sup_amt_type}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex card-sec">
+                        <div className="customer-info-icon-wrapper ">
+                          <IconPhoneCall />
+                        </div>
+                        <div className="customer-info-text">
+                          <h2>Phone Number</h2>
+                          <p className=" font-medium">{item.sup_number}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex card-sec">
+                        <div className="customer-info-icon-wrapper ">
+                          <IconReceipt />
+                        </div>
+                        <div className="customer-info-text">
+                          <h2>GST Number</h2>
+                          <p className=" font-medium">
+                            {item.sup_gstin ? item.sup_gstin : "-"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex card-sec">
+                        <div className="customer-info-icon-wrapper ">
+                          <IconMapPin />
+                        </div>
+                        <div className="customer-info-text">
+                          <h2>Shipping Address</h2>
+                          <p className=" font-medium">
+                            {item.sup_sflat ? item.sup_sflat + "," : ""}
+                            {item.sup_sarea ? " " + item.sup_sarea + "," : ""}
+                            {item.sup_scity ? " " + item.sup_scity + "," : ""}
+                            {item.sup_sstate ? " " + item.sup_sstate + "," : ""}
+                            {item.sup_spin ? " " + item.sup_spin : ""}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex card-sec">
+                        <div className="customer-info-icon-wrapper ">
+                          <IconMapPin />
+                        </div>
+                        <div className="customer-info-text">
+                          <h2>Billing Address</h2>
+                          <p className=" font-medium">
+                            {item.sup_bflat ? item.sup_bflat + "," : ""}
+                            {item.sup_barea ? " " + item.sup_barea + "," : ""}
+                            {item.sup_bcity ? " " + item.sup_bcity + "," : ""}
+                            {item.sup_bstate ? " " + item.sup_bstate + "," : ""}
+                            {item.sup_bpin ? " " + item.sup_bpin : ""}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Box>
+              </div>
+              <div className="add-customer-btn-wrapper flex justify-center">
+                <button
+                  className="delete-btn text-red-600 flex gap-1 justify-center"
+                  type="submit"
+                  onClick={handleClickOpen}
+                >
+                  <IconTrash />
+                  Delete Customer
+                </button>
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <div className="flex">
+                    <div className="pt-5 pl-3">
+                      <IconAlertOctagonFilled
+                        size={60}
+                        className="text-red-600"
+                      />
+                    </div>
+                    <div>
+                      <DialogTitle id="alert-dialog-title">
+                        Are You Sure ?
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          You are about to delete this supplier This action
+                          cannot be undone.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions className="flex gap-4">
+                        <button className="pb-3" onClick={handleClose}>
+                          Cancel
+                        </button>
+                        <button
+                          className="delete-btn text-red-600 pb-3 pr-3"
+                          onClick={delSup}
+                          autoFocus
+                        >
+                          Delete Customer
+                        </button>
+                      </DialogActions>
+                    </div>
+                  </div>
+                </Dialog>
+              </div>
+            </div>
+          ))
+        )
       ) : (
         <div></div>
       )}
@@ -310,8 +436,9 @@ const EditSup = (props) => {
                           size="small"
                           value={info.sup_name}
                           onChange={(e) =>
-                            setInfo({ ...info, sup_name: e.target.value })
+                            setInfo({ ...info, sup_name: e.target.value.replace(/[^A-Z a-z.]/g, ""), })
                           }
+                          inputProps={{ maxLength: 20 }}
                           required
                         />
                       </Box>
@@ -325,8 +452,12 @@ const EditSup = (props) => {
                           className="w-full"
                           size="small"
                           value={info.sup_number}
+                          inputProps={{ maxLength: 10 }}
                           onChange={(e) =>
-                            setInfo({ ...info, sup_number: e.target.value.replace(/\D/g, "") })
+                            setInfo({
+                              ...info,
+                              sup_number: e.target.value.replace(/\D/g, ""),
+                            })
                           }
                           required
                         />
@@ -340,14 +471,13 @@ const EditSup = (props) => {
                           label="Enter amount"
                           className="sec-1"
                           size="small"
+                          inputProps={{ maxLength: 10}}
                           value={info.sup_amt}
-                          // onChange={(e) =>
-                          //   setInfo({ ...info, sup_amt: e.target.value.replace(/\D/g, "") })
-                          // }
+                          
                           required
                         />
                         <select
-                        disabled
+                          disabled
                           className={
                             info.sup_amt_type === "receive"
                               ? "text-green-600 bg-white p-1 border border-slate-400 rounded"
@@ -390,11 +520,12 @@ const EditSup = (props) => {
                               label="GST IN"
                               className="w-full"
                               size="small"
+                              inputProps={{maxLength: 10}}
                               value={info.sup_gstin}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_gstin: e.target.value,
+                                  sup_gstin: e.target.value.replace(/[^A-Z0-9]/g, ""),
                                 })
                               }
                             />
@@ -413,7 +544,10 @@ const EditSup = (props) => {
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_sflat: e.target.value,
+                                  sup_sflat: e.target.value.replace(
+                                    /[^A-Z a-z 0-9 /]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -430,7 +564,10 @@ const EditSup = (props) => {
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_sarea: e.target.value,
+                                  sup_sarea: e.target.value.replace(
+                                    /[^A-Z a-z 0-9 /]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -443,10 +580,11 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_spin}
+                              inputProps={{ maxLength: 6}}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_spin: e.target.value,
+                                  sup_spin: e.target.value.replace(/[^0-9]/g, ""),
                                 })
                               }
                             />
@@ -462,7 +600,10 @@ const EditSup = (props) => {
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_scity: e.target.value,
+                                  sup_scity: e.target.value.replace(
+                                    /[^A-Z a-z]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -477,7 +618,10 @@ const EditSup = (props) => {
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_sstate: e.target.value,
+                                  sup_sstate: e.target.value.replace(
+                                    /[^A-Z a-z]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -513,7 +657,10 @@ const EditSup = (props) => {
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_bflat: e.target.value,
+                                    sup_bflat: e.target.value.replace(
+                                      /[^A-Z a-z 0-9 /]/g,
+                                      ""
+                                    ),
                                   })
                                 }
                               />
@@ -529,7 +676,10 @@ const EditSup = (props) => {
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_barea: e.target.value,
+                                    sup_barea: e.target.value.replace(
+                                      /[^A-Z a-z 0-9 /]/g,
+                                      ""
+                                    ),
                                   })
                                 }
                               />
@@ -542,10 +692,11 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_bpin}
+                                inputProps={{maxLength: 6}}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_bpin: e.target.value,
+                                    sup_bpin: e.target.value.replace(/[^0-9]/g, ""),
                                   })
                                 }
                               />
@@ -561,7 +712,10 @@ const EditSup = (props) => {
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_bcity: e.target.value,
+                                    sup_bcity: e.target.value.replace(
+                                      /[^A-Z a-z]/g,
+                                      ""
+                                    ),
                                   })
                                 }
                               />
@@ -576,7 +730,10 @@ const EditSup = (props) => {
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_bstate: e.target.value,
+                                    sup_bstate: e.target.value.replace(
+                                      /[^A-Z a-z]/g,
+                                      ""
+                                    ),
                                   })
                                 }
                               />

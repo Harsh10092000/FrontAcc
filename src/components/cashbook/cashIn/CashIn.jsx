@@ -4,11 +4,11 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { useContext, useState , useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
 const CashIn = (props) => {
-  const { changeChange } = useContext(UserContext);
+  const { changeChange , accountId } = useContext(UserContext);
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
@@ -30,6 +30,7 @@ const CashIn = (props) => {
     cash_date: "",
     cash_description: "",
     cash_mode: "",
+    cash_acc_id: "",
   });
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -45,7 +46,8 @@ const CashIn = (props) => {
       formData.append("cash_description", values.cash_description);
       formData.append("cash_date", values.cash_date);
       formData.append("cash_mode", values.cash_mode);
-      axios.post("http://localhost:8000/api/cash/sendData", formData);
+      formData.append("cash_acc_id", accountId);
+      axios.post(import.meta.env.VITE_BACKEND + "/api/cash/sendData", formData);
       changeChange();
       props.snack();
     } catch (err) {
@@ -53,19 +55,20 @@ const CashIn = (props) => {
     }
   };
 
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (values.cash_receive !== "") {
+    if (values.cash_receive !== "" && error === null) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.cash_receive]);
+  }, [values.cash_receive, error]);
 
   return (
     <form className="block overflow-hidden" method="post">
       <h1 className="text_left heading text-green-500 font-semibold text-lg">
-        In Entry
+        
       </h1>
 
       <div className="cashout-section-wrapper">
@@ -86,9 +89,16 @@ const CashIn = (props) => {
                 className="w-full m-0"
                 size="small"
                 name="cash_receive"
-                //onChange={handleChange}
+                
+                inputProps={{maxLength : 10}}
                 onChange={(e) =>
-                  setValues({ ...values, cash_receive: e.target.value.replace(/\D/g, "") })
+                  setValues({
+                    ...values,
+                    cash_receive: e.target.value
+                    .replace(/^\.|[^0-9.]/g, "")
+                    .replace(/(\.\d*\.)/, "$1")
+                    .replace(/^(\d*\.\d{0,2}).*$/, "$1")
+                  })
                 }
                 value={values.cash_receive}
                 required
@@ -114,7 +124,7 @@ const CashIn = (props) => {
             </Box>
             <Box>
               <div>
-                <label >Payment Mode</label>
+                <label>Payment Mode</label>
               </div>
               <div className="flex gap-2 p-2">
                 <input
@@ -144,6 +154,9 @@ const CashIn = (props) => {
                     format="LL"
                     className="w-full"
                     maxDate={todaysDate}
+                    onError={(newError) => {
+                      setError(newError);
+                    }}
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -217,7 +230,7 @@ const CashIn = (props) => {
       </div>
 
       <div className="cashout-btn-wrapper">
-        \
+        
         {submitDisabled ? (
           <button
             disabled={submitDisabled}

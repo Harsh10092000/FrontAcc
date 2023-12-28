@@ -9,7 +9,6 @@ import {
   IconCategory,
   IconPlus,
   IconEdit,
-  IconTrash,
   IconTrashFilled,
 } from "@tabler/icons-react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -20,20 +19,8 @@ import "./editExpenses.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-const EditExpense = (props) => {
-  const prefixSuggestions = [
-    {
-      option: "None",
-    },
-    {
-      option: "Office",
-    },
-    {
-      option: "Travel",
-    },
-  ];
-
-  const { change, expId, changeChange } = useContext(UserContext);
+const EditExpenses = (props) => {
+  const { change, expId, changeChange , accountId} = useContext(UserContext);
   const [expensesListResult, setExpensesListResult] = useState([]);
   const [expensesCategoryResult, setExpensesCategoryResult] = useState([]);
   const [expensesUserAddedItemList, setExpensesUserAddedItemList] = useState(
@@ -56,7 +43,7 @@ const EditExpense = (props) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpensesTran/${expId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpensesTran/${expId}`)
       .then((response) => {
         setExpensesTranResult(response.data);
         setData({
@@ -69,31 +56,34 @@ const EditExpense = (props) => {
         });
       });
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpensesRightTran/${expId}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/fetchExpensesRightTran/${expId}`
+      )
       .then((response) => {
         setExpensesRightTranResult(response.data);
       });
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpenseCategory`)
+      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpenseCategory/${accountId}`)
       .then((response) => {
         setExpensesCategoryResult(response.data);
       });
 
     axios
-      .get(`http://localhost:8000/api/exp/fetchExpenseList`)
+      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpenseList/${accountId}`)
       .then((response) => {
         setExpensesListResult(response.data);
       });
     axios
       .get(
-        `http://localhost:8000/api/exp/fetchExpensesUserAddedItemList/${expId}/${expId}`
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/fetchExpensesUserAddedItemList/${expId}/${accountId}/${expId}`
       )
       .then((response) => {
         setExpensesUserAddedItemList(response.data);
       });
   }, [change, expId]);
 
-  console.log("data  :", data);
   const [isClicked, setIsClicked] = useState(false);
   const handleIsClicked = () => {
     setIsClicked(!isClicked);
@@ -142,7 +132,7 @@ const EditExpense = (props) => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:8000/api/exp/addExpenseCategory",
+        import.meta.env.VITE_BACKEND + "/api/exp/addExpenseCategory",
         values2
       );
       changeChange();
@@ -164,7 +154,10 @@ const EditExpense = (props) => {
   const handleClick3 = async () => {
     console.log(values3);
     try {
-      await axios.post("http://localhost:8000/api/exp/addExpenselist", values3);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/exp/addExpenselist",
+        values3
+      );
       changeChange();
       handleClickVariant("success", "", "Added Successfully");
     } catch (err) {
@@ -181,7 +174,7 @@ const EditExpense = (props) => {
   const updateExpenseItemData = async (eiid) => {
     try {
       await axios.put(
-        `http://localhost:8000/api/exp/updateExpenseItemData/${eiid}`,
+        import.meta.env.VITE_BACKEND + `/api/exp/updateExpenseItemData/${eiid}`,
         values4
       );
       changeChange();
@@ -195,13 +188,13 @@ const EditExpense = (props) => {
     category_name: null,
   });
   values5.category_name = updatedExpenseCategoryName;
-  
-  const updateExpenseCategoryData = async () => {
-    
+  const updateExpenseCategoryData = async (e) => {
+    e.preventDefault();
     try {
-      
+      console.log(values5);
       await axios.put(
-        `http://localhost:8000/api/exp/updateExpenseCategoryData/${ecid}`,
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/updateExpenseCategoryData/${ecid}`,
         values5
       );
       changeChange();
@@ -215,12 +208,11 @@ const EditExpense = (props) => {
     try {
       console.log("expenseItemId :", expenseItemId);
       await axios.delete(
-        `http://localhost:8000/api/exp/delExpenseItemFromList/${expenseItemId}`
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/delExpenseItemFromList/${expenseItemId}`
       );
       changeChange();
       handleClickVariant("success", "", "Deleted Successfully");
-
-      //props.snackd();
     } catch (err) {
       console.log(err);
     }
@@ -230,11 +222,11 @@ const EditExpense = (props) => {
     try {
       console.log("expenseCategoryId :", expenseCategoryId);
       await axios.delete(
-        `http://localhost:8000/api/exp/delExpenseCategory/${expenseCategoryId}`
+        import.meta.env.VITE_BACKEND +
+          `/api/exp/delExpenseCategory/${expenseCategoryId}`
       );
       changeChange();
       handleClickVariant("success", "", "Deleted Successfully");
-      //props.snackd();
     } catch (err) {
       console.log(err);
     }
@@ -253,21 +245,17 @@ const EditExpense = (props) => {
       );
     setItemsFlag(true);
   };
-
-  console.log("expensesListResult after increase : ", expensesListResult);
   const handleDecrease = (expenseItemId) => {
-    console.log("item.id.... : ", expenseItemId),
-      setExpensesUserAddedItemList((expensesUserAddedItemList) =>
-        expensesUserAddedItemList.map((item) =>
-          expenseItemId === item.id && item.exp_item_qty >= 1
-            ? {
-                ...item,
-                exp_item_qty: parseInt(item.exp_item_qty) - 1,
-                //total_price: item.qty * item.price,
-              }
-            : item
-        )
-      );
+    setExpensesUserAddedItemList((expensesUserAddedItemList) =>
+      expensesUserAddedItemList.map((item) =>
+        expenseItemId === item.id && item.exp_item_qty >= 1
+          ? {
+              ...item,
+              exp_item_qty: parseInt(item.exp_item_qty) - 1,
+            }
+          : item
+      )
+    );
     setItemsFlag(true);
   };
 
@@ -318,7 +306,6 @@ const EditExpense = (props) => {
     exp_date: data.exp_date,
     exp_category: "",
     exp_total: sum,
-    //expid: expId
     list: "",
   });
 
@@ -343,17 +330,23 @@ const EditExpense = (props) => {
       expenseData.list = result3;
 
       await axios.put(
-        `http://localhost:8000/api/exp/updateExpenses/${expId}`,
+        import.meta.env.VITE_BACKEND + `/api/exp/updateCash/${expId}`,
+        expenseData
+      );
+      await axios.put(
+        import.meta.env.VITE_BACKEND + `/api/exp/updateExpenses/${expId}`,
         expenseData
       );
 
       if (itemsFlag === true) {
         await axios.delete(
-          `http://localhost:8000/api/exp/DeleteExpensesUserAddedItemList/${expId}`
+          import.meta.env.VITE_BACKEND +
+            `/api/exp/DeleteExpensesUserAddedItemList/${expId}`
         );
 
         await axios.post(
-          "http://localhost:8000/api/exp/UpdateExpensesUserAddedItemList",
+          import.meta.env.VITE_BACKEND +
+            "/api/exp/UpdateExpensesUserAddedItemList",
           expenseData
         );
       }
@@ -381,7 +374,7 @@ const EditExpense = (props) => {
         <>
           <div>
             <Box>
-              <h1 className="text_left heading">Create an Expense</h1>
+              <h1 className="text_left heading">Edit Expense</h1>
 
               <div className="add-expense-section-wrapper">
                 <div className="section-2">
@@ -401,10 +394,8 @@ const EditExpense = (props) => {
                           variant="outlined"
                           value={data.exp_prefix}
                           name="prefix_name"
-                          //onChange={handleChange}
                           className=" w-[65%]"
                           required
-                          //onClick={() => setAddPrefix(true)}
                         />
                         <TextField
                           disabled
@@ -412,7 +403,6 @@ const EditExpense = (props) => {
                           variant="outlined"
                           value={data.exp_prefix_no}
                           name="prefix_number"
-                          //onChange={handleChange}
                           className=" w-[35%]"
                           required
                         />
@@ -499,7 +489,7 @@ const EditExpense = (props) => {
                           ) : (
                             <div className=" inline-block">
                               <button
-                                onClick={() =>  setEditCategories(false)}
+                                onClick={() => setEditCategories(false)}
                                 className="w-fit icon_check icon_back flex items-center justify-center py-2 px-2 pl-0 text-gray-600 bg-gray-200 rounded-[5px] hover:text-white hover:bg-gray-600 transition-all ease-in  "
                               >
                                 <div>
@@ -599,15 +589,10 @@ const EditExpense = (props) => {
                                 <IconCheck
                                   size={60}
                                   className="text-green-600 fill-inherit cursor-pointer"
-                                  onClick={(e) => {
-                                    e.preventDefault(),
-                                      updateExpenseCategoryData();
-                                      
-                                  }}
+                                  onClick={updateExpenseCategoryData}
                                   disabled={editCategoryError ? true : false}
                                 />
                               </button>
-                              <div className="helllo"></div>
                               <div
                                 className="pl-3 icon_check"
                                 onClick={() => setEditCategories(false)}
@@ -672,12 +657,11 @@ const EditExpense = (props) => {
                                       <button
                                         onClick={(e) => {
                                           e.preventDefault(),
-                                            //setupdatedExpenseItemName(filteredItem.category_name),
-
                                             deleteExpenseCategory(
                                               filteredItem.id
                                             );
                                         }}
+                                        
                                         className="text-red-600 py-2 px-5 rounded-[5px] hover:text-white hover:bg-red-600 transition-all ease-in"
                                         style={{ border: "1px solid #dc2626" }}
                                       >
@@ -779,7 +763,7 @@ const EditExpense = (props) => {
                 disabled={submitDisabled}
                 className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
               >
-                Add Expense
+                Update Expense
               </button>
             ) : (
               <button
@@ -787,7 +771,7 @@ const EditExpense = (props) => {
                 disabled={submitDisabled}
                 className="text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"
               >
-                Add Expense
+                Update Expense
               </button>
             )}
           </div>
@@ -983,7 +967,7 @@ const EditExpense = (props) => {
                                     +
                                   </button>
                                 </span>
-                                <div className="flex gap-3">
+                                {/* <div className="flex gap-3">
                                   {filteredItem.exp_item_qty > 0 ? (
                                     <>
                                       <button
@@ -1006,7 +990,9 @@ const EditExpense = (props) => {
                                             : false
                                         }
                                         className=" text-slate-600  py-2 px-4 rounded-[5px]  hover:bg-slate-300 transition-all ease-in"
-                                        style={{ border: "1px solid rgb(71 85 105)" }}
+                                        style={{
+                                          border: "1px solid rgb(71 85 105)",
+                                        }}
                                       >
                                         <IconEdit
                                           style={{
@@ -1085,7 +1071,7 @@ const EditExpense = (props) => {
                                       }}
                                     />
                                   </button>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                             {editExpenseItems ? (
@@ -1093,7 +1079,6 @@ const EditExpense = (props) => {
                                 <Box className="box-sec ">
                                   <TextField
                                     label="Enter Name of Expense"
-                                    //name="enter-category-name"
                                     value={updatedExpenseItemName}
                                     id="outlined-basic"
                                     variant="outlined"
@@ -1211,4 +1196,4 @@ const EditExpense = (props) => {
   );
 };
 
-export default EditExpense;
+export default EditExpenses;

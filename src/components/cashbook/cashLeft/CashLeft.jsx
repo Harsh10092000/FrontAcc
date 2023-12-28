@@ -11,7 +11,7 @@ import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
 
 const CashLeft = (props) => {
-  const { change } = useContext(UserContext);
+  const { change, accountId } = useContext(UserContext);
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
@@ -26,20 +26,20 @@ const CashLeft = (props) => {
   const [transactionDate, setTransactionDate] = useState(todaysDate);
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
-  const fDate = filteredDate + " "
   const [info, setInfo] = useState([]);
-  console.log("filteredDate :",filteredDate,"filteredDate")
+
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/cash/fetchDate/${filteredDate}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/cash/fetchDate/${filteredDate}/${accountId}`)
       .then((res) => {
         setData(res.data);
       });
-    axios.get("http://localhost:8000/api/cash/fetchData").then((res) => {
-      setInfo(res.data);
-    });
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/cash/fetchData/${accountId}`)
+      .then((res) => {
+        setInfo(res.data);
+      });
   }, [change, transactionDate]);
-
 
   const sum_pay = data.reduce(function (prev, current) {
     return prev + +current.cash_pay;
@@ -55,7 +55,7 @@ const CashLeft = (props) => {
     return prev + +current.cash_receive;
   }, 0);
   const totalBalance = total_pay - total_receive;
-  console.log(data)
+
   return (
     <div className="cashleft">
       <div className="text-xl font-semibold p-5 border-b border-gray-300 text-blue-600">
@@ -73,8 +73,8 @@ const CashLeft = (props) => {
           >
             ₹
             {totalBalance < 0
-              ? totalBalance * -1 + " Pay"
-              : totalBalance + " Receive"}
+              ? totalBalance.toFixed(2) * -1 + " Pay"
+              : totalBalance.toFixed(2) + " Receive"}
           </span>
         </div>
         <div className="text-gray-500 flex gap-1 items-center">
@@ -88,8 +88,8 @@ const CashLeft = (props) => {
           >
             ₹
             {todaysBalance < 0
-              ? todaysBalance * -1 + " Pay"
-              : todaysBalance + " Receive"}
+              ? todaysBalance.toFixed(2) * -1 + " Pay"
+              : todaysBalance.toFixed(2) + " Receive"}
           </span>
         </div>
         <button className="flex gap-1 items-end report rounded-md p-2 text-blue-600 hover:text-white hover:bg-blue-600">
@@ -142,19 +142,19 @@ const CashLeft = (props) => {
             </div>
           </div>
           <div className="text-red-600 justify-self-end font-semibold">
-            ₹ {sum_pay}
+            ₹ {sum_pay.toFixed(2)}
           </div>
           <div className="text-green-600 justify-self-end font-semibold">
-            ₹ {sum_receive}
+            ₹ {sum_receive.toFixed(2)}
           </div>
         </div>
       </div>
       <div className="transactions">
         {age === ""
-          ? data.map((item, index) =>( <CashTran key={index} data={item} />))
+          ? data.map((item, index) => <CashTran key={index} data={item} />)
           : data
               .filter((persons) => persons.cash_mode === age)
-              .map((item, index) => (<CashTran key={index} data={item} />)  )}
+              .map((item, index) => <CashTran key={index} data={item} />)}
       </div>
       <div className="outin flex p-3 gap-4">
         <button

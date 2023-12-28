@@ -3,6 +3,17 @@ import Img from "../../../assets/proIcon.png";
 import { UserContext } from "../../../context/UserIdContext";
 const ProCard = (props) => {
   const { changeProduct, pId } = useContext(UserContext);
+
+  // const balStock = props.stockData
+  //   .filter((item) => item.cnct_id === props.data.product_id)
+  //   .reduce(function (prev, current) {
+  //     if (current.product_stock_in) {
+  //       return prev + +current.product_stock_in;
+  //     } else {
+  //       return prev - +current.product_stock_out;
+  //     }
+  //   }, 0);
+
   return (
     <div
       className={
@@ -21,7 +32,9 @@ const ProCard = (props) => {
             <img
               src={
                 props.data.product_image
-                  ? "http://localhost:8000/product/" + props.data.product_image
+                  ? import.meta.env.VITE_BACKEND +
+                    "/product/" +
+                    props.data.product_image
                   : Img
               }
               className="w-7 object-cover"
@@ -31,7 +44,7 @@ const ProCard = (props) => {
             <span className="text-lg text-slate-700">
               {props.data.product_name}{" "}
             </span>
-            {props.data.balance_stock <= props.data.low_stock ? (
+            {props.data.balStock <= props.data.low_stock ? (
               <span className=" bg-red-200 text-red-700 text-sm px-2">
                 Low Stock
               </span>
@@ -46,9 +59,7 @@ const ProCard = (props) => {
           </div>
         </div>
         <div className="w-[70px]">
-          <div className="qty text-slate-800 text-lg">
-            {props.data.balance_stock}
-          </div>
+          <div className="qty text-slate-800 text-lg">{props.data.balStock}</div>
         </div>
       </div>
     </div>

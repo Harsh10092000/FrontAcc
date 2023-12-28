@@ -8,86 +8,8 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 
 const AddService = (props) => {
-  const { changeChange } = useContext(UserContext);
-  const units = [
-    {
-      value: "PCS",
-    },
-    {
-      value: "NOS",
-    },
-    {
-      value: "DAY",
-    },
-    {
-      value: "HRS",
-    },
-  ];
-
-  // const gst = [
-  //   {
-  //     value: "taxExempted",
-  //     label1: "Tax Exempted",
-  //     label2: "(NO GST)",
-  //   },
-  //   {
-  //     value: "gst0",
-  //     label1: "GST@ 0%",
-  //     label2: "(NO GST)",
-  //   },
-  //   {
-  //     value: "gst0_1", // 0_1 => 0.1
-  //     label1: "GST@ 0.1%",
-  //     label2: "(0.05% CSGT + 0.05% SGST/UT GST ; 0.1% IGST )",
-  //   },
-  //   {
-  //     value: "gst0_25", // 0_25 => 0.25
-  //     label1: "GST@ 0.25%",
-  //     label2: "(0.125% CSGT + 0.125% SGST/UT GST ; 0.25% IGST )",
-  //   },
-  //   {
-  //     value: "gst3",
-  //     label1: "GST@ 3%",
-  //     label2: "(1.5% CSGT + 1.5% SGST/UT GST ; 3% IGST )",
-  //   },
-  //   {
-  //     value: "gst5",
-  //     label1: "GST@ 5%",
-  //     label2: "(2.5% CSGT + 2.5% SGST/UT GST ; 5% IGST )",
-  //   },
-  //   {
-  //     value: "gst6",
-  //     label1: "GST@ 6%",
-  //     label2: "(3% CSGT + 3% SGST/UT GST ; 6% IGST )",
-  //   },
-  //   {
-  //     value: "gst7_5", // 7_5  =>  7.5
-  //     label1: "GST@ 7.5%",
-  //     label2: "(3.75% CSGT + 3.75% SGST/UT GST ; 7.5% IGST )",
-  //   },
-  //   {
-  //     value: "gst12",
-  //     label1: "GST@ 12%",
-  //     label2: "(6% CSGT + 6% SGST/UT GST ; 12% IGST )",
-  //   },
-  //   {
-  //     value: "gst18",
-  //     label1: "GST@ 18%",
-  //     label2: "(9% CSGT + 9% SGST/UT GST ; 18% IGST )",
-  //   },
-  //   {
-  //     value: "gst28",
-  //     label1: "GST@ 28%",
-  //     label2: "(14% CSGT + 14% SGST/UT GST ; 28% IGST )",
-  //   },
-  // ];
-
+  const { changeChange, accountId } = useContext(UserContext);
   const gst = [
-    // {
-    //   value: "taxExempted",
-    //   label1: "Tax Exempted",
-    //   label2: "(NO GST)",
-    // },
     {
       value: "gst0",
       label1: 0,
@@ -150,26 +72,21 @@ const AddService = (props) => {
     },
   ];
 
-  const [igst, setIgst] = useState(null);
-  const [stategst, setStategst] = useState(null);
-  const [cgst, setCgst] = useState(null);
-  const [cess, setCess] = useState(null);
-
   const [productUnits, setProductUnits] = useState([]);
-  axios
-    .get(`http://localhost:8000/api/auth/fetchProductUnits`)
-    .then((response) => {
-      setProductUnits(response.data);
-    });
+  const [sacCodes, setSacCodes] = useState([]);
+  useEffect(() => {
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductUnits`)
+      .then((response) => {
+        setProductUnits(response.data);
+      });
 
-  const [productHsnCodes, setProductHsnCodes] = useState([]);
-  axios
-    .get(`http://localhost:8000/api/auth/fetchProductHsnCodes`)
-    .then((response) => {
-      setProductHsnCodes(response.data);
-    });
-
-  const [isOn2, setIsOn2] = useState(false);
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchSacCodes`)
+      .then((response) => {
+        setSacCodes(response.data);
+      });
+  }, []);
 
   const [isClicked, setIsClicked] = useState(false);
   const [isClicked2, setIsClicked2] = useState(false);
@@ -184,27 +101,16 @@ const AddService = (props) => {
     setIsClicked(false);
   };
 
-  const [gstOnItem, setGstOnItem] = useState("");
   const [gstValue1, setGstValue1] = useState("GST %");
   const [gstValue2, setGstValue2] = useState("");
 
   const [hsnCode, setHsnCode] = useState("SAC Code");
   const [hsnValue1, setHsnValue1] = useState("");
 
-  const [searchValue, setSearchValue] = useState("0");
+  const [searchValue, setSearchValue] = useState("");
 
   const [customGst, setcustomGst] = useState("");
   const [customeCess, setCustomeCess] = useState("");
-  const custom_gst_details =
-    "(" +
-    customGst / 2 +
-    "% CSTS + " +
-    customGst / 2 +
-    "% SGST/UT GST ; " +
-    customGst +
-    "% IGST ; " +
-    customeCess +
-    "% CESS )";
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [flag, setFlag] = useState(false);
   const [data, setData] = useState({
@@ -213,21 +119,27 @@ const AddService = (props) => {
     ser_price: "",
     ser_tax_included: 0,
     ser_sac: "",
-    ser_sac_desc: "",
-    ser_sgst: null,
-    ser_igst: null,
-    ser_cgst: null,
-    ser_cess: null,
+    ser_ser_sac_desc: "",
+    ser_sgst: "",
+    ser_igst: "",
+    ser_cgst: "",
+    ser_cess: "",
+    ser_acc_id: "",
   });
+  console.log("data : ", data);
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  data.ser_acc_id = accountId;
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       //data.ser_gst = gstValue1;
       console.log("data : ", data);
-      await axios.post("http://localhost:8000/api/ser/sendData", data);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/ser/sendData",
+        data
+      );
       changeChange();
       props.snack();
     } catch (err) {
@@ -256,6 +168,25 @@ const AddService = (props) => {
     }
   }, [data.ser_name, data.ser_unit, data.ser_price]);
 
+  const gst_details =
+    "(" +
+    data.ser_igst / 2 +
+    "% CSTS + " +
+    data.ser_igst / 2 +
+    "% SGST/UT GST ; " +
+    data.ser_igst +
+    "% IGST ); ";
+
+  const custom_gst_details =
+    "(" +
+    data.ser_igst / 2 +
+    "% CGST + " +
+    data.ser_igst / 2 +
+    "% SGST/UT GST ; " +
+    data.ser_igst +
+    "% IGST ; " +
+    data.ser_cess +
+    "% CESS )";
 
   return (
     <div>
@@ -282,7 +213,14 @@ const AddService = (props) => {
                     className="w-full"
                     size="small"
                     name="ser_name"
-                    onChange={handleChange}
+                    inputProps={{ maxLength: 20 }}
+                    value={data.ser_name}
+                    onChange={(e) =>
+                      setData({
+                        ...data,
+                        ser_name: e.target.value.replace(/[^A-Z a-z.]/g, ""),
+                      })
+                    }
                     required
                   />
                 </Box>
@@ -315,10 +253,15 @@ const AddService = (props) => {
                     className=" w-full"
                     size="small"
                     name="ser_price"
-                    //onChange={handleChange}
                     required
                     onChange={(e) =>
-                      setData({ ...data, ser_price : e.target.value.replace(/\D/g, "") })
+                      setData({
+                        ...data,
+                        ser_price: e.target.value
+                          .replace(/^\.|[^0-9.]/g, "")
+                          .replace(/(\.\d*\.)/, "$1")
+                          .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                      })
                     }
                     value={data.ser_price}
                   />
@@ -337,8 +280,14 @@ const AddService = (props) => {
                   <TextField
                     id="outlined-basic"
                     variant="outlined"
-                    value={hsnCode}
-                    helperText={hsnValue1}
+                    
+                    
+                    value={
+                      data.ser_sac ? data.ser_sac : "SAC Code"
+                    }
+                    helperText={
+                      data.ser_sac_desc ? data.ser_sac_desc : ""
+                    }
                     className="sec-1 cursor-pointer"
                     size="small"
                     InputProps={{
@@ -352,8 +301,24 @@ const AddService = (props) => {
                   <TextField
                     id="outlined-basic"
                     variant="outlined"
-                    value={gstValue1}
-                    helperText={gstValue2}
+                    // value={data.sac_igst}
+                    // helperText={"(" +
+                    // data.sac_cgst +
+                    // "% CGST + " +
+                    // data.sac_cgst +
+                    // "% SGST/UT GST ; " +
+                    // data.sac_igst +
+                    // "% IGST ; " +
+                    // data.sac_cess +
+                    // "% CESS )"}
+                    value={data.ser_igst ? data.ser_igst + "%" : "GST %"}
+                    helperText={
+                      data.ser_cess !== ""
+                        ? custom_gst_details
+                        : data.ser_igst !== ""
+                        ? gst_details
+                        : ""
+                    }
                     className="sec-2 cursor-pointer"
                     size="small"
                     InputProps={{
@@ -379,55 +344,62 @@ const AddService = (props) => {
                         }}
                       />
 
-                      {productHsnCodes
-                        .filter(
-                          (code) =>
-                            code.hsn_code.toString().startsWith(searchValue) ||
-                            code.hsn_desc.startsWith(searchValue)
-                        )
-                        .map((filteredItem) => (
-                          <div
-                            key={filteredItem.hsn_code}
-                            className="flex card-sec"
-                            onClick={() => {
-                              setData({
-                                ...data,
-                                ser_sac: filteredItem.hsn_code,
-                                ser_sac_desc: filteredItem.hsn_desc,
-                                ser_igst: filteredItem.igst,
-                                ser_cgst: filteredItem.cgst,
-                                ser_sgst: filteredItem.sgst,
-                              });
-                              setSearchValue("0");
-
-                              setHsnCode(filteredItem.hsn_code),
-                                setHsnValue1(filteredItem.hsn_desc),
-                                setGstValue1(filteredItem.igst),
-                                setGstValue2(
-                                  "( " +
-                                    filteredItem.cgst +
-                                    "% CGST + " +
-                                    filteredItem.sgst +
-                                    "% SGST/UT GST ; " +
-                                    filteredItem.igst +
-                                    "% IGST )"
-                                );
-                              setIsClicked(false);
-                            }}
-                          >
-                            <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
-                              <div className="flex gap-6 pb-4">
-                                <h2 className=" rounded bg-slate-300 px-6 py-1 ">
-                                  {filteredItem.hsn_code}
-                                </h2>
-                                <h2 className=" rounded bg-slate-300 px-4 py-1 ">
-                                  {filteredItem.igst + "% GST"}
-                                </h2>
+                      {searchValue !== null && (searchValue !== "") === true &&
+                        sacCodes
+                          .filter(
+                            (code) =>
+                              code.sac_code
+                                .toString()
+                                .startsWith(searchValue) ||
+                              code.sac_desc
+                                .toString()
+                                .toLowerCase()
+                                .startsWith(
+                                  searchValue.toString().toLowerCase()
+                                )
+                          )
+                          .map((filteredItem) => (
+                            <div
+                              key={filteredItem.id}
+                              className="flex card-sec"
+                              onClick={() => {
+                                setData({
+                                  ...data,
+                                  ser_sac: filteredItem.sac_code,
+                                  ser_sac_desc: filteredItem.sac_desc,
+                                  ser_igst: filteredItem.sac_igst,
+                                  ser_cgst: filteredItem.sac_igst / 2,
+                                  ser_sgst: filteredItem.sac_igst / 2,
+                                });
+                                setSearchValue("");
+                                // setHsnCode(filteredItem.ser_sac),
+                                //   setHsnValue1(filteredItem.ser_sac_desc),
+                                //   setGstValue1(filteredItem.sac_igst),
+                                //   setGstValue2(
+                                //     "( " +
+                                //       filteredItem.sac_igst / 2 +
+                                //       "% CGST + " +
+                                //       filteredItem.sac_igst / 2 +
+                                //       "% SGST/UT GST ; " +
+                                //       filteredItem.sac_igst +
+                                //       "% IGST )"
+                                //   );
+                                setIsClicked(false);
+                              }}
+                            >
+                              <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
+                                <div className="flex gap-6 pb-4">
+                                  <h2 className=" rounded bg-slate-300 px-6 py-1 ">
+                                    {filteredItem.sac_code}
+                                  </h2>
+                                  <h2 className=" rounded bg-slate-300 px-4 py-1 ">
+                                    {filteredItem.sac_igst + "% GST"}
+                                  </h2>
+                                </div>
+                                <p>{filteredItem.sac_desc}</p>
                               </div>
-                              <p>{filteredItem.hsn_desc}</p>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                     </>
                   ) : (
                     <div></div>
@@ -459,21 +431,18 @@ const AddService = (props) => {
                                   type="radio"
                                   id="gst_on_selected_item"
                                   name="gst"
-                                  onChange={() => {
-                                    console.log("clicked on gst rate");
-
-                                    setGstValue1(item.label1),
-                                      setGstValue2(
-                                        "( " +
-                                          item.label1 +
-                                          "% CGST + " +
-                                          item.label2 +
-                                          "% SGST/UT GST ; " +
-                                          item.label3 +
-                                          "% IGST )"
-                                      );
+                                  onChange={() => { 
+                                    // setGstValue1(item.label1),
+                                    //   setGstValue2(
+                                    //     "( " +
+                                    //       item.label1 +
+                                    //       "% CGST + " +
+                                    //       item.label2 +
+                                    //       "% SGST/UT GST ; " +
+                                    //       item.label3 +
+                                    //       "% IGST )"
+                                    //   );
                                     setIsClicked2(false);
-
                                     setData({
                                       ...data,
                                       ser_igst: item.label1,
@@ -496,23 +465,56 @@ const AddService = (props) => {
                         variant="outlined"
                         className="sec-1"
                         required
+                        // onChange={(e) => {
+                        //   setcustomGst(e.target.value);
+                        // }}
+                        inputProps={{ maxLength: 10 }}
+                        value={data.ser_igst}
                         onChange={(e) => {
-                          setcustomGst(e.target.value);
+                          setData({
+                            ...data,
+                            ser_igst: e.target.value
+                              .replace(/^\.|[^0-9.]/g, "")
+                              .replace(/(\.\d*\.)/, "$1")
+                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            ser_cgst:
+                              e.target.value
+                                .replace(/^\.|[^0-9.]/g, "")
+                                .replace(/(\.\d*\.)/, "$1")
+                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                            ser_sgst:
+                              e.target.value
+                                .replace(/^\.|[^0-9.]/g, "")
+                                .replace(/(\.\d*\.)/, "$1")
+                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                          });
                         }}
                       />
+
                       <TextField
                         label="CESS"
                         id="outlined-basic"
                         variant="outlined"
                         className="sec-2"
                         required
+                        // onChange={(e) => {
+                        //   setCustomeCess(e.target.value);
+                        // }}
+                        inputProps={{ maxLength: 10 }}
+                        value={data.ser_cess}
                         onChange={(e) => {
-                          setCustomeCess(e.target.value);
+                          setData({
+                            ...data,
+                            ser_cess: e.target.value
+                              .replace(/^\.|[^0-9.]/g, "")
+                              .replace(/(\.\d*\.)/, "$1")
+                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                          });
                         }}
                       />
                     </Box>
 
-                    <Box className="box-sec">
+                    {/* <Box className="box-sec">
                       <button
                         onClick={(e) => {
                           e.preventDefault(),
@@ -528,7 +530,7 @@ const AddService = (props) => {
                       >
                         Add Custome Gst
                       </button>
-                    </Box>
+                    </Box> */}
                   </>
                 ) : (
                   <div></div>
