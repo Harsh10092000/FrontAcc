@@ -95,25 +95,6 @@ const AddProduct = (props) => {
     },
   ];
 
-  const units = [
-    {
-      value: "pieces",
-      label: "Pieces - PCS",
-    },
-    {
-      value: "numbers",
-      label: "Numbers - NOS",
-    },
-    {
-      value: "Days",
-      label: "Days - DAY",
-    },
-    {
-      value: "hours",
-      label: "Hours - HRS",
-    },
-  ];
-
   const [isOn, setIsOn] = useState(false);
   const handleOnChange1 = () => {
     setIsOn(!isOn);
@@ -137,19 +118,7 @@ const AddProduct = (props) => {
     setIsClicked(false);
   };
 
-  //const [gstValue1, setGstValue1] = useState("GST %");
-  //const [gstValue2, setGstValue2] = useState("");
-
-  // const [hsnCode, setHsnCode] = useState("HSN Code");
-  // const [hsnValue1, setHsnValue1] = useState(null);
-
   const [searchValue, setSearchValue] = useState(0);
-
-  //const [customGst, setcustomGst] = useState("");
-  //const [customeCess, setCustomeCess] = useState(null);
-
-  //const [igst, setIgst] = useState(null);
-
   const today = new Date();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
@@ -163,8 +132,8 @@ const AddProduct = (props) => {
 
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const maxFileSize = 20000;
-  const [file, setFile] = useState("File Name");
-  const [fileExists, setFileExists] = useState(false);
+  const [file, setFile] = useState("");
+
 
   const [primaryUnitValue, setPrimaryUnitValue] = useState(null);
   const [secondaryUnitValue, setSecondaryUnitValue] = useState("");
@@ -188,11 +157,7 @@ const AddProduct = (props) => {
     conversion: "",
     cgst: "",
     acc_id: "",
-    
   });
-  const handleChange = (e) => {
-    setProductData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const gst_details =
     "(" +
@@ -225,7 +190,7 @@ const AddProduct = (props) => {
       productData.balance_stock = productData.opening_stock;
       productData.primary_unit = primaryUnitValue;
       productData.secondary_unit = secondaryUnitValue;
-      
+
       formData.append("image", file);
       formData.append("product_name", productData.product_name);
       formData.append("primary_unit", productData.primary_unit);
@@ -245,7 +210,7 @@ const AddProduct = (props) => {
       formData.append("conversion", productData.conversion);
       formData.append("cgst", productData.cgst);
       formData.append("acc_id", productData.acc_id);
-      
+
       await axios.post(
         import.meta.env.VITE_BACKEND + "/api/auth/addProduct",
         formData
@@ -258,6 +223,7 @@ const AddProduct = (props) => {
     }
   };
 
+  const [formatError, setFormatError] = useState(false);
   const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
@@ -265,13 +231,12 @@ const AddProduct = (props) => {
       productData.product_name !== "" &&
       primaryUnitValue !== null &&
       primaryUnitValue !== "" &&
-      productData.sale_price !== null &&
-      productData.sale_price !== "" &&
-      productData.purchase_price !== null &&
-      productData.purchase_price !== "" &&
-      productData.opening_stock !== null &&
-      productData.opening_stock !== "" &&
-      error === null
+      productData.sale_price > 0 &&
+      productData.purchase_price > 0 &&
+      productData.opening_stock > 0 &&
+      error === null &&
+      fileSizeExceeded === false &&
+      formatError === false
     ) {
       setSubmitDisabled(false);
     } else {
@@ -284,7 +249,46 @@ const AddProduct = (props) => {
     productData.purchase_price,
     productData.opening_stock,
     error,
+    formatError,
+    fileSizeExceeded,
   ]);
+
+
+  const handleImage = (event) => {
+    setFile(event[0]);
+    var pattern = /image-*/;
+    if (!event[0].type.match(pattern)) {
+      setFormatError(true);
+      setFileSizeExceeded(false);
+    } else if (event[0].size > maxFileSize) {
+      setFileSizeExceeded(true);
+      setFormatError(false);
+      return;
+    } else {
+      setFileSizeExceeded(false);
+      setFormatError(false);
+    }
+  };
+
+  const handleDrag = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
+      handleImage(e.dataTransfer.files);
+    }
+  };
+  const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g; //working
+
+  //const numberValidation = /^\.|[^0-9.]{3}$|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
+  //const numberValidation =  /^[0-9]*\.[0-9]{2}$/g;
+  //const numberValidation = /^\.|\D*\D{0,3}|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
+  //const numberValidation = /^(10|\d)(\.\d{1,2})?$/g;
 
   return (
     <div>
@@ -335,19 +339,16 @@ const AddProduct = (props) => {
                       id="file-1"
                       className="hidden sr-only w-full"
                       accept="image/x-png,image/gif,image/jpeg"
+                      
                       onChange={(event) => {
-                        setFile(event.target.files[0]);
-                        setFileExists(true);
-                        const get_file_size = event.target.files[0];
-                        if (get_file_size.size > maxFileSize) {
-                          setFileSizeExceeded(true);
-                          return;
-                        } else {
-                          setFileSizeExceeded(false);
-                        }
+                        handleImage(event.target.files);
                       }}
                     />
                     <label
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={handleDrop}
                       htmlFor="file-1"
                       id="file-1"
                       className="relative flex  items-center justify-center rounded-md text-center border border-dashed border-[#e0e0e0] py-8 px-16"
@@ -365,21 +366,21 @@ const AddProduct = (props) => {
                       </div>
                     </label>
                   </div>
-                  {fileExists ? (
+                  {file !== "" && file !== undefined ? (
                     <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                       <div class="flex items-center justify-between">
                         <span class="truncate pr-3 text-base font-medium text-[#07074D]">
-                          {file.name}
+                          {file.name ? file.name : file}
                         </span>
                         <button
                           class="text-[#07074D]"
                           onClick={(e) => {
                             e.preventDefault(), setFile("");
-                            setFileExists(false);
+                            setFormatError(false);
                             setFileSizeExceeded(false);
                           }}
                         >
-                          <IconX />
+                          <IconX className="static h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -387,12 +388,11 @@ const AddProduct = (props) => {
                     <div></div>
                   )}
                   {fileSizeExceeded && (
-                    <>
-                      <p className="error">
-                        File size exceeded the limit of {maxFileSize / 1000} KB
-                      </p>
-                    </>
+                    <p className="error">
+                      File size exceeded the limit of {maxFileSize / 1000} KB
+                    </p>
                   )}
+                  {formatError && <p className="error">Invalid Format</p>}
                 </div>
 
                 <Autocomplete
@@ -401,6 +401,7 @@ const AddProduct = (props) => {
                   className="box-sec margin-bottom-zero "
                   onChange={(event, newValue) => {
                     setPrimaryUnitValue(newValue);
+                    setSecondaryUnitValue("");
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -415,7 +416,7 @@ const AddProduct = (props) => {
                     />
                   )}
                 />
-
+                {console.log(secondaryUnitValue)}
                 <Box className="box-sec margin-top-zero margin-bottom-zero">
                   <label className="pl-3">Add Secondary Unit</label>
                   <Switch
@@ -433,6 +434,7 @@ const AddProduct = (props) => {
                       onChange={(event, newValue) => {
                         setSecondaryUnitValue(newValue);
                       }}
+                      value={secondaryUnitValue}
                       id="disable-close-on-select"
                       className="w-full sec-1 mt-0 pl-3 pb-3"
                       renderInput={(params) => (
@@ -447,6 +449,7 @@ const AddProduct = (props) => {
                         />
                       )}
                     />
+
                     <div className="pr-3 pb-3 w-full">
                       <TextField
                         id="outlined-basic"
@@ -460,10 +463,10 @@ const AddProduct = (props) => {
                         onChange={(e) =>
                           setProductData({
                             ...productData,
-                            conversion: e.target.value
-                              .replace(/^\.|[^0-9.]/g, "")
-                              .replace(/(\.\d*\.)/, "$1")
-                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            conversion: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
                           })
                         }
                         value={productData.conversion}
@@ -483,10 +486,10 @@ const AddProduct = (props) => {
                     onChange={(e) =>
                       setProductData({
                         ...productData,
-                        sale_price: e.target.value
-                          .replace(/^\.|[^0-9.]/g, "")
-                          .replace(/(\.\d*\.)/, "$1")
-                          .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                        sale_price: e.target.value.replace(
+                          numberValidation,
+                          "$1"
+                        ),
                       })
                     }
                     inputProps={{ maxLength: 10 }}
@@ -508,10 +511,10 @@ const AddProduct = (props) => {
                     onChange={(e) =>
                       setProductData({
                         ...productData,
-                        purchase_price: e.target.value
-                          .replace(/^\.|[^0-9.]/g, "")
-                          .replace(/(\.\d*\.)/, "$1")
-                          .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                        purchase_price: e.target.value.replace(
+                          numberValidation,
+                          "$1"
+                        ),
                       })
                     }
                     value={productData.purchase_price}
@@ -755,20 +758,16 @@ const AddProduct = (props) => {
                         onChange={(e) => {
                           setProductData({
                             ...productData,
-                            igst: e.target.value
-                              .replace(/^\.|[^0-9.]/g, "")
-                              .replace(/(\.\d*\.)/, "$1")
-                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            igst: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
                             cgst:
-                              e.target.value
-                                .replace(/^\.|[^0-9.]/g, "")
-                                .replace(/(\.\d*\.)/, "$1")
-                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
                             sgst:
-                              e.target.value
-                                .replace(/^\.|[^0-9.]/g, "")
-                                .replace(/(\.\d*\.)/, "$1")
-                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
                           });
                         }}
                       />
@@ -784,10 +783,10 @@ const AddProduct = (props) => {
                         onChange={(e) => {
                           setProductData({
                             ...productData,
-                            cess: e.target.value
-                              .replace(/^\.|[^0-9.]/g, "")
-                              .replace(/(\.\d*\.)/, "$1")
-                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            cess: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
                           });
                         }}
                       />

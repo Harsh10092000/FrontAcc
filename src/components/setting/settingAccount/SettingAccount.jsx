@@ -11,6 +11,15 @@ const SettingAccount = () => {
   const { currentUser } = useContext(AuthContext);
   const {
     changeAccountId,
+    changeUser,
+    changeSup,
+    changeProduct,
+    changeService,
+    changeCashId,
+    changeExpId,
+    changeSaleId,
+    changePurchaseId,
+    changeStaffId
   } = useContext(UserContext);
 
   const [info, setInfo] = useState([]);
@@ -39,6 +48,20 @@ const SettingAccount = () => {
       });
     }
   }, [staffData]);
+
+
+  const changeId = (id) => {
+    changeAccountId(id);
+    changeUser(0);
+    changeSup(0);
+    changeProduct(0);
+    changeService(0);
+    changeCashId(0);
+    changeExpId(0);
+    changeSaleId(0);
+    changePurchaseId(0);
+    changeStaffId(0);
+  };
 
   return (
     <div className="w-full">
@@ -83,7 +106,7 @@ const SettingAccount = () => {
             <motion.button
               className="w-full bg-blue-600/70 p-2 text-white"
               //whileTap={{ scale: 0.99 }}
-              onClick={() => changeAccountId(item.business_id)}
+              onClick={() => changeId(item.business_id)}
             >
               Use this account
             </motion.button>

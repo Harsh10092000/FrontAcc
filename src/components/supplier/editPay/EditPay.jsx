@@ -38,8 +38,8 @@ const EditPay = (props) => {
   const value = dayjs(current_date);
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const maxFileSize = 20000;
-  const [file, setFile] = useState("File Name");
-  const [fileExists, setFileExists] = useState(false);
+  const [file, setFile] = useState("");
+
   const [open, setOpen] = useState(false);
   const [transactionDate, setTransactionDate] = useState(value);
   var date1 = transactionDate.$d;
@@ -59,9 +59,7 @@ const EditPay = (props) => {
   };
   const [flag, setFlag] = useState(false);
   const [data, setData] = useState([]);
-  const [subAmtType, setSubAmtType] = useState("");
-  const [prevSubTranPay, setPrevSubTranPay] = useState(0);
-  const [prevSubBalance, setPrevSubBalance] = useState(0);
+
   const [tran, setTran] = useState([]);
   const [update, setUpdate] = useState({
     sup_tran_pay: "",
@@ -74,7 +72,6 @@ const EditPay = (props) => {
       .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSup/${supId}`)
       .then((res) => {
         setData(res.data);
-        setSubAmtType(res.data[0].sup_amt_type);
       });
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchTranid/${tranId}`)
@@ -85,15 +82,9 @@ const EditPay = (props) => {
           sup_tran_pay: res.data[0].sup_tran_pay,
           sup_tran_date: res.data[0].sup_tran_date,
           sup_tran_description: res.data[0].sup_tran_description,
-          sup_balance: res.data[0].sup_balance,
         });
+        setFile(res.data[0].sup_tran_bill);
         setSkeleton(false);
-      });
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSupLastTran/${supId}`)
-      .then((response) => {
-        setPrevSubTranPay(response.data[0].sup_tran_pay);
-        setPrevSubBalance(response.data[0].sup_balance);
       });
   }, [tranId]);
   const delTran = async () => {
@@ -110,31 +101,13 @@ const EditPay = (props) => {
   const updateTran = async (e) => {
     e.preventDefault();
     try {
-      if (subAmtType === "pay") {
-        if (update.sup_tran_pay > prevSubTranPay) {
-          update.sup_balance =
-            prevSubBalance + (update.sup_tran_pay - prevSubTranPay);
-        } else if (update.sup_tran_pay < prevSubTranPay) {
-          update.sup_balance =
-            prevSubBalance - (prevSubTranPay - update.sup_tran_pay);
-        }
-      } else if (subAmtType === "receive") {
-        if (update.sup_tran_pay > prevSubTranPay) {
-          update.sup_balance =
-            prevSubBalance - (update.sup_tran_pay - prevSubTranPay);
-        } else if (update.sup_tran_pay < prevSubTranPay) {
-          update.sup_balance =
-            prevSubTranPay - update.sup_tran_pay + prevSubBalance;
-        }
-      }
       flag ? (update.sup_tran_date = filteredDate) : "";
       const formData = new FormData();
       formData.append("image", file);
       formData.append("sup_tran_pay", update.sup_tran_pay);
       formData.append("sup_tran_description", update.sup_tran_description);
       formData.append("sup_tran_date", update.sup_tran_date);
-      formData.append("sup_balance", update.sup_balance);
-      console.log("filr : ", file, formData);
+
       await axios.put(
         import.meta.env.VITE_BACKEND + `/api/sup/updateTran/${tranId}`,
         formData
@@ -155,16 +128,51 @@ const EditPay = (props) => {
     setImgOpen(false);
   };
 
-  const [error , setError] = useState(null)
+  const [formatError, setFormatError] = useState(false);
+  const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   useEffect(() => {
-    if (update.sup_tran_pay !== ""   && error === null) {
+    if (
+      update.sup_tran_pay !== "" &&
+      error === null &&
+      fileSizeExceeded === false &&
+      formatError === false
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [update.sup_tran_pay, error]);
+  }, [update.sup_tran_pay, error, formatError, fileSizeExceeded]);
 
+  const handleImage = (event) => {
+    setFile(event[0]);
+    var pattern = /image-*/;
+    if (!event[0].type.match(pattern)) {
+      setFormatError(true);
+      setFileSizeExceeded(false);
+    } else if (event[0].size > maxFileSize) {
+      setFileSizeExceeded(true);
+      setFormatError(false);
+      return;
+    } else {
+      setFileSizeExceeded(false);
+      setFormatError(false);
+    }
+  };
+
+  const handleDrag = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
+      handleImage(e.dataTransfer.files);
+    }
+  };
 
   return (
     <Box sx={{ width: 400 }} role="presentation">
@@ -206,7 +214,6 @@ const EditPay = (props) => {
                         <h2>You Pay</h2>
 
                         <p className=" font-medium">
-                          
                           <Skeleton
                             variant="rectangular"
                             width={50}
@@ -223,7 +230,6 @@ const EditPay = (props) => {
                       <div className="customer-info-text">
                         <h2>Description</h2>
                         <p className=" font-medium">
-                          
                           <Skeleton
                             variant="rectangular"
                             width={50}
@@ -240,7 +246,6 @@ const EditPay = (props) => {
                       <div className="customer-info-text">
                         <h2>Photo Attachment</h2>
                         <p className=" font-medium">
-                          
                           <Skeleton
                             variant="rectangular"
                             width={50}
@@ -257,7 +262,6 @@ const EditPay = (props) => {
                       <div className="customer-info-text">
                         <h2>Running Balance</h2>
                         <p className=" font-medium">
-                          
                           <Skeleton
                             variant="rectangular"
                             width={50}
@@ -320,7 +324,9 @@ const EditPay = (props) => {
                       </div>
                       <div className="customer-info-text">
                         <h2>You Pay</h2>
-                        <p className=" font-medium">₹{parseFloat(item.sup_tran_pay).toFixed(2)}</p>
+                        <p className=" font-medium">
+                          ₹{parseFloat(item.sup_tran_pay).toFixed(2)}
+                        </p>
                       </div>
                     </div>
 
@@ -487,14 +493,15 @@ const EditPay = (props) => {
                       onChange={(e) =>
                         setUpdate({
                           ...update,
-                          sup_tran_pay: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                          sup_tran_pay: e.target.value
+                            .replace(/^\.|[^0-9.]/g, "")
+                            .replace(/(\.\d*\.)/, "$1")
+                            .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                         })
                       }
                       required
                     />
                   </Box>
-
-                  {console.log( update.sup_tran_pay)}
 
                   <Box className="box-sec">
                     <TextField
@@ -531,7 +538,9 @@ const EditPay = (props) => {
                           onChange={(newValue) => {
                             setTransactionDate(newValue), setFlag(true);
                           }}
-                          onError={(newError) => {setError(newError)}}
+                          onError={(newError) => {
+                            setError(newError);
+                          }}
                         />
                       </DemoContainer>
                     </LocalizationProvider>
@@ -545,18 +554,14 @@ const EditPay = (props) => {
                         className="hidden sr-only w-full"
                         accept="image/x-png,image/gif,image/jpeg"
                         onChange={(event) => {
-                          setFile(event.target.files[0]);
-                          setFileExists(true);
-                          const get_file_size = event.target.files[0];
-                          if (get_file_size.size > maxFileSize) {
-                            setFileSizeExceeded(true);
-                            return;
-                          } else {
-                            setFileSizeExceeded(false);
-                          }
+                          handleImage(event.target.files);
                         }}
                       />
                       <label
+                        onDragEnter={handleDrag}
+                        onDragLeave={handleDrag}
+                        onDragOver={handleDrag}
+                        onDrop={handleDrop}
                         htmlFor="file-1"
                         id="file-1"
                         className="relative flex  items-center justify-center rounded-md text-center border border-dashed border-[#e0e0e0] py-8 px-16"
@@ -574,21 +579,21 @@ const EditPay = (props) => {
                         </div>
                       </label>
                     </div>
-                    {fileExists ? (
+                    {file !== "" && file !== undefined ? (
                       <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                         <div class="flex items-center justify-between">
                           <span class="truncate pr-3 text-base font-medium text-[#07074D]">
-                            {file.name}
+                            {file.name ? file.name  : file}
                           </span>
                           <button
                             class="text-[#07074D]"
                             onClick={(e) => {
                               e.preventDefault(), setFile("");
-                              setFileExists(false);
+                              setFormatError(false);
                               setFileSizeExceeded(false);
                             }}
                           >
-                            <IconX />
+                            <IconX className=" static h-4 w-4" />
                           </button>
                         </div>
                       </div>
@@ -596,20 +601,26 @@ const EditPay = (props) => {
                       <div></div>
                     )}
                     {fileSizeExceeded && (
-                      <>
-                        <p className="error">
-                          File size exceeded the limit of {maxFileSize / 1000}{" "}
-                          KB
-                        </p>
-                      </>
+                      <p className="error">
+                        File size exceeded the limit of {maxFileSize / 1000} KB
+                      </p>
                     )}
+                    {formatError && <p className="error">Invalid Format</p>}
                   </div>
                 </Box>
               </div>
             </div>
 
             <div className="supplier-pay-btn-wrapper bg-white">
-              <button className={submitDisabled ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in" : "add_btn2 text-red-600" } onClick={updateTran} disabled={submitDisabled}>
+              <button
+                className={
+                  submitDisabled
+                    ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
+                    : "add_btn2 text-red-600"
+                }
+                onClick={updateTran}
+                disabled={submitDisabled}
+              >
                 Save
               </button>
             </div>

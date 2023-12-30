@@ -17,14 +17,13 @@ import {
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
 
-
 const MainLeft = (props) => {
-  
-  const { change , accountId, parties  } = useContext(UserContext);
+  const { change, accountId, parties } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [tran, setTran] = useState([]);
   const [skeleton, setSkeleton] = useState(true);
-  
+  const [total, setTotal] = useState([]);
+
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/auth/fetch/${accountId}`)
@@ -37,28 +36,33 @@ const MainLeft = (props) => {
       .then((response) => {
         setTran(response.data);
       });
-  }, [accountId , change]);
-  const sum = result
-    .filter((person) => person.amt_type === "pay")
-    .reduce(function (prev, current) {
-      return prev + +current.cust_amt;
-    }, 0);
-    
-  const sum1 = result
-    .filter((person) => person.amt_type === "receive")
-    .reduce(function (prev, current) {
-      return prev + +current.cust_amt;
-    }, 0);
-  const pay = tran.reduce(function (prev, current) {
-    return prev + +current.tran_pay;
-  }, 0);
-  const receive = tran.reduce(function (prev, current) {
-    return prev + +current.tran_receive;
-  }, 0);
-  
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchTotal/${accountId}`)
+      .then((response) => {
+        setTotal(response.data);
+      });
 
-  const total_pay = sum + pay;
-  const total_receive = sum1 + receive;
+  }, [accountId, change]);
+  // const sum = result
+  //   .filter((person) => person.amt_type === "pay")
+  //   .reduce(function (prev, current) {
+  //     return prev + +current.cust_amt;
+  //   }, 0);
+  // const sum1 = result
+  //   .filter((person) => person.amt_type === "receive")
+  //   .reduce(function (prev, current) {
+  //     return prev + +current.cust_amt;
+  //   }, 0);
+
+  // const pay = tran.reduce(function (prev, current) {
+  //   return prev + +current.tran_pay;
+  // }, 0);
+  // const receive = tran.reduce(function (prev, current) {
+  //   return prev + +current.tran_receive;
+  // }, 0);
+
+  // const total_pay = sum + pay;
+  // const total_receive = sum1 + receive;
   const [sortOption, setSortOption] = useState("recent");
   const handleChange1 = (e) => {
     setSortOption(e.target.value);
@@ -75,7 +79,7 @@ const MainLeft = (props) => {
     sortedUsers.sort((a, b) => a.cust_name.localeCompare(b.cust_name));
   }
 
-  // var parties = "1";
+
 
   return (
     <div className="left bg-white shadow-lg w-full flex flex-col h-full">
@@ -86,15 +90,29 @@ const MainLeft = (props) => {
       <div className="giveget flex justify-between">
         <div className="give text-gray-500 flex gap-1 items-center">
           Total Paid :
-          <span className="text-gray-700 font-bold">₹ {total_receive.toFixed(2)}</span>
+          <span className="text-gray-700 font-bold">
+          ₹ {total.length > 0 && total[0].payTotal !== null ? 
+             parseFloat(total[0].payTotal).toFixed(2) : 0
+            }
+          </span>
           <IconArrowUpRight className="text-red-600" />
         </div>
         <div className="give text-gray-500 flex gap-1 items-center">
           Total Recieved:
-          <span className="text-gray-700 font-bold">₹ {total_pay.toFixed(2)}</span>
+          <span className="text-gray-700 font-bold">
+            ₹ {total.length && total[0].payRecieve !== null > 0 ?  parseFloat(total[0].receiveTotal).toFixed(2) : 0}
+          </span>
           <IconArrowDownLeft className="text-green-600" />
         </div>
-        <button className={parties === 1 ? " hover:!bg-slate-200 !border-none flex gap-1 cursor-not-allowed !text-slate-400 bg-slate-200 rounded" : "flex gap-1 cursor-pointer"  } onClick={props.add} disabled={parties === 1 ? true : false}  >
+        <button
+          className={
+            parties === 1
+              ? " hover:!bg-slate-200 !border-none flex gap-1 cursor-not-allowed !text-slate-400 bg-slate-200 rounded"
+              : "flex gap-1 cursor-pointer"
+          }
+          onClick={props.add}
+          disabled={parties === 1 ? true : false}
+        >
           <IconPlus className="w-5" />
           Add Customer
         </button>
@@ -124,7 +142,6 @@ const MainLeft = (props) => {
               label="Sort By"
               onChange={handleChange1}
             >
-              
               <MenuItem value="recent">Most Recent</MenuItem>
               <MenuItem value="highestAmount">Highest Amount</MenuItem>
               <MenuItem value="name">By Name</MenuItem>

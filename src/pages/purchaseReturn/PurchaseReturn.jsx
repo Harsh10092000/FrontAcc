@@ -26,7 +26,6 @@ const PurchaseReturn = () => {
     useContext(UserContext);
 
   const [supplierData, setSupplierData] = useState([]);
-  const [businessdata, setBusinessdata] = useState([]);
   const [businessGst, setBusinessGst] = useState("");
   const [purchaseData, setPurchaseData] = useState([]);
   const [purchaseDataById, setPurchaseDataById] = useState([]);
@@ -45,7 +44,7 @@ const PurchaseReturn = () => {
     axios
       .get(import.meta.env.VITE_BACKEND + "/api/act/fetchData")
       .then((response) => {
-        setBusinessdata(response.data);
+       
         setBusinessGst(response.data[0].business_gst);
       });
     axios

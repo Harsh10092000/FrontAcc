@@ -267,7 +267,7 @@ const SaleRight = (props) => {
             ): "" }
             
             {data.sale_payment_in_id === null && totalAmtPaid === parseInt(data.sale_amt) && data.sale_re_id === null ?
-            <Link to="/salesReturn">
+            <Link to="/saleReturn">
                 <button
                   className="edit flex items-center gap-2 p-2 rounded text-blue-700 hover:text-white hover:bg-blue-700"
                   style={{

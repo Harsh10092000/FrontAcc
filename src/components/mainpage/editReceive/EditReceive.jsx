@@ -28,12 +28,10 @@ import axios from "axios";
 
 const EditReceive = (props) => {
   const { userId, changeChange } = useContext(UserContext);
-  const [prevTranRecieve, setPrevTranRecieve] = useState(null);
-  const [prevBalance, setPrevBalance] = useState(null);
   const { tranId } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [result2, setResult2] = useState([]);
-  const [amtType, setAmtType] = useState("");
+
   const [data, setData] = useState({
     tran_description: "",
     tran_date: "",
@@ -53,6 +51,7 @@ const EditReceive = (props) => {
           tran_date: response.data[0].tran_date,
           balance: response.data[0].balance,
         });
+        setFile(response.data[0].tran_bill);
         setSkeleton(false);
       });
 
@@ -61,16 +60,13 @@ const EditReceive = (props) => {
         import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
       )
       .then((response) => {
-        setAmtType(response.data[0].amt_type);
+
         setResult2(response.data);
       });
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchLastTran/${userId}`)
-      .then((response) => {
-        setPrevTranRecieve(response.data[0].tran_receive);
-        setPrevBalance(response.data[0].balance);
-      });
+    
   }, [tranId]);
+
+  
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -97,10 +93,10 @@ const EditReceive = (props) => {
   var filteredDate = date1.toString().slice(4, 16);
   const [flag, setFlag] = useState(false);
 
-  const [file, setFile] = useState("File Name");
+  const [file, setFile] = useState("");
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const maxFileSize = 20000;
-  const [fileExists, setFileExists] = useState(false);
+
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -109,24 +105,7 @@ const EditReceive = (props) => {
   const handleClickSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (amtType === "pay") {
-        if (data.tran_receive > prevTranRecieve) {
-          data.balance =
-            prevBalance - (parseInt(data.tran_receive) - prevTranRecieve);
-        } else if (data.tran_receive < prevTranRecieve) {
-          data.balance =
-            prevBalance + (prevTranRecieve - parseInt(data.tran_receive));
-        }
-      } else if (amtType === "receive") {
-        if (data.tran_receive > prevTranRecieve) {
-          data.balance =
-            prevBalance + (parseInt(data.tran_receive) - prevTranRecieve);
-        } else if (data.tran_receive < prevTranRecieve) {
-          data.balance =
-            prevBalance - (prevTranRecieve - parseInt(data.tran_receive));
-        }
-      }
-
+      
       flag ? (data.tran_date = filteredDate) : "";
       const formData = new FormData();
       formData.append("image", file);
@@ -165,15 +144,52 @@ const EditReceive = (props) => {
     setImgOpen(false);
   };
 
+  const [formatError, setFormatError] = useState(false);
   const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (data.tran_receive !== "" && error === null) {
+    if (
+      data.tran_receive !== "" && data.tran_receive > 0 &&
+      error === null &&
+      fileSizeExceeded === false &&
+      formatError === false
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.tran_receive, error]);
+  }, [data.tran_receive, error, fileSizeExceeded, formatError]);
+
+  const handleImage = (event) => {
+    setFile(event[0]);
+    var pattern = /image-*/;
+    if (!event[0].type.match(pattern)) {
+      setFormatError(true);
+      setFileSizeExceeded(false);
+    } else if (event[0].size > maxFileSize) {
+      setFileSizeExceeded(true);
+      setFormatError(false);
+      return;
+    } else {
+      setFileSizeExceeded(false);
+      setFormatError(false);
+    }
+  };
+  
+  const handleDrag = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    //setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleImage(e.dataTransfer.files);
+    }
+  };
+
   return (
     <>
       {skeleton ? (
@@ -487,7 +503,10 @@ const EditReceive = (props) => {
                             onChange={(e) =>
                               setData({
                                 ...data,
-                                tran_receive: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                                tran_receive: e.target.value
+                                  .replace(/^\.|[^0-9.]/g, "")
+                                  .replace(/(\.\d*\.)/, "$1")
+                                  .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                               })
                             }
                             value={data.tran_receive}
@@ -497,6 +516,7 @@ const EditReceive = (props) => {
                             className="w-full m-0"
                             size="small"
                             required
+                            inputProps={{ maxLength: 10 }}
                           />
                         </Box>
 
@@ -537,7 +557,9 @@ const EditReceive = (props) => {
                                 onChange={(newValue) => {
                                   setTransactionDate(newValue), setFlag(true);
                                 }}
-                                onError={(newError) => {setSubmitDisabled(true) , setError(newError)}}
+                                onError={(newError) => {
+                                  setSubmitDisabled(true), setError(newError);
+                                }}
                               />
                             </DemoContainer>
                           </LocalizationProvider>
@@ -551,19 +573,14 @@ const EditReceive = (props) => {
                               className="hidden sr-only w-full"
                               accept="image/x-png,image/gif,image/jpeg"
                               onChange={(event) => {
-                                setFile(event.target.files[0]);
-                                setFileExists(true);
-                                const get_file_size = event.target.files[0];
-
-                                if (get_file_size.size > maxFileSize) {
-                                  setFileSizeExceeded(true);
-                                  return;
-                                } else {
-                                  setFileSizeExceeded(false);
-                                }
+                                handleImage(event.target.files);
                               }}
                             />
                             <label
+                              onDragEnter={handleDrag}
+                              onDragLeave={handleDrag}
+                              onDragOver={handleDrag}
+                              onDrop={handleDrop}
                               htmlFor="file-1"
                               id="file-1"
                               className="relative flex  items-center justify-center rounded-md text-center border border-dashed border-[#e0e0e0] py-8 px-16"
@@ -581,21 +598,21 @@ const EditReceive = (props) => {
                               </div>
                             </label>
                           </div>
-                          {fileExists ? (
+                          {file !== "" && file !== undefined ? (
                             <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                               <div class="flex items-center justify-between">
                                 <span class="truncate pr-3 text-base font-medium text-[#07074D]">
-                                  {file.name}
+                                  { file.name ? file.name : file }
                                 </span>
                                 <button
                                   class="text-[#07074D]"
                                   onClick={(e) => {
                                     e.preventDefault(), setFile("");
-                                    setFileExists(false);
                                     setFileSizeExceeded(false);
+                                    setFormatError(false);
                                   }}
                                 >
-                                  <IconX />
+                                  <IconX className = "static h-4 w-4"/>
                                 </button>
                               </div>
                             </div>
@@ -603,12 +620,13 @@ const EditReceive = (props) => {
                             <div></div>
                           )}
                           {fileSizeExceeded && (
-                            <>
-                              <p className="error">
-                                File size exceeded the limit of{" "}
-                                {maxFileSize / 1000} KB
-                              </p>
-                            </>
+                            <p className="error">
+                              File size exceeded the limit of
+                              {maxFileSize / 1000} KB
+                            </p>
+                          )}
+                          {formatError && (
+                            <p className="error">Invalid Format</p>
                           )}
                         </div>
                       </Box>

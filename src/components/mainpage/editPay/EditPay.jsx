@@ -28,12 +28,11 @@ import axios from "axios";
 
 const EditPay = (props) => {
   const { userId, changeChange, parties } = useContext(UserContext);
-  const [prevTranPay, setPrevTranPay] = useState(null);
-  const [prevBalance, setPrevBalance] = useState(null);
+
   const { tranId } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [result2, setResult2] = useState([]);
-  const [amtType, setAmtType] = useState("");
+
   const [data, setData] = useState({
     tran_pay: "",
     tran_description: "",
@@ -53,6 +52,7 @@ const EditPay = (props) => {
           tran_date: response.data[0].tran_date,
           balance: response.data[0].balance,
         });
+        setFile(response.data[0].tran_bill);
         setSkeleton(false);
       });
 
@@ -61,14 +61,7 @@ const EditPay = (props) => {
         import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
       )
       .then((response) => {
-        setAmtType(response.data[0].amt_type);
         setResult2(response.data);
-      });
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchLastTran/${userId}`)
-      .then((response) => {
-        setPrevTranPay(response.data[0].tran_pay);
-        setPrevBalance(response.data[0].balance);
       });
   }, [tranId]);
 
@@ -85,8 +78,7 @@ const EditPay = (props) => {
 
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const maxFileSize = 20000;
-  const [file, setFile] = useState("File Name");
-  const [fileExists, setFileExists] = useState(false);
+  const [file, setFile] = useState("");
 
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -120,28 +112,13 @@ const EditPay = (props) => {
   const handleClickSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (amtType === "pay") {
-        if (data.tran_pay > prevTranPay) {
-          data.balance = prevBalance + (data.tran_pay - prevTranPay);
-        } else if (data.tran_pay < prevTranPay) {
-          data.balance = prevBalance - (prevTranPay - data.tran_pay);
-        }
-      } else if (amtType === "receive") {
-        if (data.tran_pay > prevTranPay) {
-          data.balance = prevBalance - (data.tran_pay - prevTranPay);
-        } else if (data.tran_pay < prevTranPay) {
-          data.balance = prevTranPay - data.tran_pay + prevBalance;
-        }
-      }
-
       flag ? (data.tran_date = filteredDate) : "";
       const formData = new FormData();
       formData.append("image", file);
       formData.append("tran_pay", data.tran_pay);
       formData.append("tran_description", data.tran_description);
       formData.append("tran_date", data.tran_date);
-      formData.append("balance", data.balance);
-      console.log("formData : ", formData);
+
       await axios.put(
         import.meta.env.VITE_BACKEND + `/api/auth/updateTran/${tranId}`,
         formData
@@ -161,16 +138,60 @@ const EditPay = (props) => {
     setImgOpen(false);
   };
 
+  const [formatError, setFormatError] = useState(false);
   const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (data.tran_pay !== "" && error === null) {
+    if (
+      data.tran_pay !== "" &&
+      data.tran_pay > 0 &&
+      error === null &&
+      formatError === false &&
+      fileSizeExceeded === false
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.tran_pay, error]);
-  
+  }, [data.tran_pay, error, formatError, fileSizeExceeded]);
+
+  const handleImage = (event) => {
+    setFile(event[0]);
+    var pattern = /image-*/;
+    if (!event[0].type.match(pattern)) {
+      setFormatError(true);
+      setFileSizeExceeded(false);
+    } else if (event[0].size > maxFileSize) {
+      setFileSizeExceeded(true);
+      setFormatError(false);
+      return;
+    } else {
+      setFileSizeExceeded(false);
+      setFormatError(false);
+    }
+  };
+
+  const [dragActive, setDragActive] = useState(false);
+  const handleDrag = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
+      handleImage(e.dataTransfer.files);
+    }
+  };
+
   return (
     <>
       {skeleton ? (
@@ -206,7 +227,6 @@ const EditPay = (props) => {
                       <h2>You Pay</h2>
 
                       <p className=" font-medium">
-                        
                         <Skeleton
                           variant="rectangular"
                           width={50}
@@ -327,7 +347,9 @@ const EditPay = (props) => {
                         <div className="customer-info-text">
                           <h2>You Pay</h2>
 
-                          <p className=" font-medium">₹ {parseFloat(item.tran_pay).toFixed(2)}</p>
+                          <p className=" font-medium">
+                            ₹ {parseFloat(item.tran_pay).toFixed(2)}
+                          </p>
                         </div>
                       </div>
 
@@ -406,7 +428,11 @@ const EditPay = (props) => {
 
                 <div className="add-customer-btn-wrapper flex justify-center">
                   <button
-                    className={ parties === 3 ? "delete-btn text-red-600 flex gap-1 justify-center" : "delete-btn flex gap-1 justify-center !bg-slate-200 hover:!bg-slate-200 !text-slate-400 !border-none  cursor-not-allowed" }
+                    className={
+                      parties === 3
+                        ? "delete-btn text-red-600 flex gap-1 justify-center"
+                        : "delete-btn flex gap-1 justify-center !bg-slate-200 hover:!bg-slate-200 !text-slate-400 !border-none  cursor-not-allowed"
+                    }
                     type="submit"
                     onClick={handleClickOpen}
                     disabled={parties === 3 ? false : true}
@@ -493,7 +519,10 @@ const EditPay = (props) => {
                             onChange={(e) =>
                               setData({
                                 ...data,
-                                tran_pay: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                                tran_pay: e.target.value
+                                  .replace(/^\.|[^0-9.]/g, "")
+                                  .replace(/(\.\d*\.)/, "$1")
+                                  .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                               })
                             }
                             id="outlined-basic"
@@ -501,6 +530,7 @@ const EditPay = (props) => {
                             className="w-full m-0"
                             size="small"
                             required
+                            inputProps={{ maxLength: 10 }}
                           />
                         </Box>
 
@@ -509,7 +539,6 @@ const EditPay = (props) => {
                             fullWidth
                             multiline
                             name="tran_description"
-                            //onChange={handleChange}
                             onChange={(e) =>
                               setData({
                                 ...data,
@@ -545,7 +574,9 @@ const EditPay = (props) => {
                                 onChange={(newValue) => {
                                   setTransactionDate(newValue), setFlag(true);
                                 }}
-                                onError={(newError) => {setSubmitDisabled(true) , setError(newError)}}
+                                onError={(newError) => {
+                                  setSubmitDisabled(true), setError(newError);
+                                }}
                               />
                             </DemoContainer>
                           </LocalizationProvider>
@@ -559,19 +590,14 @@ const EditPay = (props) => {
                               className="hidden sr-only w-full"
                               accept="image/x-png,image/gif,image/jpeg"
                               onChange={(event) => {
-                                setFile(event.target.files[0]);
-                                setFileExists(true);
-                                const get_file_size = event.target.files[0];
-
-                                if (get_file_size.size > maxFileSize) {
-                                  setFileSizeExceeded(true);
-                                  return;
-                                } else {
-                                  setFileSizeExceeded(false);
-                                }
+                                handleImage(event.target.files);
                               }}
                             />
                             <label
+                              onDragEnter={handleDrag}
+                              onDragLeave={handleDrag}
+                              onDragOver={handleDrag}
+                              onDrop={handleDrop}
                               htmlFor="file-1"
                               id="file-1"
                               className="relative flex  items-center justify-center rounded-md text-center border border-dashed border-[#e0e0e0] py-8 px-16"
@@ -589,21 +615,21 @@ const EditPay = (props) => {
                               </div>
                             </label>
                           </div>
-                          {fileExists ? (
+                          {file !== "" && file !== undefined ? (
                             <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                               <div class="flex items-center justify-between">
                                 <span class="truncate pr-3 text-base font-medium text-[#07074D]">
-                                  {file.name}
+                                  {file.name ? file.name : file}
                                 </span>
                                 <button
                                   class="text-[#07074D]"
                                   onClick={(e) => {
                                     e.preventDefault(), setFile("");
-                                    setFileExists(false);
+                                    setFormatError(false);
                                     setFileSizeExceeded(false);
                                   }}
                                 >
-                                  <IconX />
+                                  <IconX className="static h-4 w-4" />
                                 </button>
                               </div>
                             </div>
@@ -611,12 +637,13 @@ const EditPay = (props) => {
                             <div></div>
                           )}
                           {fileSizeExceeded && (
-                            <>
-                              <p className="error">
-                                File size exceeded the limit of
-                                {maxFileSize / 1000} KB
-                              </p>
-                            </>
+                            <p className="error">
+                              File size exceeded the limit of
+                              {maxFileSize / 1000} KB
+                            </p>
+                          )}
+                          {formatError && (
+                            <p className="error">Invalid Format</p>
                           )}
                         </div>
                       </Box>

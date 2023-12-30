@@ -196,12 +196,7 @@ const SalesForm = () => {
       });
   }, [state]);
 
-  try {
-    const filteredData = hsnCodes.filter((item) => item.hsn_code.toString().startsWith(1301));
-    console.log(filteredData);
-  } catch (error) {
-    console.log(error);
-  }
+ 
 
   const [custData, setCustData] = useState({
     cust_id: "",
@@ -1019,34 +1014,7 @@ const SalesForm = () => {
                               ).map((item) => (
                                 <div>
                                   <div>
-                                    {/* {item.item_tax === "1" ? (
-                                      <Box className="box-sec margin-top-zero ">
-                                        <label className="pl-2 ">
-                                          Tax Included?
-                                        </label>
-                                        <Switch
-                                          {...label}
-                                          defaultChecked
-                                          color="success"
-                                          onChange={() =>
-                                            handleTaxIncluded(item.item_id)
-                                          }
-                                        />
-                                      </Box>
-                                    ) : (
-                                      <Box className="box-sec margin-top-zero ">
-                                        <label className="pl-2 ">
-                                          Tax Included?
-                                        </label>
-                                        <Switch
-                                          {...label}
-                                          color="success"
-                                          onChange={() =>
-                                            handleTaxIncluded(item.item_id)
-                                          }
-                                        />
-                                      </Box>
-                                    )} */}
+                                    
 
                                     <Box className="box-sec margin-top-zero ">
                                       <label className="pl-2 ">
@@ -1289,6 +1257,7 @@ const SalesForm = () => {
                                         </div>
                                       </Box>
                                       <div>Custom Tax %</div>
+                                      {console.log(item.item_igst)}
                                       <Box className="box-sec">
                                         <TextField
                                           label="GST"
@@ -1298,7 +1267,7 @@ const SalesForm = () => {
                                           size="small"
                                           required
                                           inputProps={{ maxLength: 10 }}
-                                          value={item.item_igst}
+                                          value={item.item_igst ? item.item_igst : 0}
                                           onChange={(e) => {
                                             handleCustomGstChange(
                                               item.item_id,
@@ -1318,14 +1287,7 @@ const SalesForm = () => {
                                           required
                                           inputProps={{ maxLength: 10 }}
                                           value={item.item_cess}
-                                          // onChange={(e) => {
-                                          //   setCustomeCess(
-                                          //     e.target.value.replace(
-                                          //       numberValidation,
-                                          //       "$1"
-                                          //     )
-                                          //   );
-                                          // }}
+                                         
                                           onChange={(e) => {
                                             handleCustomCessChange(
                                               item.item_id,

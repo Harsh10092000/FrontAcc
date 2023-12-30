@@ -29,6 +29,8 @@ import { Navigate } from "react-router-dom";
 import Admin from "./pages/admin/Admin";
 import AddAccount from "./pages/account/Account";
 import SalesEdit from "./pages/salesEdit/SalesEdit";
+import PurchaseReturn from "./pages/purchaseReturn/PurchaseReturn";
+import SalesReturn from "./pages/salesReturn/SalesReturn";
 const App = () => {
   const { currentUser } = useContext(AuthContext);
   const ProtectedRoute = ({ children }) => {
@@ -136,6 +138,14 @@ const App = () => {
       ),
     },
     {
+      path: "/saleReturn",
+      element: (
+        <ProtectedRoute>
+          <SalesReturn />
+        </ProtectedRoute>
+      ),
+    },
+    {
       path: "/custReport",
       element: (
         <ProtectedRoute>
@@ -188,6 +198,14 @@ const App = () => {
       element: (
         <ProtectedRoute>
           <PurchaseEdit />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/purchaseReturn",
+      element: (
+        <ProtectedRoute>
+          <PurchaseReturn />
         </ProtectedRoute>
       ),
     },

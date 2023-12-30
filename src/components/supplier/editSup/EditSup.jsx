@@ -120,12 +120,18 @@ const EditSup = (props) => {
 
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (info.sup_name !== "" && info.sup_number !== "" && info.sup_amt !== "") {
+    if (
+      info.sup_name !== "" &&
+      info.sup_number !== "" &&
+      info.sup_number.length > 9 &&
+      (info.sup_spin === "" || info.sup_spin.length > 5) &&
+      (info.sup_bpin === "" || info.sup_bpin.length > 5)
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [info.sup_name, info.sup_number, info.sup_amt]);
+  }, [info.sup_name, info.sup_number, info.sup_spin, info.sup_bpin]);
 
   return (
     <div>
@@ -436,7 +442,13 @@ const EditSup = (props) => {
                           size="small"
                           value={info.sup_name}
                           onChange={(e) =>
-                            setInfo({ ...info, sup_name: e.target.value.replace(/[^A-Z a-z.]/g, ""), })
+                            setInfo({
+                              ...info,
+                              sup_name: e.target.value.replace(
+                                /[^A-Z a-z.]/g,
+                                ""
+                              ),
+                            })
                           }
                           inputProps={{ maxLength: 20 }}
                           required
@@ -471,9 +483,8 @@ const EditSup = (props) => {
                           label="Enter amount"
                           className="sec-1"
                           size="small"
-                          inputProps={{ maxLength: 10}}
+                          inputProps={{ maxLength: 10 }}
                           value={info.sup_amt}
-                          
                           required
                         />
                         <select
@@ -484,12 +495,6 @@ const EditSup = (props) => {
                               : "text-red-600 bg-white p-1 border border-slate-400 rounded"
                           }
                           value={info.sup_amt_type}
-                          onChange={(e) =>
-                            setInfo({
-                              ...info,
-                              sup_amt_type: e.target.value,
-                            })
-                          }
                         >
                           <option value="pay">Pay</option>
                           <option value="receive">Receive</option>
@@ -520,12 +525,15 @@ const EditSup = (props) => {
                               label="GST IN"
                               className="w-full"
                               size="small"
-                              inputProps={{maxLength: 10}}
+                              inputProps={{ maxLength: 15 }}
                               value={info.sup_gstin}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_gstin: e.target.value.replace(/[^A-Z0-9]/g, ""),
+                                  sup_gstin: e.target.value.replace(
+                                    /[^A-Z0-9]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -541,6 +549,7 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_sflat}
+                              inputProps={{ maxLength: 40 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -561,6 +570,7 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_sarea}
+                              inputProps={{ maxLength: 40 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -580,11 +590,14 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_spin}
-                              inputProps={{ maxLength: 6}}
+                              inputProps={{ maxLength: 6 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
-                                  sup_spin: e.target.value.replace(/[^0-9]/g, ""),
+                                  sup_spin: e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                  ),
                                 })
                               }
                             />
@@ -597,6 +610,7 @@ const EditSup = (props) => {
                               className="sec-1 w-full"
                               size="small"
                               value={info.sup_scity}
+                              inputProps={{ maxLength: 30 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -615,6 +629,7 @@ const EditSup = (props) => {
                               className="sec-2"
                               size="small"
                               value={info.sup_sstate}
+                              inputProps={{ maxLength: 30 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -654,6 +669,7 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_bflat}
+                                inputProps={{ maxLength: 40 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -673,6 +689,7 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_barea}
+                                inputProps={{ maxLength: 40 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -692,11 +709,14 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_bpin}
-                                inputProps={{maxLength: 6}}
+                                inputProps={{ maxLength: 6 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
-                                    sup_bpin: e.target.value.replace(/[^0-9]/g, ""),
+                                    sup_bpin: e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    ),
                                   })
                                 }
                               />
@@ -709,6 +729,7 @@ const EditSup = (props) => {
                                 className="sec-1"
                                 size="small"
                                 value={info.sup_bcity}
+                                inputProps={{ maxLength: 30 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -727,6 +748,7 @@ const EditSup = (props) => {
                                 className="sec-2"
                                 size="small"
                                 value={info.sup_bstate}
+                                inputProps={{ maxLength: 30 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,

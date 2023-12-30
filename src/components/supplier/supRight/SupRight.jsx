@@ -12,9 +12,8 @@ import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 
 const SupRight = (props) => {
-  const { supId, change, parties } = useContext(UserContext);
+  const { supId, change, parties, accountId } = useContext(UserContext);
   const [result, setResult] = useState([]);
-  const [supAmt, setSupAmt] = useState([]);
   const [supAmtType, setSupAmtType] = useState([]);
 
   useEffect(() => {
@@ -26,10 +25,13 @@ const SupRight = (props) => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchSup/${supId}`)
       .then((response) => {
-        setSupAmt(response.data[0].sup_amt);
         setSupAmtType(response.data[0].sup_amt_type);
       });
-  }, [supId, change]);
+    
+  }, [supId, change ]);
+
+
+
   return (
     <div className="supright">
       <div className="customer">

@@ -128,13 +128,15 @@ const Edit = (props) => {
     if (
       data.cust_name !== "" &&
       data.cust_number !== "" &&
-      data.cust_amt !== ""
+      data.cust_number > 9 &&
+      (data.cust_spin === "" || data.cust_spin.length > 5) &&
+      (data.cust_bpin === "" || data.cust_bpin.length > 5)
     ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.cust_name, data.cust_number, data.cust_amt]);
+  }, [data.cust_name, data.cust_number,data.cust_spin, data.cust_bpin]);
 
   return (
     <Box sx={{ width: 400 }} role="presentation">
@@ -507,6 +509,7 @@ const Edit = (props) => {
                           label="Enter amount"
                           className="sec-1"
                           size="small"
+                          
                           value={data.cust_amt}
                           required
                         />
@@ -570,6 +573,7 @@ const Edit = (props) => {
                               className="w-full"
                               size="small"
                               value={data.cust_sflat}
+                              inputProps={{ maxLength: 40}}
                               onChange={(e) =>
                                 setData({ ...data, cust_sflat: e.target.value.replace(
                                   /[^A-Z a-z 0-9 /]/g,
@@ -587,6 +591,7 @@ const Edit = (props) => {
                               className="w-full"
                               size="small"
                               value={data.cust_sarea}
+                              inputProps={{ maxLength: 40}}
                               onChange={(e) =>
                                 setData({ ...data, cust_sarea: e.target.value.replace(
                                   /[^A-Z a-z 0-9 /]/g,
@@ -616,6 +621,7 @@ const Edit = (props) => {
                               variant="outlined"
                               className="sec-1 w-full"
                               value={data.cust_scity}
+                              inputProps={{ maxLength: 30}}
                               onChange={(e) =>
                                 setData({ ...data, cust_scity: e.target.value.replace(
                                   /[^A-Z a-z]/g,
@@ -632,6 +638,7 @@ const Edit = (props) => {
                               className="sec-2"
                               size="small"
                               value={data.cust_sstate}
+                              inputProps={{ maxLength: 30}}
                               onChange={(e) =>
                                 setData({
                                   ...data,
@@ -670,6 +677,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_bflat}
+                                inputProps={{ maxLength: 40}}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -690,6 +698,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_barea}
+                                inputProps={{ maxLength: 40}}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -709,6 +718,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_bpin}
+                                inputProps={{ maxLength: 6}}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -728,6 +738,7 @@ const Edit = (props) => {
                                 className="sec-1"
                                 size="small"
                                 value={data.cust_bcity}
+                                inputProps={{ maxLength: 30}}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -745,6 +756,7 @@ const Edit = (props) => {
                                 variant="outlined"
                                 className="sec-2"
                                 size="small"
+                                inputProps={{ maxLength: 30}}
                                 value={data.cust_bstate}
                                 onChange={(e) =>
                                   setData({

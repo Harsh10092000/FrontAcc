@@ -101,16 +101,7 @@ const AddService = (props) => {
     setIsClicked(false);
   };
 
-  const [gstValue1, setGstValue1] = useState("GST %");
-  const [gstValue2, setGstValue2] = useState("");
-
-  const [hsnCode, setHsnCode] = useState("SAC Code");
-  const [hsnValue1, setHsnValue1] = useState("");
-
   const [searchValue, setSearchValue] = useState("");
-
-  const [customGst, setcustomGst] = useState("");
-  const [customeCess, setCustomeCess] = useState("");
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const [flag, setFlag] = useState(false);
   const [data, setData] = useState({
@@ -126,15 +117,11 @@ const AddService = (props) => {
     ser_cess: "",
     ser_acc_id: "",
   });
-  console.log("data : ", data);
-  const handleChange = (e) => {
-    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+
   data.ser_acc_id = accountId;
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      //data.ser_gst = gstValue1;
       console.log("data : ", data);
       await axios.post(
         import.meta.env.VITE_BACKEND + "/api/ser/sendData",
@@ -159,8 +146,7 @@ const AddService = (props) => {
       data.ser_name !== "" &&
       data.ser_unit !== null &&
       data.ser_unit !== "" &&
-      data.ser_price !== null &&
-      data.ser_price !== ""
+      data.ser_price > 0 
     ) {
       setSubmitDisabled(false);
     } else {
@@ -171,7 +157,7 @@ const AddService = (props) => {
   const gst_details =
     "(" +
     data.ser_igst / 2 +
-    "% CSTS + " +
+    "% CGST + " +
     data.ser_igst / 2 +
     "% SGST/UT GST ; " +
     data.ser_igst +
@@ -187,6 +173,8 @@ const AddService = (props) => {
     "% IGST ; " +
     data.ser_cess +
     "% CESS )";
+
+  const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
   return (
     <div>
@@ -254,13 +242,14 @@ const AddService = (props) => {
                     size="small"
                     name="ser_price"
                     required
+                    inputProps={{ maxLength: 10 }}
                     onChange={(e) =>
                       setData({
                         ...data,
-                        ser_price: e.target.value
-                          .replace(/^\.|[^0-9.]/g, "")
-                          .replace(/(\.\d*\.)/, "$1")
-                          .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                        ser_price: e.target.value.replace(
+                          numberValidation,
+                          "$1"
+                        ),
                       })
                     }
                     value={data.ser_price}
@@ -280,14 +269,8 @@ const AddService = (props) => {
                   <TextField
                     id="outlined-basic"
                     variant="outlined"
-                    
-                    
-                    value={
-                      data.ser_sac ? data.ser_sac : "SAC Code"
-                    }
-                    helperText={
-                      data.ser_sac_desc ? data.ser_sac_desc : ""
-                    }
+                    value={data.ser_sac ? data.ser_sac : "SAC Code"}
+                    helperText={data.ser_sac_desc ? data.ser_sac_desc : ""}
                     className="sec-1 cursor-pointer"
                     size="small"
                     InputProps={{
@@ -301,16 +284,7 @@ const AddService = (props) => {
                   <TextField
                     id="outlined-basic"
                     variant="outlined"
-                    // value={data.sac_igst}
-                    // helperText={"(" +
-                    // data.sac_cgst +
-                    // "% CGST + " +
-                    // data.sac_cgst +
-                    // "% SGST/UT GST ; " +
-                    // data.sac_igst +
-                    // "% IGST ; " +
-                    // data.sac_cess +
-                    // "% CESS )"}
+                    
                     value={data.ser_igst ? data.ser_igst + "%" : "GST %"}
                     helperText={
                       data.ser_cess !== ""
@@ -344,7 +318,8 @@ const AddService = (props) => {
                         }}
                       />
 
-                      {searchValue !== null && (searchValue !== "") === true &&
+                      {searchValue !== null &&
+                        (searchValue !== "") === true &&
                         sacCodes
                           .filter(
                             (code) =>
@@ -372,18 +347,7 @@ const AddService = (props) => {
                                   ser_sgst: filteredItem.sac_igst / 2,
                                 });
                                 setSearchValue("");
-                                // setHsnCode(filteredItem.ser_sac),
-                                //   setHsnValue1(filteredItem.ser_sac_desc),
-                                //   setGstValue1(filteredItem.sac_igst),
-                                //   setGstValue2(
-                                //     "( " +
-                                //       filteredItem.sac_igst / 2 +
-                                //       "% CGST + " +
-                                //       filteredItem.sac_igst / 2 +
-                                //       "% SGST/UT GST ; " +
-                                //       filteredItem.sac_igst +
-                                //       "% IGST )"
-                                //   );
+
                                 setIsClicked(false);
                               }}
                             >
@@ -431,17 +395,7 @@ const AddService = (props) => {
                                   type="radio"
                                   id="gst_on_selected_item"
                                   name="gst"
-                                  onChange={() => { 
-                                    // setGstValue1(item.label1),
-                                    //   setGstValue2(
-                                    //     "( " +
-                                    //       item.label1 +
-                                    //       "% CGST + " +
-                                    //       item.label2 +
-                                    //       "% SGST/UT GST ; " +
-                                    //       item.label3 +
-                                    //       "% IGST )"
-                                    //   );
+                                  onChange={() => {
                                     setIsClicked2(false);
                                     setData({
                                       ...data,
@@ -465,28 +419,21 @@ const AddService = (props) => {
                         variant="outlined"
                         className="sec-1"
                         required
-                        // onChange={(e) => {
-                        //   setcustomGst(e.target.value);
-                        // }}
                         inputProps={{ maxLength: 10 }}
                         value={data.ser_igst}
                         onChange={(e) => {
                           setData({
                             ...data,
-                            ser_igst: e.target.value
-                              .replace(/^\.|[^0-9.]/g, "")
-                              .replace(/(\.\d*\.)/, "$1")
-                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            ser_igst: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
                             ser_cgst:
-                              e.target.value
-                                .replace(/^\.|[^0-9.]/g, "")
-                                .replace(/(\.\d*\.)/, "$1")
-                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
                             ser_sgst:
-                              e.target.value
-                                .replace(/^\.|[^0-9.]/g, "")
-                                .replace(/(\.\d*\.)/, "$1")
-                                .replace(/^(\d*\.\d{0,2}).*$/, "$1") / 2,
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
                           });
                         }}
                       />
@@ -497,40 +444,23 @@ const AddService = (props) => {
                         variant="outlined"
                         className="sec-2"
                         required
-                        // onChange={(e) => {
-                        //   setCustomeCess(e.target.value);
-                        // }}
+                        
                         inputProps={{ maxLength: 10 }}
                         value={data.ser_cess}
                         onChange={(e) => {
                           setData({
                             ...data,
                             ser_cess: e.target.value
-                              .replace(/^\.|[^0-9.]/g, "")
-                              .replace(/(\.\d*\.)/, "$1")
-                              .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            .replace(
+                              numberValidation,
+                              "$1"
+                            ),
                           });
                         }}
                       />
                     </Box>
 
-                    {/* <Box className="box-sec">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault(),
-                            setData({
-                              ...data,
-                              ser_igst: customGst,
-                              ser_cgst: customGst / 2,
-                              ser_sgst: customGst / 2,
-                              ser_cess: customeCess,
-                            });
-                          setIsClicked2(false);
-                        }}
-                      >
-                        Add Custome Gst
-                      </button>
-                    </Box> */}
+                    
                   </>
                 ) : (
                   <div></div>

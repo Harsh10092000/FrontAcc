@@ -14,8 +14,7 @@ const PurLeft = () => {
   useEffect(() => {
     axios
       .get(
-        import.meta.env.VITE_BACKEND + `/api/purchase/fetchData/${accountId}`
-      )
+        import.meta.env.VITE_BACKEND + `/api/purchase/fetchData/${accountId}`)
       .then((response) => {
         setResult(response.data);
       });
@@ -35,7 +34,6 @@ const PurLeft = () => {
     setFilter2(e.target.value);
   };
 
-  
   const [searchValue, setSearchValue] = useState("");
   let sortedUsers = [...result];
 
@@ -57,29 +55,30 @@ const PurLeft = () => {
   //     return prev + +current.purchase_amt_paid;
   //   }, 0);
 
-    const [totalAmtPaid , setTotalAmtPaid] = useState(0);
+  const [totalAmtPaid, setTotalAmtPaid] = useState(0);
   const t = (id) => {
     console.log("id : ", id);
-    setTotalAmtPaid(result
-      .filter(
-        (filteredItem) =>
-          parseInt(filteredItem.purchase_pay_out_id) === parseInt(id)
-      )
-      .reduce(function (prev, current) {
-        return prev + +current.purchase_amt_paid;
-      }, 0));
- 
+    setTotalAmtPaid(
+      result
+        .filter(
+          (filteredItem) =>
+            parseInt(filteredItem.purchase_pay_out_id) === parseInt(id)
+        )
+        .reduce(function (prev, current) {
+          return prev + +current.purchase_amt_paid;
+        }, 0)
+    );
   };
   console.log("totalAmtPaid : ", totalAmtPaid);
   return (
     <div className="left bg-white shadow-lg w-full flex flex-col h-full">
       <div className="heading text-xl font-semibold">
         Purchase
-        <p className=" text-sky-600 num font-semibold">5</p>
+        <p className=" text-sky-600 num font-semibold">{result.length}</p>
       </div>
       <div className="flex justify-between p-5 border-b border-slate-300">
         <div className="give text-gray-500 flex gap-1 items-center">
-          Sales :<span className="text-gray-700 font-bold">₹ 20000</span>
+          Purchase :<span className="text-gray-700 font-bold">₹ {total_amt.toFixed(2)}</span>
           <IconArrowDownLeft className="text-green-600" />
         </div>
         <Link to="/purchaseForm">
@@ -165,7 +164,6 @@ const PurLeft = () => {
           )
           .filter((code) => {
             if (filter2 === "pur") {
-              
               return (
                 code.purchase_pay_out_id === null &&
                 code.purchase_re_id === null
@@ -178,12 +176,30 @@ const PurLeft = () => {
               return true;
             } else if (filter2 === "pp") {
               () => t(code.purchase_id);
-              console.log(code.purchase_pay_out_id , code.purchase_re_id , code.purchase_amt , totalAmtPaid);
-              return (code.purchase_pay_out_id === null && code.purchase_re_id === null && totalAmtPaid < parseFloat(code.purchase_amt));
+              console.log(
+                code.purchase_pay_out_id,
+                code.purchase_re_id,
+                code.purchase_amt,
+                totalAmtPaid
+              );
+              return (
+                code.purchase_pay_out_id === null &&
+                code.purchase_re_id === null &&
+                totalAmtPaid < parseFloat(code.purchase_amt)
+              );
             } else if (filter2 === "full") {
               () => t(code.purchase_id);
-              console.log(code.purchase_pay_out_id , code.purchase_re_id , code.purchase_amt , totalAmtPaid);
-              return (code.purchase_pay_out_id === null && code.purchase_re_id === null && totalAmtPaid === parseFloat(code.purchase_amt));
+              console.log(
+                code.purchase_pay_out_id,
+                code.purchase_re_id,
+                code.purchase_amt,
+                totalAmtPaid
+              );
+              return (
+                code.purchase_pay_out_id === null &&
+                code.purchase_re_id === null &&
+                totalAmtPaid === parseFloat(code.purchase_amt)
+              );
             }
           })
           .map((filteredItem, index) => (

@@ -17,40 +17,21 @@ const Receive = (props) => {
   const current_date = `${month}/${date}/${year}`;
   const todaysDate = dayjs(current_date);
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+
   const maxFileSize = 20000;
-  const [file, setFile] = useState("File Name");
-  const [fileExists, setFileExists] = useState(false);
+  const [file, setFile] = useState("");
+
   const [transactionDate, setTransactionDate] = useState(todaysDate);
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
 
-  const [res, setRes] = useState([]);
-  const [bal, setBal] = useState(null);
-  const [amtType, setAmtType] = useState("");
-  const [custAmt, setCustAmt] = useState(0);
-  useEffect(() => {
-    axios
-      .get(
-        import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
-      )
-      .then((response) => {
-        setCustAmt(response.data[0].cust_amt);
-        setAmtType(response.data[0].amt_type);
-      });
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchLastTran/${userId}`)
-      .then((response) => {
-        setRes(response.data);
-        setBal(response.data[0].balance);
-      });
-  }, [userId]);
 
   const [values, setValues] = useState({
     tran_date: "",
     tran_receive: "",
     tran_description: "",
     cnct_id: userId,
-    balance: "",
+    
   });
   const handleChange = (e) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -58,19 +39,7 @@ const Receive = (props) => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      if (amtType === "pay") {
-        if (bal === null) {
-          values.balance = custAmt - parseInt(values.tran_receive);
-        } else {
-          values.balance = bal - parseInt(values.tran_receive);
-        }
-      } else if (amtType === "receive") {
-        if (bal === null) {
-          values.balance = custAmt + parseInt(values.tran_receive);
-        } else {
-          values.balance = bal + parseInt(values.tran_receive);
-        }
-      }
+      
 
       const formData = new FormData();
       values.tran_date = filteredDate;
@@ -79,7 +48,7 @@ const Receive = (props) => {
       formData.append("tran_description", values.tran_description);
       formData.append("cnct_id", values.cnct_id);
       formData.append("tran_date", values.tran_date);
-      formData.append("balance", values.balance);
+    
       await axios.post(
         import.meta.env.VITE_BACKEND + "/api/auth/sendTran",
         formData
@@ -91,15 +60,60 @@ const Receive = (props) => {
     }
   };
 
+  const [formatError, setFormatError] = useState(false);
   const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    if (values.tran_receive !== "" && error === null) {
+    if (
+      values.tran_receive !== "" &&
+      values.tran_receive > 0 &&
+      error === null &&
+      fileSizeExceeded === false &&
+      formatError === false
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.tran_receive, error]);
+  }, [values.tran_receive, error, fileSizeExceeded, formatError]);
+
+  
+  const handleImage = (event) => {
+    setFile(event[0]);
+    var pattern = /image-*/;
+    if (!event[0].type.match(pattern)) {
+      setFileSizeExceeded(false);
+      setFormatError(true);
+    } else if (event[0].size > maxFileSize) {
+      setFileSizeExceeded(true);
+      setFormatError(false);
+      return;
+    } else {
+      setFileSizeExceeded(false);
+      setFormatError(false);
+    }
+  };
+
+  const [dragActive, setDragActive] = useState(false);
+  const handleDrag = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
+      handleImage(e.dataTransfer.files);
+    }
+  };
 
   return (
     <form className="block overflow-hidden">
@@ -126,10 +140,14 @@ const Receive = (props) => {
                 size="small"
                 name="tran_receive"
                 value={values.tran_receive}
+                inputProps={{ maxLength: 10 }}
                 onChange={(e) =>
                   setValues({
                     ...values,
-                    tran_receive: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                    tran_receive: e.target.value
+                      .replace(/^\.|[^0-9.]/g, "")
+                      .replace(/(\.\d*\.)/, "$1")
+                      .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                   })
                 }
                 required
@@ -164,7 +182,9 @@ const Receive = (props) => {
                     onChange={(newValue) => setTransactionDate(newValue)}
                     className="w-full"
                     maxDate={todaysDate}
-                    onError={(newError) => {setSubmitDisabled(true) , setError(newError)}}
+                    onError={(newError) => {
+                      setSubmitDisabled(true), setError(newError);
+                    }}
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -177,20 +197,16 @@ const Receive = (props) => {
                 id="file-1"
                 className="hidden sr-only w-full"
                 accept="image/x-png,image/gif,image/jpeg"
+                
                 onChange={(event) => {
-                  setFile(event.target.files[0]);
-                  setFileExists(true);
-
-                  const get_file_size = event.target.files[0];
-                  if (get_file_size.size > maxFileSize) {
-                    setFileSizeExceeded(true);
-                    return;
-                  } else {
-                    setFileSizeExceeded(false);
-                  }
+                  handleImage(event.target.files);
                 }}
               />
               <label
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
                 htmlFor="file-1"
                 id="file-1"
                 className="relative flex  items-center justify-center rounded-md text-center border border-dashed border-[#b6b6b6] py-8 px-16"
@@ -208,7 +224,7 @@ const Receive = (props) => {
                 </div>
               </label>
             </div>
-            {fileExists ? (
+            {file !== "" && file !== undefined ? (
               <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                 <div class="flex items-center justify-between">
                   <span class="truncate pr-3 text-base font-medium text-[#07074D]">
@@ -218,11 +234,11 @@ const Receive = (props) => {
                     class="text-[#07074D]"
                     onClick={(e) => {
                       e.preventDefault(), setFile("");
-                      setFileExists(false);
+                      setFormatError(false);
                       setFileSizeExceeded(false);
                     }}
                   >
-                    <IconX />
+                    <IconX className= " static h-4 w-4"/>
                   </button>
                 </div>
               </div>
@@ -230,11 +246,14 @@ const Receive = (props) => {
               <div></div>
             )}
             {fileSizeExceeded && (
-              <>
-                <p className="error">
-                  File size exceeded the limit of {maxFileSize / 1000} KB
-                </p>
-              </>
+              <p className="error">
+                File size exceeded the limit of {maxFileSize / 1000} KB
+              </p>
+            )}
+            {formatError && (
+              <p className="error">
+                Invalid Format
+              </p>
             )}
           </div>
         </div>
