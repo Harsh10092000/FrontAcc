@@ -12,7 +12,9 @@ const Login = () => {
     changeParties,
     changeInventory,
     changeBills,
-    changeUId
+    changeUId,
+    changeAccess,
+    changeUserType
   } = useContext(UserContext);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ const Login = () => {
         });
     }, [currentUser]);
   }
-  
+
   const fetchOtp = () => {
     try {
       setOtpdrop(true);
@@ -55,26 +57,29 @@ const Login = () => {
       if (otp == cotp) {
         try {
           userData = await login(email);
-          changeAccountId(userData[0].business_id);
-          changeUId(userData[0].log_id)
-
-          if (userData[0].log_user === 0) {
-            changeParties(userData[0].staff_parties);
-            changeBills(userData[0].staff_bills);
-            changeInventory(userData[0].staff_inventory);
-            
-          }
-          // if (userData) {
-          //   navigate("/");
-          // } else {
-          //   navigate("/settings/account");
-          // }
-          if (userData[0].business_id) {
-            navigate("/");
-          } else {
-            navigate("/addAccount");
-          }
           
+          if (parseInt(userData[0].access) !== 0) { 
+            changeAccountId(userData[0].business_id);
+            changeUId(userData[0].log_id);
+            changeAccess(userData[0].access)
+            changeUserType(userData[0].log_user)
+            if (userData[0].log_user === 0) {
+              changeParties(userData[0].staff_parties);
+              changeBills(userData[0].staff_bills);
+              changeInventory(userData[0].staff_inventory);
+              
+            }
+
+            if (userData[0].business_id) {
+              navigate("/");
+            } else {
+              navigate("/addAccount"); 
+            }
+          } else {
+            console.log("account restricted")
+            //localStorage.setItem("user", JSON.stringify(""));
+            navigate("/settings/Account"); //navigate to restridted msg page
+          }
         } catch (err) {
           console.log(err);
         }

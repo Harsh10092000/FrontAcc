@@ -12,13 +12,16 @@ export const AuthContextProvider = ({ children }) => {
       import.meta.env.VITE_BACKEND + "/api/log/checklog",
       { inputs }
     );
-    const userData = res.data;
+    let userData = res.data;
     console.log(userData);
     setCurrentUser(res.data);
     return userData;
   };
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(currentUser));
+    
+    
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    
   }, [currentUser]);
   return (
     <AuthContext.Provider value={{ currentUser, login }}>

@@ -409,7 +409,7 @@ const EditProduct = (props) => {
                       </div>
                     </label>
                   </div>
-                  {file !== "" && file !== undefined ? (
+                  {file !== "" && file !== undefined && file !== null ? (
                     <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                       <div class="flex items-center justify-between">
                         <span class="truncate pr-3 text-base font-medium text-[#07074D]">

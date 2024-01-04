@@ -791,6 +791,8 @@ const SalesForm = () => {
 
   const [amountPaid, setAmountPaid] = useState(0);
 
+
+
   const [saleData, setSaleData] = useState({
     cust_cnct_id: "",
     sale_prefix: "",

@@ -230,75 +230,91 @@ function useMenuAnimation(isOpen) {
 }
 const Navbar = () => {
   const navigate = useNavigate();
-  const { change, parties, inventory, bills } = useContext(UserContext);
+  const { parties, inventory, bills , access } = useContext(UserContext);
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const scope = useMenuAnimation(isOpen);
+
+  const parties_validation = parties !== 0 && parseInt(access) !== 0;
+  const inventory_validation = inventory !== 0 && parseInt(access) !== 0;
+  const bills_validation = bills !== 0 && parseInt(access) !== 0;
+  
   const items = [
 
-    parties !== 0 && 
+     
     {
       name: "Customer",
       icon: <IconUser />,
-      linkto: "/",
+      linkto: "/" ,
+      user_access: parties_validation,
     } ,
-    parties !== 0 && 
+     
     {
       name: "Supplier",
       icon: <IconTruckLoading />,
-      linkto: "/supplier",
+      linkto:"/supplier",
+      user_access: parties_validation,
     },
     
-    inventory !== 0 ?
+    
     {
       name: "Items",
       icon: <IconServer />,
       linkto: "/products",
       link2: "/services",
-    } 
-    : "",
-    bills !== 0 && 
+      user_access: inventory_validation,
+    } ,
+    
     {
       name: "CashBook",
       icon: <IconBuildingBank />,
       linkto: "/cashbook",
+      user_access: bills_validation,
     },
-    bills !== 0 && 
+    
     {
       name: "Expenses",
       icon: <IconCreditCard />,
       linkto: "/expenses",
+      user_access: bills_validation,
     },
-    bills !== 0 && 
+    
     {
       name: "Sales",
       icon: <IconShoppingCart />,
       linkto: "/sales",
       link2: "/salesForm",
+      user_access: bills_validation,
     },
-    bills !== 0 && 
+    
     {
       name: "Purchase",
       icon: <IconTruckDelivery />,
       linkto: "/purchase",
       link2: "/purchaseForm",
+      user_access: bills_validation,
     } ,
     
     {
       name: "Reports",
       icon: <IconReportAnalytics />,
       linkto: "/custReport",
+      user_access: true,
     },
     {
       name: "Staff",
       icon: <IconUsers />,
       linkto: "/staff",
+      user_access: parseInt(access) === 1 ? true : false,
     },
+
     {
       name: "Settings",
       icon: <IconSettings />,
       linkto: "/settings/account",
+      user_access: true,
     },
+
     // {
     //   name: "Account",
     //   icon: <IconBriefcase />,
@@ -330,7 +346,7 @@ const Navbar = () => {
                   : ""
               }
               key={index}
-              to={item.linkto}
+              to={item.user_access ? item.linkto : "*" }
             >
               
               <div className="item flex flex-col items-center gap-1 justify-center cursor-pointer">

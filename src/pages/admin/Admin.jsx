@@ -4,9 +4,10 @@ import { Box, TextField } from "@mui/material";
 import { UserContext } from "../../context/UserIdContext";
 
 const Admin = () => {
-  const { changeChange } = useContext(UserContext);
+  const { changeChange , change } = useContext(UserContext);
   const [accData, setAccData] = useState([]);
   const [planData, setPlanData] = useState([]);
+  const [allCouponData, setAllCouponData] = useState([]);
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/ad/fetch`)
@@ -18,21 +19,44 @@ const Admin = () => {
       .then((response) => {
         setPlanData(response.data);
       });
-  }, []);
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ad/fetchCoupon`)
+      .then((response) => {
+        setAllCouponData(response.data);
+      });
+  }, [change]);
 
   const restrictCompany = (id) => {};
 
   const [businessId, setBusinessId] = useState(0);
   const [data, setData] = useState({
-    restrict: "restrict",
+    restrict: 0,
   });
-  const restrictAcc = async (e) => {
-    e.preventDefault();
-    console.log(businessId);
+  const [data1, setData1] = useState({
+    unrestrict: 1,
+  });
+  const restrictAcc = async (businessId) => {
+    
+    
     try {
       await axios.put(
         import.meta.env.VITE_BACKEND + `/api/ad/restrictAcc/${businessId}`,
         data
+      );
+      changeChange();
+      //props.snacku();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const unrestrictAcc = async (businessId) => {
+    
+    console.log(businessId);
+    try {
+      await axios.put(
+        import.meta.env.VITE_BACKEND + `/api/ad/unrestrictAcc/${businessId}`,
+        data1
       );
       changeChange();
       //props.snacku();
@@ -85,13 +109,72 @@ const Admin = () => {
     }
   };
 
+
+
+  const [addCouponData, setAddCouponData] = useState({
+    offer_code: "",
+    offer_value: "",
+    offer_type: "",
+  });
+
+  const [updatedCouponData , setUpdatedCouponData] = useState({
+    offer_code: "",
+    offer_value: "",
+    offer_type: "",
+    code_id: "",
+  });
+
+  const addCoupon = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        import.meta.env.VITE_BACKEND + `/api/ad/addCoupon`,
+        addCouponData
+      );
+      changeChange();
+      //props.snacku();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const editCoupon = async (codeId) => {
+    updatedCouponData.code_id = codeId
+    e.preventDefault();
+    try {
+      await axios.put(
+        import.meta.env.VITE_BACKEND + `/api/ad/updateCoupon`,
+        updatedCouponData
+      );
+      changeChange();
+      //props.snacku();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const delCoupon = async (codeId) => {
+    
+    try {
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/ad/delCoupon/${codeId}`
+      );
+      changeChange();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
   return (
     <div>
       {accData.map((item) => (
         <div className="flex gap-6">
           <div>{item.business_name}</div>
+          <div>{item.business_id}</div>
           <div onClick={() => setBusinessId(item.business_id)}>View</div>
-          <div onClick={restrictAcc}>Restrict</div>
+          <div onClick={(e) => (e.preventDefault() , restrictAcc(item.business_id))}>Restrict</div>
+          <div onClick={(e) => (e.preventDefault() , unrestrictAcc(item.business_id))}>Unrestrict</div>
         </div>
       ))}
 
@@ -136,7 +219,7 @@ const Admin = () => {
                 plan_dur: e.target.value,
               })
             }
-            addPayPlan={addPayPlan.plan_dur}
+            value={addPayPlan.plan_dur}
             required
           />
         </Box>
@@ -164,6 +247,75 @@ const Admin = () => {
           <button onClick={addPlan}>Submit</button>
         </div>
       </div>
+
+      <div className=" w-80">
+        <div>Create Coupon code</div>
+        <Box className="box-sec">
+          <TextField
+            label="Offer Code"
+            id="outlined-basic"
+            variant="outlined"
+            className="w-full m-0"
+            size="small"
+            name="offer_code"
+            type="text"
+            onChange={(e) =>
+              setAddCouponData({
+                ...addCouponData,
+                offer_code: e.target.value,
+              })
+            }
+            value={addCouponData.offer_code}
+            required
+          />
+        </Box>
+
+        
+        <Box className="flex">
+          <select
+            className=" py-[8.5px] border"
+            name="discount_unit"
+            onChange={(e) =>
+              setAddCouponData({ ...addCouponData, offer_type: e.target.value })
+            }
+            defaultValue="amount"
+          >
+            <option value="amount">Amount</option>
+            <option value="percentage">Percentage</option>
+          </select>
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            size="small"
+            value={addCouponData.offer_value}
+            onChange={(e) =>
+              setAddCouponData({
+                ...addCouponData,
+                offer_value: e.target.value.replace(/\D/g, ""),
+              })
+            }
+            name="offer_value"
+            className=" w-[35%]"
+            required
+          />
+        </Box>
+        <div>
+          <button onClick={addCoupon}>Submit</button>
+        </div>
+      
+      </div>
+
+      <div className="p-3">
+        {allCouponData.map((item) => (
+          <div className="flex gap-5  ">
+            <div>{item.code_name} Months</div>
+            <div>{ item.code_type === "amount" ? "Rs " + item.code_value : item.code_value + " %"} </div>
+            <button onClick={() => editCoupon(item.code_id)}>Edit</button>
+            <button onClick={() => delCoupon(item.code_id)}>Delete</button>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 };

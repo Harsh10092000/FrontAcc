@@ -95,13 +95,15 @@ const MainLeft = (props) => {
              parseFloat(total[0].payTotal).toFixed(2) : 0
             }
           </span>
+         
           <IconArrowUpRight className="text-red-600" />
         </div>
         <div className="give text-gray-500 flex gap-1 items-center">
           Total Recieved:
           <span className="text-gray-700 font-bold">
-            ₹ {total.length && total[0].payRecieve !== null > 0 ?  parseFloat(total[0].receiveTotal).toFixed(2) : 0}
+            ₹ {total.length > 0 && total[0].receiveTotal !== null ? parseFloat(total[0].receiveTotal).toFixed(2) : 0}
           </span>
+          {console.log("total[0].receiveTotal : " , total)}
           <IconArrowDownLeft className="text-green-600" />
         </div>
         <button

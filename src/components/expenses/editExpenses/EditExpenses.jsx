@@ -514,11 +514,11 @@ const EditExpenses = (props) => {
                                     expensesCategoryResult.find(
                                       (category) =>
                                         category.category_name.toLowerCase() ===
-                                        e.target.value.toLowerCase()
+                                        e.target.value.toLowerCase().replace(/[^A-Z a-z]/g, "")
                                     )
                                       ? setAddNewCategoryError(true)
                                       : (setAddNewCategoryError(false),
-                                        e.target.value)
+                                        e.target.value.replace(/[^A-Z a-z]/g, ""))
                                   )
                                 }
                                 helperText={
@@ -570,11 +570,11 @@ const EditExpenses = (props) => {
                                     expensesCategoryResult.find(
                                       (category) =>
                                         category.category_name ===
-                                        e.target.value
+                                        e.target.value.replace(/[^A-Z a-z]/g, "")
                                     )
                                       ? setEditCategoryError(true)
                                       : (setEditCategoryError(false),
-                                        e.target.value)
+                                        e.target.value.replace(/[^A-Z a-z]/g, ""))
                                   )
                                 }
                                 helperText={
@@ -848,15 +848,16 @@ const EditExpenses = (props) => {
                               variant="outlined"
                               className="w-full "
                               size="small"
+                              value={expenseList}
                               onChange={(e) =>
                                 setExpenseList(
                                   expensesListResult.find(
                                     (item) =>
-                                      item.expense_name === e.target.value
+                                      item.expense_name === e.target.value.replace(/[^A-Z a-z]/g, "")
                                   )
                                     ? setAddNewExpensesItemError(true)
                                     : (setAddNewExpensesItemError(false),
-                                      e.target.value)
+                                      e.target.value.replace(/[^A-Z a-z]/g, ""))
                                 )
                               }
                               helperText={
@@ -873,7 +874,8 @@ const EditExpenses = (props) => {
                               variant="outlined"
                               className="w-full "
                               size="small"
-                              onChange={(e) => setPrice(e.target.value)}
+                              value={price}
+                              onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ""))}
                               required
                             />
                           </Box>
@@ -1088,11 +1090,11 @@ const EditExpenses = (props) => {
                                       setupdatedExpenseItemName(
                                         expensesListResult.find(
                                           (item) =>
-                                            item.expense_name === e.target.value
+                                            item.expense_name === e.target.value.replace(/[^A-Z a-z]/g, "")
                                         )
                                           ? setEditExpensesItemError(true)
                                           : (setEditExpensesItemError(false),
-                                            e.target.value)
+                                            e.target.value.replace(/[^A-Z a-z]/g, ""))
                                       )
                                     }
                                     helperText={
@@ -1106,13 +1108,13 @@ const EditExpenses = (props) => {
                                   <TextField
                                     label="Enter Price"
                                     value={updatedExpensePrice}
-                                    //name="enter-category-name"
+                                    
                                     id="outlined-basic"
                                     variant="outlined"
                                     className="w-full "
                                     size="small"
                                     onChange={(e) =>
-                                      setUpdatedExpensePrice(e.target.value)
+                                      setUpdatedExpensePrice(e.target.value.replace(/[^0-9]/g, ""))
                                     }
                                     required
                                   />

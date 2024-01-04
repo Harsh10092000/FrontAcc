@@ -428,8 +428,10 @@ const AddExpense = (props) => {
                               variant="outlined"
                               className="w-full "
                               size="small"
+                              inputProps={{ maxLength: 20 }}
+                              value={temp}
                               onChange={(e) => {
-                                setTemp(e.target.value), setPrefixNo(1);
+                                setTemp(e.target.value.replace(/[^A-Z a-z]/g, "")), setPrefixNo(1);
                               }}
                               required
                             />
@@ -561,17 +563,18 @@ const AddExpense = (props) => {
                                 variant="outlined"
                                 className="w-full "
                                 value={newCategoryValue}
+                                inputProps={{ maxLength: 20 }}
                                 size="small"
                                 onChange={(e) =>
                                   setNewCategoryValue(
                                     result.find(
                                       (category) =>
                                         category.category_name.toLowerCase() ===
-                                        e.target.value.toLowerCase()
+                                        e.target.value.replace(/[^A-Z a-z]/g, "").toLowerCase()
                                     )
                                       ? setAddNewCategoryError(true)
                                       : (setAddNewCategoryError(false),
-                                        e.target.value)
+                                        e.target.value.replace(/[^A-Z a-z]/g, ""))
                                   )
                                 }
                                 helperText={
@@ -623,11 +626,11 @@ const AddExpense = (props) => {
                                     result.find(
                                       (category) =>
                                         category.category_name ===
-                                        e.target.value
+                                        e.target.value.replace(/[^A-Z a-z]/g, "").toLowerCase()
                                     )
                                       ? setEditCategoryError(true)
                                       : (setEditCategoryError(false),
-                                        e.target.value)
+                                        e.target.value.replace(/[^A-Z a-z]/g, ""))
                                   )
                                 }
                                 helperText={
@@ -903,16 +906,17 @@ const AddExpense = (props) => {
                               variant="outlined"
                               className="w-full "
                               size="small"
+                              value={expenseList}
                               //onChange={(e) => setExpenseList(e.target.value)}
                               onChange={(e) =>
                                 setExpenseList(
                                   result2.find(
                                     (item) =>
-                                      item.expense_name === e.target.value
+                                      item.expense_name === e.target.value.replace(/[^A-Z a-z]/g, "")
                                   )
                                     ? setAddNewExpensesItemError(true)
                                     : (setAddNewExpensesItemError(false),
-                                      e.target.value)
+                                      e.target.value.replace(/[^A-Z a-z]/g, ""))
                                 )
                               }
                               helperText={
@@ -929,7 +933,8 @@ const AddExpense = (props) => {
                               variant="outlined"
                               className="w-full "
                               size="small"
-                              onChange={(e) => setPrice(e.target.value)}
+                              value={price}
+                              onChange={(e) => setPrice(e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1") )}
                               required
                             />
                           </Box>
@@ -1071,7 +1076,7 @@ const AddExpense = (props) => {
                                 <Box className="box-sec ">
                                   <TextField
                                     label="Enter Name of Expense"
-                                    //name="enter-category-name"
+                                    
                                     value={updatedExpenseItemName}
                                     id="outlined-basic"
                                     variant="outlined"
@@ -1081,11 +1086,11 @@ const AddExpense = (props) => {
                                       setupdatedExpenseItemName(
                                         result2.find(
                                           (item) =>
-                                            item.expense_name === e.target.value
+                                            item.expense_name === e.target.value.replace(/[^0-9]/g, "")
                                         )
                                           ? setEditExpensesItemError(true)
                                           : (setEditExpensesItemError(false),
-                                            e.target.value)
+                                            e.target.value.replace(/[^0-9]/g, ""))
                                       )
                                     }
                                     helperText={
@@ -1105,7 +1110,7 @@ const AddExpense = (props) => {
                                     className="w-full "
                                     size="small"
                                     onChange={(e) =>
-                                      setUpdatedExpensePrice(e.target.value)
+                                      setUpdatedExpensePrice(e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"))
                                     }
                                     required
                                   />

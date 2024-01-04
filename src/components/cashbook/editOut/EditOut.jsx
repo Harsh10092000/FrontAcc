@@ -258,7 +258,7 @@ const EditOut = (props) => {
               </label>
             </div>
 
-            {file !== "" && file !== undefined ? (
+            {file !== "" && file !== undefined && file !== null ? (
               <div className=" rounded-md bg-[#F5F7FB] py-4 px-8">
                 <div className="flex items-center justify-between">
                   <span className="truncate pr-3 text-base font-medium text-[#07074D]">

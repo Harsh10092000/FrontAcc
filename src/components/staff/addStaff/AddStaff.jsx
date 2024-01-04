@@ -3,23 +3,9 @@ import "./addstaff.scss";
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const AddStaff = (props) => {
-  // const mailOptions = {
-  //   from: 'harshgupta.calinfo@gmail.com',
-  //   to: 'harshwork1009@gmail.com',
-  //   subject: 'Sending Email using Node.js',
-  //   text: 'That was easy!'
-  // };
-
-  // transporter.sendMail(mailOptions, function(error, info){
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log('Email sent: ' + info.response);
-  //   }
-  // });
-
   const { changeChange, accountId, uId } = useContext(UserContext);
   const [values, setValues] = useState({
     staff_name: "",
@@ -41,19 +27,6 @@ const AddStaff = (props) => {
   values.staff_bills = bills !== 0 ? bills : 0;
   values.staff_owner_id = uId;
   const [err, setErr] = useState(null);
-  const handleClick = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        import.meta.env.VITE_BACKEND + "/api/st/sendData",
-        values
-      );
-      changeChange();
-      props.snack();
-    } catch (err) {
-      setErr(err.response.data);
-    }
-  };
 
   // const [on, setOn] = useState(false);
 
@@ -69,11 +42,39 @@ const AddStaff = (props) => {
   //   }
   // }, [on]);
 
+  const [cotp, setCotp] = useState(0);
+  const fetchOtp = async (e) => {
+    e.preventDefault();
+    try {
+      axios
+        .get(
+          import.meta.env.VITE_BACKEND + `/api/st/sendOtp/${values.staff_email}`
+        )
+        .then((res) => {
+          setCotp(res.data);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [otp, setOtp] = useState("");
+
+  const [validateOtp, setValidateOtp] = useState(false);
+  useEffect(() => {
+    if (cotp == otp) {
+      setValidateOtp(true);
+    } else {
+      setValidateOtp(false);
+    }
+  }, [otp]);
+
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
     if (
       values.staff_name !== "" &&
       values.staff_email !== "" &&
+      validateOtp === true &&
       (values.staff_parties !== 0 ||
         values.staff_inventory !== 0 ||
         values.staff_bills !== 0)
@@ -88,32 +89,20 @@ const AddStaff = (props) => {
     values.staff_parties,
     values.staff_inventory,
     values.staff_bills,
+    validateOtp,
   ]);
 
-  const [cotp, setCotp] = useState(0);
-  const fetchOtp = async (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
     try {
-      axios
-        .get(
-          import.meta.env.VITE_BACKEND + `/api/st/sendOtp/${values.staff_email}`
-        )
-        .then((res) => {
-          //console.log(res.data)
-          setCotp(res.data);
-        });
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/st/sendData",
+        values
+      );
+      changeChange();
+      props.snack();
     } catch (err) {
-      console.log(err);
-    }
-  };
-
-  
-
-  const checkOtp = (otp) => {
-    if (cotp == otp) {
-      console.log("match : ", otp);
-    } else {
-      console.log("no match : ", otp);
+      setErr(err.response.data);
     }
   };
 
@@ -164,19 +153,15 @@ const AddStaff = (props) => {
                 className="w-full"
                 size="small"
                 type="email"
-                //inputProps={{ maxLength: 10, minLength: 10 }}
-                // onChange={(e) =>
-                //   setValues({
-                //     ...values,
-                //     staff_number: e.target.value.replace(/\D/g, ""),
-                //   })
-                // }
                 onChange={(e) =>
                   setValues({
                     ...values,
                     //staff_email: e.target.value.replace(/[^A-Z a-z 0-9]/g, "").replace(/@[A-Za-z]/g, "").replace(/.[A-Za-z]/g, ""),
                     //staff_email: e.target.value.replace(/^\.|[^0-9A-Z a-z@.]/g, "").replace(/(\@\d*\@)/, "$1").replace(/^(\d*\@\d{0,2}).*$/, "$1"),
-                    staff_email : e.target.value.replace(/^\@|[^0-9A-Z a-z.@]/g, "").replace(/(\@\d*\@)/, "$1").replace(/^(\d*\@\d{0,2})@*$/, "$1"),
+                    staff_email: e.target.value
+                      .replace(/^\@|[^0-9A-Z a-z.@]/g, "")
+                      .replace(/(\@\d*\@)/, "$1")
+                      .replace(/^(\d*\@\d{0,2})@*$/, "$1"),
                   })
                 }
                 value={values.staff_email}
@@ -185,26 +170,40 @@ const AddStaff = (props) => {
               />
             </Box>
 
-            <button onClick={fetchOtp}>send otp</button>
-            <div>{cotp}</div>
-
             {cotp && (
               <Box className="box-sec">
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  label="Email"
+                  label="OTP"
                   name="staff_email"
                   className="w-full"
                   size="small"
                   type="text"
-                  onChange={(e) => checkOtp(e.target.value)}
-                  //value={}
+                  onChange={(e) => setOtp(e.target.value)}
                   required
+                  disabled={cotp == otp ? true : false}
+                  inputProps={{ maxLength: 6 }}
+                  InputProps={
+                    cotp == otp
+                      ? {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              Verified
+                            </InputAdornment>
+                          ),
+                        }
+                      : ""
+                  }
+                  helperText={
+                    otp.length > 5 && (cotp == otp) === false ? "Wrong OTP" : ""
+                  }
                 />
               </Box>
             )}
 
+            <button onClick={fetchOtp}>send otp</button>
+            <div>{cotp}</div>
             <div>Permissions</div>
 
             {/* <div>
@@ -219,108 +218,124 @@ const AddStaff = (props) => {
               </div>
             </div> */}
 
-            <Box>
+            {validateOtp ? (
               <div>
-                <div>Icon</div>
-                <div>Parties</div>
-              </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_1">View Entries & Send Reminders</label>
-                <input
-                  type="radio"
-                  id="pr_1"
-                  name="parties"
-                  checked={parties === 1 ? true : false}
-                  onChange={(e) => setParties(1)}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_2">Add & View: Entries/Parties</label>
-                <input
-                  type="radio"
-                  id="pr_2"
-                  name="parties"
-                  checked={parties === 2 ? true : false}
-                  onClick={(e) => setParties(2)}
-                />
-              </div>
+                <Box>
+                  <div>
+                    <div>Icon</div>
+                    <div>Parties</div>
+                    <div>
+                      <div onClick={() => setParties(0)}>Remove</div>
+                    </div>
+                  </div>
+                  <div>Select what Staff can do</div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="pr_1">View Entries & Send Reminders</label>
+                    <input
+                      type="radio"
+                      id="pr_1"
+                      name="parties"
+                      checked={parties === 1 ? true : false}
+                      onChange={(e) => setParties(1)}
+                    />
+                  </div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="pr_2">Add & View: Entries/Parties</label>
+                    <input
+                      type="radio"
+                      id="pr_2"
+                      name="parties"
+                      checked={parties === 2 ? true : false}
+                      onClick={(e) => setParties(2)}
+                    />
+                  </div>
 
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_3">
-                  Add, View, Edit & Delete: Entries/Parties & Reports
-                </label>
-                <input
-                  type="radio"
-                  id="pr_3"
-                  name="parties"
-                  checked={parties === 3 ? true : false}
-                  onClick={(e) => setParties(3)}
-                />
-              </div>
-            </Box>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="pr_3">
+                      Add, View, Edit & Delete: Entries/Parties & Reports
+                    </label>
+                    <input
+                      type="radio"
+                      id="pr_3"
+                      name="parties"
+                      checked={parties === 3 ? true : false}
+                      onClick={(e) => setParties(3)}
+                    />
+                  </div>
+                </Box>
 
-            <Box>
-              <div>
-                <div>Icon</div>
-                <div> Inventory</div>
-              </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="in_1">Add Items & Stock In/Out</label>
-                <input
-                  type="radio"
-                  checked={inventory === 1 ? true : false}
-                  id="in_1"
-                  name="inventory"
-                  onChange={(e) => setInventory(1)}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="in_2">
-                  Add, Edit & Delete: Items, Stock In/Out
-                </label>
-                <input
-                  type="radio"
-                  checked={inventory === 2 ? true : false}
-                  id="in_2"
-                  name="inventory"
-                  onClick={(e) => setInventory(2)}
-                />
-              </div>
-            </Box>
+                <Box>
+                  <div>
+                    <div>Icon</div>
+                    <div> Inventory</div>
+                    <div>
+                      <div onClick={() => setInventory(0)}>Remove</div>
+                    </div>
+                  </div>
+                  <div>Select what Staff can do</div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="in_1">Add Items & Stock In/Out</label>
+                    <input
+                      type="radio"
+                      checked={inventory === 1 ? true : false}
+                      id="in_1"
+                      name="inventory"
+                      onChange={(e) => setInventory(1)}
+                    />
+                  </div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="in_2">
+                      Add, Edit & Delete: Items, Stock In/Out
+                    </label>
+                    <input
+                      type="radio"
+                      checked={inventory === 2 ? true : false}
+                      id="in_2"
+                      name="inventory"
+                      onClick={(e) => setInventory(2)}
+                    />
+                  </div>
+                </Box>
 
-            <Box>
-              <div>
-                <div>Icon</div>
-                <div> Bills</div>
+                <Box>
+                  <div>
+                    <div>Icon</div>
+                    <div> Bills</div>
+                    <div>
+                      <div onClick={() => setBills(0)}>Remove</div>
+                    </div>
+                  </div>
+                  <div>Select what Staff can do</div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="bill_1">
+                      View & Add for All Bills (Sales/Purchase/Returns) &
+                      Cashbook
+                    </label>
+                    <input
+                      type="radio"
+                      id="bill_1"
+                      name="bills"
+                      checked={bills === 1 ? true : false}
+                      onChange={(e) => setBills(1)}
+                    />
+                  </div>
+                  <div className="flex gap-2 p-2">
+                    <label htmlFor="bill_2">
+                      Add, Edit & Delete for Bills, Cashbook & Reports
+                    </label>
+                    <input
+                      type="radio"
+                      checked={bills === 2 ? true : false}
+                      id="bill_2"
+                      name="bills"
+                      onClick={(e) => setBills(2)}
+                    />
+                  </div>
+                </Box>
               </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="bill_1">
-                  View & Add for All Bills (Sales/Purchase/Returns) & Cashbook
-                </label>
-                <input
-                  type="radio"
-                  id="bill_1"
-                  name="bills"
-                  checked={bills === 1 ? true : false}
-                  onChange={(e) => setBills(1)}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="bill_2">
-                  Add, Edit & Delete for Bills, Cashbook & Reports
-                </label>
-                <input
-                  type="radio"
-                  checked={bills === 2 ? true : false}
-                  id="bill_2"
-                  name="bills"
-                  onClick={(e) => setBills(2)}
-                />
-              </div>
-            </Box>
+            ) : (
+              ""
+            )}
           </Box>
         </div>
       </div>

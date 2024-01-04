@@ -73,7 +73,7 @@ const AddSupplier = (props) => {
       values.sup_number !== "" &&
       values.sup_number.length > 9 &&
       values.sup_amt !== "" &&
-      valueslues.sup_amt > 0 &&
+      values.sup_amt > 0 &&
       values.sup_amt_type !== "" &&
       (values.sup_spin === "" || values.sup_spin.length > 5) &&
       (values.sup_bpin === "" || values.sup_bpin.length > 5)

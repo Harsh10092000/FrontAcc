@@ -38,6 +38,7 @@ const EditPay = (props) => {
     tran_description: "",
     tran_date: "",
     balance: "",
+    tran_bill: "",
   });
   const [skeleton, setSkeleton] = useState(true);
   useEffect(() => {
@@ -51,6 +52,7 @@ const EditPay = (props) => {
           tran_description: response.data[0].tran_description,
           tran_date: response.data[0].tran_date,
           balance: response.data[0].balance,
+          tran_bill: response.data[0].tran_bill,
         });
         setFile(response.data[0].tran_bill);
         setSkeleton(false);
@@ -114,10 +116,12 @@ const EditPay = (props) => {
     try {
       flag ? (data.tran_date = filteredDate) : "";
       const formData = new FormData();
+
       formData.append("image", file);
       formData.append("tran_pay", data.tran_pay);
       formData.append("tran_description", data.tran_description);
       formData.append("tran_date", data.tran_date);
+      
 
       await axios.put(
         import.meta.env.VITE_BACKEND + `/api/auth/updateTran/${tranId}`,
@@ -129,6 +133,9 @@ const EditPay = (props) => {
       console.log(err);
     }
   };
+
+  
+
   const [imgOpen, setImgOpen] = useState(false);
   const handleImgOpen = () => {
     setImgOpen(true);
@@ -615,7 +622,7 @@ const EditPay = (props) => {
                               </div>
                             </label>
                           </div>
-                          {file !== "" && file !== undefined ? (
+                          {file !== "" && file !== undefined && file !== null ? (
                             <div class=" rounded-md bg-[#F5F7FB] py-4 px-8">
                               <div class="flex items-center justify-between">
                                 <span class="truncate pr-3 text-base font-medium text-[#07074D]">

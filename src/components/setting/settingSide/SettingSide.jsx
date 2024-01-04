@@ -1,12 +1,8 @@
 import {
-  Icon3dCubeSphere,
   IconBrandDatabricks,
   IconBriefcase,
-  IconBuildingBank,
   IconFileCertificate,
   IconLogout,
-  IconShoppingCart,
-  IconTruckLoading,
 } from "@tabler/icons-react";
 import { IconUser } from "@tabler/icons-react";
 import React from "react";

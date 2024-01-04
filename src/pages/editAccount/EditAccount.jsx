@@ -3,33 +3,15 @@ import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Navbar from "../../components/navbar/Navbar";
-import "./account.scss";
-import { IconAlertOctagonFilled, IconX } from "@tabler/icons-react";
+//import "./account.scss";
+import { IconX } from "@tabler/icons-react";
 import axios from "axios";
 import { UserContext } from "../../context/UserIdContext";
-
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export default function AddAccount() {
-  const {
-    changeChange,
-    change,
-    accountId,
-    changeAccountId,
-    changeUser,
-    changeParties,
-    changeInventory,
-    changeBills,
-    parties,
-    uId,
-  } = useContext(UserContext);
+export default function EditAccount() {
+  const { changeChange, changeAccountId, accountId, uId } =
+    useContext(UserContext);
   const navigate = useNavigate();
   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
   const [fileSizeExceeded1, setFileSizeExceeded1] = useState(false);
@@ -38,158 +20,112 @@ export default function AddAccount() {
   const [file, setFile] = useState("");
   const [file1, setFile1] = useState("");
 
-  // const onChange = (e) => {
-  //   setFile(e.target.files[0]);
-  //   setFilename(e.target.files[0].name);
-  //   console.log(file);
-  //   console.log(filename);
-  // };
-
-  const [data, setData] = useState({
-    business_name: "",
-    business_address: "",
-    business_gst: "",
-    business_type: "",
-    business_nature: "",
-    business_bank_name: "",
-    business_payee_name: "",
-    business_acc_no: "",
-    business_ifsc_code: "",
-    user_id: "",
-  });
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-  data.user_id = uId;
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("business", file);
-      formData.append("signature", file1);
-      formData.append("business_name", data.business_name);
-      formData.append("business_address", data.business_address);
-      formData.append("business_gst", data.business_gst);
-      formData.append("business_type", data.business_type);
-      formData.append("business_nature", data.business_nature);
-      formData.append("business_bank_name", data.business_bank_name);
-      formData.append("business_payee_name", data.business_payee_name);
-      formData.append("business_acc_no", data.business_acc_no);
-      formData.append("business_ifsc_code", data.business_ifsc_code);
-      formData.append("user_id", data.user_id);
-      const res = await axios.post(
-        import.meta.env.VITE_BACKEND + "/api/act/sendData",
+      formData.append("business_logo", file);
+      formData.append("business_signature", file1);
+      formData.append("business_name", accDataById.business_name);
+      formData.append("business_address", accDataById.business_address);
+      formData.append("business_gst", accDataById.business_gst);
+      formData.append("business_type", accDataById.business_type);
+      formData.append("business_nature", accDataById.business_nature);
+      formData.append("business_bank_acc", accDataById.business_bank_acc);
+      formData.append("business_payee_name", accDataById.business_payee_name);
+      formData.append("business_acc_no", accDataById.business_acc_no);
+      formData.append("business_ifsc_code", accDataById.business_ifsc_code);
+      formData.append("business_id", accDataById.business_id);
+      const res = await axios.put(
+        import.meta.env.VITE_BACKEND + "/api/act/updateAccData",
         formData
       );
-      
       changeAccountId(res.data);
       changeChange();
-      
       navigate("/settings/account");
     } catch (err) {
       console.log(err);
     }
   };
 
-  
-  //const uId = 5;
-  // const [info, setInfo] = useState([]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchStaffData/${uId}`)
-  //     .then((res) => {
-  //       setStaffData(res.data);
-  //     });
-  // }, [uId]);
-
-  // useEffect(() => {
-  //   if (staffData.length > 0) {
-  //     console.log(staffData , staffData[0].staff_acc_id);
-  //     changeParties(staffData[0].staff_parties);
-  //     changeInventory(staffData[0].staff_inventory);
-  //     changeBills(staffData[0].staff_bills);
-
-  //   axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchData/${staffData[0].staff_acc_id}`)
-  //     .then((res) => {
-  //       setInfo(res.data);
-  //       changeAccountId(res.data[0].business_id);
-  //     });
-  //   } else {
-  //     axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetch/${uId}`)
-  //     .then((res) => {
-  //       setInfo(res.data);
-  //       changeAccountId(res.data[0].business_id);
-  //     });
-  //   }
-  // }, [staffData]);
-
-  const deleteAc = async () => {
-    try {
-      await axios.delete(
-        import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
-      );
-      changeChange();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const changeId = (id) => {
-    changeAccountId(id);
-    changeUser(0);
-  };
+  const [accDataById, setAccDataById] = useState({
+    business_name: "",
+    business_bank_acc: "",
+    business_address: "",
+    business_gst: "",
+    business_type: "",
+    business_nature: "",
+    business_name: "",
+    business_logo: "",
+    business_signature: "",
+    business_acc_no: "",
+    business_ifsc_code: "",
+    business_payee_name: "",
+    business_id: "",
+  });
+  useEffect(() => {
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/act/fetchData/${accountId}`)
+      .then((res) => {
+        setAccDataById({
+          ...accDataById,
+          business_name: res.data[0].business_name,
+          business_address: res.data[0].business_address,
+          business_gst: res.data[0].business_gst,
+          business_type: res.data[0].business_type,
+          business_nature: res.data[0].business_nature,
+          business_bank_acc: res.data[0].business_bank_acc,
+          business_logo: res.data[0].business_logo,
+          business_signature: res.data[0].business_signature,
+          business_acc_no: res.data[0].business_acc_no,
+          business_ifsc_code: res.data[0].business_ifsc_code,
+          business_payee_name: res.data[0].business_payee_name,
+          business_id: res.data[0].business_id,
+        });
+        setFile(res.data[0].business_logo);
+        setFile1(res.data[0].business_signature);
+      });
+  }, []);
 
   const [formatError, setFormatError] = useState(false);
   const [formatError1, setFormatError1] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
     if (
-      data.business_acc_no === "" &&
-      data.business_bank_name === "" &&
-      data.business_ifsc_code === "" &&
-      data.business_payee_name === "" &&
-      data.business_name !== "" &&
-      data.business_address !== "" &&
-      (data.business_gst === "" ||
-        data.business_gst.length > 14 ||
-        data.business_gst.length === 0)
+      accDataById.business_acc_no === "" &&
+      accDataById.business_bank_acc === "" &&
+      accDataById.business_ifsc_code === "" &&
+      accDataById.business_payee_name === "" &&
+      accDataById.business_name !== "" &&
+      accDataById.business_address !== "" &&
+      (accDataById.business_gst === "" ||
+        accDataById.business_gst.length > 14 ||
+        accDataById.business_gst.length === 0)
     ) {
       setSubmitDisabled(false);
     } else if (
-      data.business_acc_no.length > 9 &&
-      data.business_bank_name !== "" &&
-      data.business_ifsc_code.length > 10 &&
-      data.business_payee_name !== "" &&
-      data.business_name !== "" &&
-      data.business_address !== "" &&
-      (data.business_gst === "" ||
-        data.business_gst.length > 14 ||
-        data.business_gst.length === 0)
+      accDataById.business_acc_no.length > 9 &&
+      accDataById.business_bank_acc !== "" &&
+      accDataById.business_ifsc_code.length > 10 &&
+      accDataById.business_payee_name !== "" &&
+      accDataById.business_name !== "" &&
+      accDataById.business_address !== "" &&
+      (accDataById.business_gst === "" ||
+        accDataById.business_gst.length > 14 ||
+        accDataById.business_gst.length === 0)
     ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
   }, [
-    data.business_acc_no,
-    data.business_bank_name,
-    data.business_ifsc_code,
-    data.business_payee_name,
-    data.business_name,
-    data.business_address,
-    data.business_gst,
+    accDataById.business_acc_no,
+    accDataById.business_bank_acc,
+    accDataById.business_ifsc_code,
+    accDataById.business_payee_name,
+    accDataById.business_name,
+    accDataById.business_address,
+    accDataById.business_gst,
   ]);
 
   const handleImage = (event) => {
@@ -259,31 +195,49 @@ export default function AddAccount() {
 
   useEffect(() => {
     if (
-      (data.business_acc_no.length > 0 && data.business_acc_no.length < 15 ) ||
-      data.business_bank_name.length > 0 ||
-      (data.business_ifsc_code.length > 0 && data.business_ifsc_code.length < 10  ) ||
-      data.business_payee_name.length > 0
+      (accDataById.business_acc_no.length > 0 &&
+        accDataById.business_acc_no.length < 15) ||
+      accDataById.business_bank_acc.length > 0 ||
+      (accDataById.business_ifsc_code.length > 0 &&
+        accDataById.business_ifsc_code.length < 10) ||
+      accDataById.business_payee_name.length > 0
     ) {
-      
+      console.log(
+        "bankDetails : ",
+        bankDetails,
+        accDataById.business_bank_acc.length,
+        accDataById.business_payee_name.length,
+        accDataById.business_acc_no.length,
+        accDataById.business_ifsc_code.length
+      );
       setBankDetails(true);
     } else if (
-      data.business_acc_no.length > 16 &&
-      data.business_bank_name.length > 0 &&
-      data.business_ifsc_code.length > 10 &&
-      data.business_payee_name.length > 0
+      accDataById.business_acc_no.length > 16 &&
+      accDataById.business_bank_acc.length > 0 &&
+      accDataById.business_ifsc_code.length > 10 &&
+      accDataById.business_payee_name.length > 0
     ) {
-      
+      console.log(
+        "bankDetails : ",
+        bankDetails,
+        accDataById.business_bank_acc.length,
+        accDataById.business_payee_name.length,
+        accDataById.business_acc_no.length,
+        accDataById.business_ifsc_code.length
+      );
       setBankDetails(false);
     }
-  }, [data.business_bank_name , data.business_acc_no, data.business_ifsc_code, data.business_payee_name]);
-
-  
+  }, [
+    accDataById.business_bank_acc,
+    accDataById.business_acc_no,
+    accDataById.business_ifsc_code,
+    accDataById.business_payee_name,
+  ]);
 
   return (
     <div className="b-form ">
       <Navbar />
       <div className="business_acc_section-wrapper">
-        
         <div className="section-1">
           <Box
             component="form"
@@ -305,10 +259,10 @@ export default function AddAccount() {
                 className="w-full"
                 name="business_name"
                 inputProps={{ maxLength: 40 }}
-                value={data.business_name}
+                value={accDataById.business_name}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_name: e.target.value.replace(/[^A-Z a-z]/g, ""),
                   })
                 }
@@ -325,10 +279,10 @@ export default function AddAccount() {
                 className="w-full"
                 name="business_address"
                 inputProps={{ maxLength: 80 }}
-                value={data.business_address}
+                value={accDataById.business_address}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_address: e.target.value.replace(
                       /[^0-9A-Z a-z /]/g,
                       ""
@@ -347,18 +301,18 @@ export default function AddAccount() {
                 label="GST Number"
                 name="business_gst"
                 inputProps={{ maxLength: 15 }}
-                value={data.business_gst}
+                value={accDataById.business_gst}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_gst: e.target.value.replace(/[^0-9A-Za-z]/g, ""),
                     //business_gst : e.target.value.replace(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/ , "")
                   })
                 }
                 className="w-full"
                 helperText={
-                  data.business_gst.length < 15 &&
-                  data.business_gst.length !== 0
+                  accDataById.business_gst.length < 15 &&
+                  accDataById.business_gst.length !== 0
                     ? errors.gstError
                     : ""
                 }
@@ -368,9 +322,14 @@ export default function AddAccount() {
             <Box className="flex w-full gap-2">
               <select
                 name="business_type"
-                value={data.business_type}
+                value={accDataById.business_type}
                 className="w-full h-[40px] bg-transparent border border-slate-400 p-2 rounded text-slate-600 text-md"
-                onChange={handleChange}
+                onChange={(e) =>
+                  setAccDataById({
+                    ...accDataById,
+                    business_type: e.target.value,
+                  })
+                }
               >
                 <option value="" disabled>
                   Select your type
@@ -386,9 +345,14 @@ export default function AddAccount() {
 
               <select
                 name="business_nature"
-                value={data.business_nature}
+                value={accDataById.business_nature}
                 className="w-full h-[40px] bg-transparent border border-slate-400 p-2 rounded text-slate-600 text-md"
-                onChange={handleChange}
+                onChange={(e) =>
+                  setAccDataById({
+                    ...accDataById,
+                    business_nature: e.target.value,
+                  })
+                }
               >
                 <option value="" disabled>
                   Select your nature
@@ -409,20 +373,21 @@ export default function AddAccount() {
                 size="small"
                 label="Bank Account Name"
                 className="w-full"
-                name="business_bank_name"
+                name="business_bank_acc"
                 inputProps={{ maxLength: 40 }}
-                value={data.business_bank_name}
+                value={accDataById.business_bank_acc}
                 onChange={(e) =>
-                  setData({
-                    ...data,
-                    business_bank_name: e.target.value.replace(
+                  setAccDataById({
+                    ...accDataById,
+                    business_bank_acc: e.target.value.replace(
                       /[^A-Z a-z]/g,
                       ""
                     ),
                   })
                 }
                 helperText={
-                  data.business_bank_name.length < 1 && bankDetails === true
+                  accDataById.business_bank_acc.length < 1 &&
+                  bankDetails === true
                     ? errors.gstError
                     : ""
                 }
@@ -436,10 +401,10 @@ export default function AddAccount() {
                 className="w-full"
                 name="business_payee_name"
                 inputProps={{ maxLength: 20 }}
-                value={data.business_payee_name}
+                value={accDataById.business_payee_name}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_payee_name: e.target.value.replace(
                       /[^A-Z a-z]/g,
                       ""
@@ -447,7 +412,8 @@ export default function AddAccount() {
                   })
                 }
                 helperText={
-                  data.business_payee_name.length < 1 && bankDetails === true
+                  accDataById.business_payee_name.length < 1 &&
+                  bankDetails === true
                     ? errors.gstError
                     : ""
                 }
@@ -463,15 +429,16 @@ export default function AddAccount() {
                 className="w-full"
                 name="business_acc_no"
                 inputProps={{ maxLength: 16 }}
-                value={data.business_acc_no}
+                value={accDataById.business_acc_no}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_acc_no: e.target.value.replace(/[^0-9]/g, ""),
                   })
                 }
                 helperText={
-                  data.business_acc_no.length < 16 && bankDetails === true
+                  accDataById.business_acc_no.length < 16 &&
+                  bankDetails === true
                     ? errors.gstError
                     : ""
                 }
@@ -485,10 +452,10 @@ export default function AddAccount() {
                 className="w-full"
                 name="business_ifsc_code"
                 inputProps={{ maxLength: 11 }}
-                value={data.business_ifsc_code}
+                value={accDataById.business_ifsc_code}
                 onChange={(e) =>
-                  setData({
-                    ...data,
+                  setAccDataById({
+                    ...accDataById,
                     business_ifsc_code: e.target.value.replace(
                       /[^0-9A-Za-z]/g,
                       ""
@@ -496,7 +463,8 @@ export default function AddAccount() {
                   })
                 }
                 helperText={
-                  data.business_ifsc_code.length < 11 && bankDetails === true
+                  accDataById.business_ifsc_code.length < 11 &&
+                  bankDetails === true
                     ? errors.gstError
                     : ""
                 }
@@ -528,13 +496,24 @@ export default function AddAccount() {
                 >
                   Browse
                 </div>
+
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    <span className="truncate pr-3 text-base font-medium text-sky-800 ">
-                      {file1 !== "" && file1 !== undefined
+                    {/* <span className="truncate pr-3 text-base font-medium text-sky-800 ">
+                      {file1 !== "" && file1 !== undefined && file1 !== null
                         ? file1.name
+                        : file1.name === undefined &&
+                          accDataById.business_signature
+                        ? accDataById.business_signature
                         : "Your Logo"}
-                    </span>
+                    </span> */}
+                    {file1 !== "" && file1 !== undefined && file1 !== null ? (
+                      <span className="truncate pr-3 text-base font-medium text-sky-800">
+                        {file1.name ? file1.name : file1}
+                      </span>
+                    ) : (
+                      "Your Logo"
+                    )}
                     <button
                       className="text-sky-800"
                       onClick={(e) => {
@@ -582,11 +561,13 @@ export default function AddAccount() {
                 </div>
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    <span className="truncate pr-3 text-base font-medium text-sky-800">
-                      {file !== "" && file !== undefined
-                        ? file.name
-                        : "Your Signature"}
-                    </span>
+                    {file !== "" && file !== undefined && file !== null ? (
+                      <span className="truncate pr-3 text-base font-medium text-sky-800">
+                        {file.name ? file.name : file}
+                      </span>
+                    ) : (
+                      "Your Signature"
+                    )}
                     <button
                       className="text-sky-800"
                       onClick={(e) => {
@@ -617,12 +598,11 @@ export default function AddAccount() {
                 onClick={handleClick}
                 disabled={submitDisabled}
               >
-                Create Account
+                Update Account
               </button>
             </div>
           </Box>
         </div>
-        {/* )} */}
       </div>
     </div>
   );
