@@ -4,8 +4,7 @@ import {
   IconTrash,
   IconUser,
   IconAlertOctagonFilled,
-  IconWallet,
-  IconTerminal2,
+  IconWallet
 } from "@tabler/icons-react";
 import "./purright.scss";
 
@@ -22,6 +21,7 @@ import { UserContext } from "../../../context/UserIdContext";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import PurRightTran from "../purRightTran/PurRightTran";
+import { useSnackbar } from "notistack";
 
 const PurRight = (props) => {
   const [open, setOpen] = useState(false);
@@ -31,6 +31,11 @@ const PurRight = (props) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const { enqueueSnackbar } = useSnackbar()
+  const handleClickVariant = (variant, msg) => {
+    enqueueSnackbar(msg, { variant });
   };
 
   const { change, purchaseId, changeChange, changePurchaseId, accountId, bills } =
@@ -47,7 +52,7 @@ const PurRight = (props) => {
     purchase_time: "",
     sup_cnct_id: 0,
   });
-  console.log("purchaseId : ", purchaseId);
+  
   useEffect(() => {
     axios
       .get(
@@ -142,7 +147,8 @@ const PurRight = (props) => {
       );
       changeChange();
       changePurchaseId(0);
-      props.snack();
+     
+      handleClickVariant('success',"Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);
@@ -156,7 +162,8 @@ const PurRight = (props) => {
         import.meta.env.VITE_BACKEND + `/api/purchase/delPayOut/${purchaseId}`
       );
       changeChange();
-      //props.snackd();
+      
+      handleClickVariant('success',"Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);
@@ -170,7 +177,7 @@ const PurRight = (props) => {
         import.meta.env.VITE_BACKEND + `/api/purchase/delPurchaseReturn/${purchaseId}`
       );
       changeChange();
-      //props.snackd();
+      handleClickVariant('success',"Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);

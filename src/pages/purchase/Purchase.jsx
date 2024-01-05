@@ -32,7 +32,6 @@ const MyApp = () => {
     setState({ ...state, [anchor]: open });
   };
   const handleClickVariant = (variant, anchor1, msg) => {
-    
     toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
@@ -53,7 +52,7 @@ const MyApp = () => {
           }
         /> </Box> :
       anchor === "addPayment"
-      ? <Box sx={{ width: 450 }} > <PayOut sx={{ width: 450 }} snack={()=>handleClickVariant('success',"add","Payment Has been Added")}/> </Box>
+      ? <Box sx={{ width: 450 }} > <PayOut sx={{ width: 450 }} snack={()=>handleClickVariant('success',"addPayment","Payment Has been Added")}/> </Box>
       : "-" 
       }
   </Box>

@@ -3,8 +3,8 @@ import axios from "axios";
 import { Box, TextField } from "@mui/material";
 import { UserContext } from "../../context/UserIdContext";
 
-const Admin = () => {
-  const { changeChange , change } = useContext(UserContext);
+const Admin = (props) => {
+  const { changeChange, change } = useContext(UserContext);
   const [accData, setAccData] = useState([]);
   const [planData, setPlanData] = useState([]);
   const [allCouponData, setAllCouponData] = useState([]);
@@ -36,8 +36,6 @@ const Admin = () => {
     unrestrict: 1,
   });
   const restrictAcc = async (businessId) => {
-    
-    
     try {
       await axios.put(
         import.meta.env.VITE_BACKEND + `/api/ad/restrictAcc/${businessId}`,
@@ -51,7 +49,6 @@ const Admin = () => {
   };
 
   const unrestrictAcc = async (businessId) => {
-    
     console.log(businessId);
     try {
       await axios.put(
@@ -109,15 +106,13 @@ const Admin = () => {
     }
   };
 
-
-
   const [addCouponData, setAddCouponData] = useState({
     offer_code: "",
     offer_value: "",
     offer_type: "",
   });
 
-  const [updatedCouponData , setUpdatedCouponData] = useState({
+  const [updatedCouponData, setUpdatedCouponData] = useState({
     offer_code: "",
     offer_value: "",
     offer_type: "",
@@ -139,7 +134,7 @@ const Admin = () => {
   };
 
   const editCoupon = async (codeId) => {
-    updatedCouponData.code_id = codeId
+    updatedCouponData.code_id = codeId;
     e.preventDefault();
     try {
       await axios.put(
@@ -154,7 +149,6 @@ const Admin = () => {
   };
 
   const delCoupon = async (codeId) => {
-    
     try {
       await axios.delete(
         import.meta.env.VITE_BACKEND + `/api/ad/delCoupon/${codeId}`
@@ -165,16 +159,59 @@ const Admin = () => {
     }
   };
 
-
   return (
     <div>
+      {console.log("props : " , props)}
+      <div>
+        <button
+          className=" p-4 text-slate-600 bg-slate-200"
+          onClick={props.add}
+        >
+          Add Payment Plan
+        </button>
+      </div>
+      <div>
+        <button
+          className=" p-4 text-slate-600 bg-slate-200"
+          onClick={props.edit}
+        >
+          Edit Payment Plan
+        </button>
+      </div>
+      <div>
+        <button
+          className=" p-4 text-slate-600 bg-slate-200"
+          onClick={props.addhsn}
+        >
+          Add Hsn Code
+        </button>
+      </div>
+      <div>
+        <button
+          className=" p-4 text-slate-600 bg-slate-200"
+          onClick={props.addsac}
+        >
+          Add Sac Code
+        </button>
+      </div>
+
       {accData.map((item) => (
         <div className="flex gap-6">
           <div>{item.business_name}</div>
           <div>{item.business_id}</div>
           <div onClick={() => setBusinessId(item.business_id)}>View</div>
-          <div onClick={(e) => (e.preventDefault() , restrictAcc(item.business_id))}>Restrict</div>
-          <div onClick={(e) => (e.preventDefault() , unrestrictAcc(item.business_id))}>Unrestrict</div>
+          <div
+            onClick={(e) => (e.preventDefault(), restrictAcc(item.business_id))}
+          >
+            Restrict
+          </div>
+          <div
+            onClick={(e) => (
+              e.preventDefault(), unrestrictAcc(item.business_id)
+            )}
+          >
+            Unrestrict
+          </div>
         </div>
       ))}
 
@@ -270,7 +307,6 @@ const Admin = () => {
           />
         </Box>
 
-        
         <Box className="flex">
           <select
             className=" py-[8.5px] border"
@@ -302,20 +338,22 @@ const Admin = () => {
         <div>
           <button onClick={addCoupon}>Submit</button>
         </div>
-      
       </div>
 
       <div className="p-3">
         {allCouponData.map((item) => (
           <div className="flex gap-5  ">
             <div>{item.code_name} Months</div>
-            <div>{ item.code_type === "amount" ? "Rs " + item.code_value : item.code_value + " %"} </div>
+            <div>
+              {item.code_type === "amount"
+                ? "Rs " + item.code_value
+                : item.code_value + " %"}{" "}
+            </div>
             <button onClick={() => editCoupon(item.code_id)}>Edit</button>
             <button onClick={() => delCoupon(item.code_id)}>Delete</button>
           </div>
         ))}
       </div>
-
     </div>
   );
 };

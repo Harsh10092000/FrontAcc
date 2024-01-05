@@ -55,7 +55,7 @@ const MyApp = () => {
           <PaymentIn
             sx={{ width: 450 }}
             snack={() =>
-              handleClickVariant("success", "add", "Product Has been Added")
+              handleClickVariant("success", "addPayment", "Transaction Has been Added")
             }
           />
         </Box>

@@ -18,7 +18,9 @@ const SettingAccount = () => {
     changeSaleId,
     changePurchaseId,
     changeStaffId,
-    access
+    access,
+    changeAccess,
+    userType,
   } = useContext(UserContext);
 
   const [info, setInfo] = useState([]);
@@ -70,10 +72,15 @@ const SettingAccount = () => {
   }, []);
 
   useEffect(() => {
+    console.log(userData ,  currentUser)
     if (parseInt(currentUser[0].log_user) === 1) {
+      changeAccess( parseInt(currentUser[0].access) === 1 ? currentUser[0].access : 1)
       localStorage.setItem("user", JSON.stringify(userData));
     }
   }, [userData]);
+
+
+  
 
   const changeId = (id) => {
     changeAccountId(id);
@@ -86,6 +93,7 @@ const SettingAccount = () => {
     changeSaleId(0);
     changePurchaseId(0);
     changeStaffId(0);
+    
   };
   return (
     <div className="w-full">
@@ -96,8 +104,9 @@ const SettingAccount = () => {
           </div>
           <div className="text-xl">Account Settings</div>
         </div>
-        <Link to={parseInt(access) === 1 ? " /addAccount" : ""}>
-          <button className={parseInt(access) === 1 ? "shadow-sm shadow-emerald-600 p-2 rounded text-emerald-600 cursor-pointer hover:bg-emerald-600 hover:text-white transition-all duration-500 flex items-center" : "shadow-sm shadow-slate-600 p-2 rounded text-slate-600 transition-all duration-500 flex items-center cursor-not-allowed" }>
+        
+        <Link to={parseInt(userType) === 1 ? "/addAccount" : ""}>
+          <button className={parseInt(userType) === 1 ? "shadow-sm shadow-emerald-600 p-2 rounded text-emerald-600 cursor-pointer hover:bg-emerald-600 hover:text-white transition-all duration-500 flex items-center" : "shadow-sm shadow-slate-600 p-2 rounded text-slate-600 transition-all duration-500 flex items-center cursor-not-allowed" }>
             <IconPlus />
             Add Account
           </button>

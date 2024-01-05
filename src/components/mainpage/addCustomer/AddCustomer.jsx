@@ -88,8 +88,6 @@ const AddCustomer = (props) => {
     }
   }, [values.cust_name, values.cust_number, values.cust_amt, values.amt_type, values.cust_spin, values.cust_bpin]);
 
-  console.log("values.cust_spin : " , values.cust_spin , typeof(values.cust_spin) , values.cust_spin.length)
-
   
   return (
     <div>

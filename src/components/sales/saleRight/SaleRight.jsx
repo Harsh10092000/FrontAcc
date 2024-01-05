@@ -22,10 +22,7 @@ import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 const SaleRight = (props) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const handleClickVariant = (variant, msg) => {
-    enqueueSnackbar(msg, { variant });
-  };
+  
 
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -108,6 +105,11 @@ const SaleRight = (props) => {
       });
   }, [data]);
 
+  const { enqueueSnackbar } = useSnackbar()
+  const handleClickVariant = (variant, msg) => {
+    enqueueSnackbar(msg, { variant });
+  };
+
   const deleteSales = async () => {
     try {
       await axios.delete(
@@ -115,7 +117,7 @@ const SaleRight = (props) => {
       );
       changeChange();
       changeSaleId(0);
-      props.snack();
+      handleClickVariant('success',"Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);
@@ -129,8 +131,8 @@ const SaleRight = (props) => {
         import.meta.env.VITE_BACKEND + `/api/sale/delPayIn/${saleId}`
       );
       changeChange();
-      //props.snackd();
-      handleClickVariant("success", "editPay", "Deleted Successfully")
+      
+      handleClickVariant("success", "Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);
@@ -144,7 +146,7 @@ const SaleRight = (props) => {
         import.meta.env.VITE_BACKEND + `/api/sale/delSaleReturn/${saleId}`
       );
       changeChange();
-      //props.snackd();
+      handleClickVariant('success',"Deleted Successfully")
       handleClose();
     } catch (err) {
       console.log(err);

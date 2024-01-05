@@ -78,10 +78,10 @@ const PayOut = (props) => {
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
 
-  const { enqueueSnackbar } = useSnackbar();
-  const handleClickVariant = (variant, anchor1, msg) => {
-    enqueueSnackbar(msg, { variant });
-  };
+  // const { enqueueSnackbar } = useSnackbar();
+  // const handleClickVariant = (variant, anchor1, msg) => {
+  //   enqueueSnackbar(msg, { variant });
+  // };
 
   const [prefixNo, setPrefixNo] = useState(0);
 
@@ -89,7 +89,7 @@ const PayOut = (props) => {
     if (defaultPaymentPrefixNo === null) {
       setPrefixNo(1);
     } else {
-      setPrefixNo(defaultPaymentPrefixNo + 1);
+      setPrefixNo(parseInt(defaultPaymentPrefixNo) + 1);
     }
   }, [defaultPaymentPrefixNo]);
 
@@ -130,7 +130,7 @@ const PayOut = (props) => {
   payData.purchase_cnct_id = purchaseDataById.purchase_id;
   payData.purchase_sup_cnct_id = purchaseDataById.sup_cnct_id;
   payData.purchase_pay_out_prefix = "PaymentOut";
-  payData.purchase_pay_out_prefix_no = parseInt(defaultPaymentPrefixNo) + 1;
+  payData.purchase_pay_out_prefix_no = prefixNo;
   payData.purchase_amt_out = amtOut;
   payData.purchase_amt_out_date = filteredDate;
   payData.purchase_amt_out_mode = payMode;
@@ -138,6 +138,8 @@ const PayOut = (props) => {
   payData.amt_paid =
     parseFloat(purchaseDataById.purchase_amt_paid) + parseFloat(amtOut);
   payData.amt_due = purchaseDataById.purchase_amt_due - amtOut;
+
+  console.log("payData.purchase_pay_out_prefix_no : " , payData.purchase_pay_out_prefix_no , defaultPaymentPrefixNo)
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -147,7 +149,7 @@ const PayOut = (props) => {
         payData
       );
       changeChange();
-      props.snack();
+      props.snack()
     } catch (err) {
       console.log(err);
     }
@@ -182,7 +184,7 @@ const PayOut = (props) => {
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
-                  value="PaymentIn"
+                  value="Payment Out"
                   name="prefix_name"
                   className=" w-[65%]"
                   required

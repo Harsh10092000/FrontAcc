@@ -126,7 +126,7 @@ const PaymentIn = (props) => {
   payData.sale_cnct_id = saleData.sale_id;
   payData.sale_cust_cnct_id = saleData.cust_cnct_id;
   payData.sale_payment_in_prefix = "PaymentIn";
-  payData.sale_payment_in_prefix_no = parseInt(defaultPaymentPrefixNo) + 1;
+  payData.sale_payment_in_prefix_no = prefixNo;
   payData.sale_amt_in = amtIn;
   payData.sale_amt_in_date = filteredDate;
   payData.sale_amt_in_mode = payMode;

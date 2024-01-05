@@ -4,7 +4,7 @@ import {
   IconUser,
   IconAlertOctagonFilled,
 } from "@tabler/icons-react";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
@@ -16,23 +16,22 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 const SettingAcCard = (props) => {
   const { currentUser } = useContext(AuthContext);
-  const { accountId, changeChange, changeAccountId , userType } = useContext(UserContext);
 
-  const deleteAc = async () => {
-    try {
-      await axios.delete(
-        import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
-      );
-      changeAccountId(currentUser[0].business_id);
-      handleClose();
-      changeChange();
-    } catch (err) {
-      console.log(err);
-    }
+  const { accountId, changeChange, changeAccountId, userType } =
+    useContext(UserContext);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant, msg) => {
+    enqueueSnackbar(msg, { variant });
   };
+
+  
+
+  
 
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -54,6 +53,22 @@ const SettingAcCard = (props) => {
 
   const access_validation = parseInt(props.data.access) !== 0;
   const user_validation = parseInt(userType) !== 0;
+  
+  const deleteAc = async () => {
+    try {
+      await axios.delete(
+        import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
+      )
+      console.log("65")
+      handleClickVariant('success',"Deleted Successfully")
+      console.log("6545")
+      changeChange();
+      //changeAccountId(0);
+      handleClose();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div
@@ -175,7 +190,7 @@ const SettingAcCard = (props) => {
                     <button
                       className="delete-btn text-red-600 pb-3 pr-3"
                       onClick={deleteAc}
-                      autoFocus
+                      
                     >
                       Delete Account
                     </button>

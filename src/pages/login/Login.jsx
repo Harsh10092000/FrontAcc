@@ -14,7 +14,7 @@ const Login = () => {
     changeBills,
     changeUId,
     changeAccess,
-    changeUserType
+    changeUserType,
   } = useContext(UserContext);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -57,28 +57,33 @@ const Login = () => {
       if (otp == cotp) {
         try {
           userData = await login(email);
-          
-          if (parseInt(userData[0].access) !== 0) { 
-            changeAccountId(userData[0].business_id);
-            changeUId(userData[0].log_id);
-            changeAccess(userData[0].access)
-            changeUserType(userData[0].log_user)
-            if (userData[0].log_user === 0) {
-              changeParties(userData[0].staff_parties);
-              changeBills(userData[0].staff_bills);
-              changeInventory(userData[0].staff_inventory);
-              
-            }
 
+          changeAccountId(userData[0].business_id);
+          changeUId(userData[0].log_id);
+          changeAccess(userData[0].access);
+          changeUserType(userData[0].log_user);
+          if (userData[0].log_user === 0) {
+            changeParties(userData[0].staff_parties);
+            changeBills(userData[0].staff_bills);
+            changeInventory(userData[0].staff_inventory);
+          }
+          
+          if (
+            parseInt(userData[0].access) !== 0 ||
+            userData[0].access === undefined ||
+            userData[0].access === null
+          ) {
+            console.log(userData, userData[0].log_user, userData[0].access );
             if (userData[0].business_id) {
               navigate("/");
             } else {
-              navigate("/addAccount"); 
+              navigate("/addAccount");
             }
           } else {
-            console.log("account restricted")
+            console.log("account restricted");
+
             //localStorage.setItem("user", JSON.stringify(""));
-            navigate("/settings/Account"); //navigate to restridted msg page
+            navigate(userData[0].log_user === 1 ? "/accountRestricted" : "/staffRestricted"); //navigate to restridted msg page
           }
         } catch (err) {
           console.log(err);

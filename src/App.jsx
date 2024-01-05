@@ -26,12 +26,15 @@ import SettingAccount from "./components/setting/settingAccount/SettingAccount";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
-import Admin from "./pages/admin/Admin";
+//import Admin from "./pages/admin/Admin";
+import Admin1 from "./pages/admin/Admin1";
 import AddAccount from "./pages/account/Account";
 import SalesEdit from "./pages/salesEdit/SalesEdit";
 import PurchaseReturn from "./pages/purchaseReturn/PurchaseReturn";
 import SalesReturn from "./pages/salesReturn/SalesReturn";
 import EditAccount from "./pages/editAccount/EditAccount";
+import AccountRestricted from "./pages/accountRestricted/AccountRestricted";
+import StaffRestricted from "./pages/staffRestricted/StaffRestricted";
 
 //import { UserContext } from "./context/UserIdContext";
 // import Test from "./pages/test";
@@ -59,15 +62,9 @@ const App = () => {
       path: "/login",
       element: <Login />,
     },
-    // {
-    //   path: "/register",
-    //   element: <Register />,
     
-    // },
-    ////parties_validation &&
     {
       path: "/",
-
       element: (
         <ProtectedRoute>
           <MainPage />
@@ -82,10 +79,7 @@ const App = () => {
       path: "/home",
       element: <Home />,
     },
-    // {
-    //   path: "/test",
-    //   element: <Test />,
-    // },
+    
     {
       path: "/account",
       element: <Account />,
@@ -290,8 +284,25 @@ const App = () => {
       ),
     },
     {
+      path: "/accountRestricted",
+      element: (
+        <ProtectedRoute>
+          <AccountRestricted />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/staffRestricted",
+      element: (
+        <ProtectedRoute>
+          <StaffRestricted />
+        </ProtectedRoute>
+      ),
+    },
+    
+    {
       path: "/admin",
-      element: <Admin />,
+      element: <Admin1 />,
     },
   ]);
   return (

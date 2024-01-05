@@ -77,7 +77,7 @@ export const UserContextProvider = ({ children }) => {
     setTestId(uId);
   };
 
-  const [access, setAccess] = useState(0);
+  const [access, setAccess] = useState(1);
   const changeAccess = (access) => {
     setAccess(access);
   };
@@ -110,6 +110,7 @@ export const UserContextProvider = ({ children }) => {
       changeUId(currentUser[0].log_id);
       changeAccess(currentUser[0].access)
       changeUserType(currentUser[0].log_user)
+      console.log(currentUser[0].log_user, currentUser[0].access)
       if (currentUser[0].log_user === 0) {
         changeParties(currentUser[0].staff_parties);
         changeBills(currentUser[0].staff_bills);

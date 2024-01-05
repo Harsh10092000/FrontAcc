@@ -103,7 +103,7 @@ const MainLeft = (props) => {
           <span className="text-gray-700 font-bold">
             ₹ {total.length > 0 && total[0].receiveTotal !== null ? parseFloat(total[0].receiveTotal).toFixed(2) : 0}
           </span>
-          {console.log("total[0].receiveTotal : " , total)}
+         
           <IconArrowDownLeft className="text-green-600" />
         </div>
         <button

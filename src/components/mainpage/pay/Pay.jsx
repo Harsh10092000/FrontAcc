@@ -49,7 +49,7 @@ const Pay = (props) => {
         formData
       );
       changeChange();
-      props.snack();
+      //props.snack();
     } catch (err) {
       console.log(err);
     }
