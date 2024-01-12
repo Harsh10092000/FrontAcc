@@ -30,12 +30,12 @@ export const AddHsnCode = (props) => {
     }
   };
 
-  const [submitDisabled , setSubmitDisabled] = useState(true);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
     if (values.hsn_code > 0 && values.hsn_desc.length > 0) {
-        setSubmitDisabled(false);
+      setSubmitDisabled(false);
     } else setSubmitDisabled(true);
-  },[values.hsn_code , values.hsn_desc]);
+  }, [values.hsn_code, values.hsn_desc]);
 
   return (
     <form className="block overflow-hidden" method="post">
@@ -59,7 +59,6 @@ export const AddHsnCode = (props) => {
                 id="outlined-basic"
                 variant="outlined"
                 className="w-full m-0 "
-                
                 name="hsn_code"
                 inputProps={{ maxLength: 10 }}
                 value={values.hsn_code}
@@ -75,22 +74,25 @@ export const AddHsnCode = (props) => {
 
             <Box className="box-sec">
               <TextField
-              fullWidth
-              multiline
+                fullWidth
+                multiline
                 label="Hsn Desc"
                 id="outlined-basic"
                 variant="outlined"
                 className="w-full m-0"
                 InputProps={{
-                    rows: 5,
-                  }}
+                  rows: 5,
+                }}
                 name="hsn_desc"
                 inputProps={{ maxLength: 200 }}
                 value={values.hsn_desc}
                 onChange={(e) =>
                   setValues({
                     ...values,
-                    hsn_desc: e.target.value.replace(/^\.|^\,|[^0-9 A-Z a-z.,]/g, ""),
+                    hsn_desc: e.target.value.replace(
+                      /^\.|^\,|[^0-9 A-Z a-z.,]/g,
+                      ""
+                    ),
                   })
                 }
                 required
@@ -103,7 +105,6 @@ export const AddHsnCode = (props) => {
                 id="outlined-basic"
                 variant="outlined"
                 className="w-full m-0"
-                
                 name="hsn_gst"
                 inputProps={{ maxLength: 10 }}
                 value={values.hsn_gst}
@@ -137,7 +138,14 @@ export const AddHsnCode = (props) => {
       </div>
 
       <div className="add-customer-btn-wrapper1">
-        <button onClick={submitDisabled ? "" : addHsn} className={submitDisabled ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in" : "text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"}>
+        <button
+          onClick={submitDisabled ? "" : addHsn}
+          className={
+            submitDisabled
+              ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
+              : "text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"
+          }
+        >
           Add Hsn Code
         </button>
       </div>

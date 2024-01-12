@@ -8,13 +8,11 @@ import { Box, Drawer } from "@mui/material";
 import AddExpense from "../../components/expenses/exAdd/ExAdd";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { UserContext } from "../../context/UserIdContext";
-import NoSelected from "../../components/cashbook/noSelected/NoSelected";
 import EditExpenses from "../../components/expenses/editExpenses/EditExpenses";
+import NoExpenseSelected from "../../components/expenses/noExpenseSelected/NoExpenseSelected";
 
 const MyApp = () => {
   const { expId, change } = useContext(UserContext);
-  const [active, setActive] = useState(false);
-
   const [state, setState] = useState({
     add: false,
     edit: false,
@@ -61,15 +59,6 @@ const MyApp = () => {
       )}
     </Box>
   );
-
-  const check = () => {
-    expId === 0 ? setActive(false) : setActive(true);
-  };
-  useEffect(() => {
-    check();
-  }, [expId, change]);
-
-  console.log("expId : ", expId);
   return (
     <React.Fragment>
       <Drawer
@@ -91,7 +80,7 @@ const MyApp = () => {
         <div className="content flex">
           <ExLeft add={toggleDrawer("add", true)} />
 
-          {active ? (
+          {expId > 0 ? (
             <ExRight
               snack={() =>
                 handleClickVariant(
@@ -103,7 +92,7 @@ const MyApp = () => {
               edit={toggleDrawer("edit", true)}
             />
           ) : (
-            <NoSelected />
+            <NoExpenseSelected />
           )}
         </div>
       </div>

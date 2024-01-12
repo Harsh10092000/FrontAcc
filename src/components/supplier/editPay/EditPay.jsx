@@ -255,7 +255,7 @@ const EditPay = (props) => {
                       </div>
                     </div>
 
-                    <div className="flex card-sec">
+                    {/* <div className="flex card-sec">
                       <div className="customer-info-icon-wrapper ">
                         <IconCurrencyRupee />
                       </div>
@@ -269,7 +269,7 @@ const EditPay = (props) => {
                           />
                         </p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </Box>
@@ -390,7 +390,7 @@ const EditPay = (props) => {
                       </div>
                     </div>
 
-                    <div className="flex card-sec">
+                    {/* <div className="flex card-sec">
                       <div className="customer-info-icon-wrapper ">
                         <IconCurrencyRupee />
                       </div>
@@ -398,7 +398,7 @@ const EditPay = (props) => {
                         <h2>Running Balance</h2>
                         <p className=" font-medium">₹422.05</p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </Box>

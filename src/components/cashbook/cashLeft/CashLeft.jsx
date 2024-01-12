@@ -9,6 +9,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import CashTran from "../cashTran/CashTran";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
+import { Link } from "react-router-dom";
 
 const CashLeft = (props) => {
   const { change, accountId } = useContext(UserContext);
@@ -30,7 +31,10 @@ const CashLeft = (props) => {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/cash/fetchDate/${filteredDate}/${accountId}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/cash/fetchDate/${filteredDate}/${accountId}`
+      )
       .then((res) => {
         setData(res.data);
       });
@@ -62,8 +66,8 @@ const CashLeft = (props) => {
         CashBook
       </div>
       <div className="flex justify-between p-5 border-b border-gray-300 balance">
-        <div className="text-gray-500 flex gap-1 items-center">
-          Total Balance &nbsp;
+        <div className="text-black font-semibold flex gap-1 items-center">
+          Total Balance :&nbsp;
           <span
             className={
               totalBalance < 0
@@ -77,8 +81,8 @@ const CashLeft = (props) => {
               : totalBalance.toFixed(2) + " Receive"}
           </span>
         </div>
-        <div className="text-gray-500 flex gap-1 items-center">
-          Today's Balance &nbsp;
+        <div className="text-black font-semibold flex gap-1 items-center">
+          Today's Balance :&nbsp;
           <span
             className={
               todaysBalance < 0
@@ -92,9 +96,11 @@ const CashLeft = (props) => {
               : todaysBalance.toFixed(2) + " Receive"}
           </span>
         </div>
-        <button className="flex gap-1 items-end report rounded-md p-2 text-blue-600 hover:text-white hover:bg-blue-600">
-          <IconChecklist className="w-5 h-5" /> View Report
-        </button>
+        <Link to="/cashReport">
+          <button className="flex gap-1 items-end shadow shadow-blue-600 rounded p-2 text-blue-600 hover:text-white hover:bg-blue-600 transition-all ease-in-out duration-300">
+            <IconChecklist className="w-5 h-5" /> View Report
+          </button>
+        </Link>
       </div>
       <div className="date flex justify-between items-center p-5 px-6 border-b border-gray-300">
         <LocalizationProvider dateAdapter={AdapterDayjs}>

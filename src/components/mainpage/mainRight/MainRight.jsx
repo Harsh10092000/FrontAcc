@@ -6,10 +6,8 @@ import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { IconBook } from "@tabler/icons-react";
 const MainRight = (props) => {
-  
   const { change, userId, parties } = useContext(UserContext);
   const [result, setResult] = useState([]);
-  const [custAmt, setCustAmt] = useState([]);
   const [custAmtType, setCustAmtType] = useState([]);
   useEffect(() => {
     axios
@@ -20,16 +18,12 @@ const MainRight = (props) => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchCust/${userId}`)
       .then((response) => {
-        setCustAmt(response.data[0].cust_amt);
         setCustAmtType(response.data[0].amt_type);
       });
   }, [change, userId]);
-
-  //var parties = "1";
   return (
     <div className="right bg-white shadow-xl w-full">
       <div className="customer">
-      
         <CardTran edit={props.edit} />
       </div>
       <div className="heading text-slate-600">
@@ -39,7 +33,7 @@ const MainRight = (props) => {
           <div className="get">Received</div>
         </div>
       </div>
-     
+
       <div className="transactions">
         {result.length > 0 ? (
           result.map((item, index) => {
@@ -92,25 +86,31 @@ const MainRight = (props) => {
           </div>
         )}
       </div>
-      {parties === 2 || parties === 3 ? 
-      <div className="btn shadow-lg">
-        <button className="pay text-red-600" onClick={props.pay} >
-          Pay ₹
-        </button>
-        <button className="receive text-green-600 " onClick={props.receive} >
-          Receive ₹
-        </button>
-      </div>
-      : 
-      <div className="btn shadow-lg text-slate-600">
-      <button className=" w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]" disabled>
-        Pay ₹
-      </button>
-      <button className="w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]" disabled>
-        Receive ₹
-      </button>
-    </div>
-      }
+      {parties === 2 || parties === 3 ? (
+        <div className="btn shadow-lg">
+          <button className="pay text-red-600" onClick={props.pay}>
+            Pay ₹
+          </button>
+          <button className="receive text-green-600 " onClick={props.receive}>
+            Receive ₹
+          </button>
+        </div>
+      ) : (
+        <div className="btn shadow-lg text-slate-600">
+          <button
+            className=" w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]"
+            disabled
+          >
+            Pay ₹
+          </button>
+          <button
+            className="w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]"
+            disabled
+          >
+            Receive ₹
+          </button>
+        </div>
+      )}
     </div>
   );
 };

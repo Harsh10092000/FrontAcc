@@ -55,7 +55,6 @@ export default function EditAccount() {
     business_gst: "",
     business_type: "",
     business_nature: "",
-    business_name: "",
     business_logo: "",
     business_signature: "",
     business_acc_no: "",
@@ -263,7 +262,10 @@ export default function EditAccount() {
                 onChange={(e) =>
                   setAccDataById({
                     ...accDataById,
-                    business_name: e.target.value.replace(/[^A-Z a-z]/g, ""),
+                    business_name: e.target.value.replace(
+                      /[^A-Z a-z . ,]/g,
+                      ""
+                    ),
                   })
                 }
                 required
@@ -284,7 +286,7 @@ export default function EditAccount() {
                   setAccDataById({
                     ...accDataById,
                     business_address: e.target.value.replace(
-                      /[^0-9A-Z a-z /]/g,
+                      /[^0-9A-Z a-z , ./]/g,
                       ""
                     ),
                   })

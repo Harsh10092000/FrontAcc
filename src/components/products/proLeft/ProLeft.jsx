@@ -15,14 +15,17 @@ import { UserContext } from "../../../context/UserIdContext";
 
 const ProLeft = (props) => {
   const [skeleton, setSkeleton] = useState(true);
-  const { change, pId, accountId  } = useContext(UserContext);
+  const { change, pId, accountId } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [result2, setResult2] = useState([]);
   const [data, setData] = useState([]);
-  
+
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchTotalStockValue/${accountId}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/auth/fetchTotalStockValue/${accountId}`
+      )
       .then((response) => {
         setResult2(response.data);
         setSkeleton(false);
@@ -64,7 +67,6 @@ const ProLeft = (props) => {
     return prev + +(current.balStock * current.sale_price);
   }, 0);
 
-
   return (
     <div className="proleft">
       <div className="heading text-lg font-semibold">
@@ -103,30 +105,26 @@ const ProLeft = (props) => {
               Low Stock Products :
               <Skeleton variant="rectangular" width={50} height={20} />
             </div>
-            <button className="flex gap-1" onClick={props.add}>
-              <IconPlus className="w-5" />
-              Add Product
-            </button>
           </div>
         ) : (
           <div className="flex gap-20">
             <div className="total text-slate-400 text-lg font-semibold">
               Total Stock Value :
-              <span className="text-black font-semibold">
-                {stockValue}
-              </span>
+              <span className="text-black font-semibold">{stockValue}</span>
             </div>
             <div className="low text-slate-400 text-lg font-semibold">
               Low Stock Products :
               <span className="text-red-600 font-semibold">{lowStock}</span>
             </div>
-            <button className="flex gap-1" onClick={props.add}>
-
-              <IconPlus className="w-5" />
-              Add Product
-            </button>
           </div>
         )}
+        <button
+          className="flex gap-1 cursor-pointer items-center p-2 shadow shadow-green-600 text-green-600 rounded hover:bg-green-600 hover:text-white transition-all ease-in-out duration-500"
+          onClick={props.add}
+        >
+          <IconPlus className="w-5" />
+          Add Product
+        </button>
       </div>
 
       <div className="filters flex items-center justify-between">
@@ -200,13 +198,11 @@ const ProLeft = (props) => {
               </div>
               <div className="w-[95px]">
                 <div className="text-slate-800 text-lg">
-                  
                   <Skeleton variant="rectangular" width={100} height={20} />
                 </div>
               </div>
               <div className="w-[70px]">
                 <div className="qty text-slate-800 text-lg">
-                 
                   <Skeleton variant="rectangular" width={60} height={20} />
                 </div>
               </div>
@@ -228,7 +224,7 @@ const ProLeft = (props) => {
                 .startsWith(searchValue.toLowerCase())
             )
             .map((filteredItem, index) => (
-              <ProCard key={index} data={filteredItem}  />
+              <ProCard key={index} data={filteredItem} />
             ))
         )}
       </div>

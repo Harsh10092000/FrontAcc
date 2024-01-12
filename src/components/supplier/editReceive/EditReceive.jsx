@@ -257,7 +257,7 @@ const EditReceive = (props) => {
                       </div>
                     </div>
 
-                    <div className="flex card-sec">
+                    {/* <div className="flex card-sec">
                       <div className="customer-info-icon-wrapper ">
                         <IconCurrencyRupee />
                       </div>
@@ -272,7 +272,7 @@ const EditReceive = (props) => {
                           />
                         </p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </Box>
@@ -393,7 +393,7 @@ const EditReceive = (props) => {
                       </div>
                     </div>
 
-                    <div className="flex card-sec">
+                    {/* <div className="flex card-sec">
                       <div className="customer-info-icon-wrapper ">
                         <IconCurrencyRupee />
                       </div>
@@ -401,7 +401,7 @@ const EditReceive = (props) => {
                         <h2>Running Balance</h2>
                         <p className=" font-medium">₹422.05</p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </Box>

@@ -1,37 +1,42 @@
-.active{
-  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(232,240,254,1) 50%, rgba(0,0,0,0) 100%);
-  background-size: 200%;
-  background-position: -66px;
-  animation: bg 800ms ease-in-out alternate;
+.active {
+  // background: linear-gradient(
+  //   90deg,
+  //   rgba(0, 0, 0, 0) 0%,
+  //   rgba(232, 240, 254, 1) 50%,
+  //   rgba(0, 0, 0, 0) 100%
+  // )
+  // background-size: 200%;
+  // background-position: -66px;
+  background-color: #3b83f619;
   position: relative;
 }
-.active::before{
+.active::before {
   content: "";
   width: 100%;
-  height: 3px;
-  background-color: #3b82f6;
+  height: 2px;
+  background-color: #3b83f6b1;
   position: absolute;
   bottom: 0px;
 }
 @keyframes bg {
-  from{
+  from {
     background-position: -100px;
   }
-  to{
+  to {
     background-position: -66px;
   }
 }
 .navbar {
-  background-color: #ffffff;
+  background-color: theme("colors.pri");
   position: sticky;
   top: 0;
   .left {
     margin-left: 20px;
-  font-weight: 600;
-    span{
+    font-weight: 600;
+    span {
       font-size: 35px;
-  text-transform: uppercase;
-  color: #eeb405;
+      text-transform: uppercase;
+      // color: theme("colors.sec");
     }
   }
   .center {
@@ -41,26 +46,25 @@
         height: 85px;
         .icon1 {
           background: inherit;
-          color: #008cff;
+          color: theme("colors.sec");
         }
         .name {
-          color: #008cff;
+          color: theme("colors.sec");
         }
       }
-
     }
   }
   .right {
     margin-right: 20px;
-    .profile{
-      div{
+    .profile {
+      div {
         padding: 10px 11px;
         border-radius: 100%;
         color: black;
         font-size: 20px;
         font-weight: 700;
-        color: #008cff;
-        background-color: #E8F0FE;
+        color: theme("colors.sec");
+        background-color: #eeeeee;
       }
     }
   }

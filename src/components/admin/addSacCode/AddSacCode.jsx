@@ -19,7 +19,7 @@ export const AddSacCode = (props) => {
     e.preventDefault();
     try {
       await axios.post(
-        import.meta.env.VITE_BACKEND + `/api/ad/addHsnCode`,
+        import.meta.env.VITE_BACKEND + `/api/ad/addSacCode`,
         values
       );
       changeChange();

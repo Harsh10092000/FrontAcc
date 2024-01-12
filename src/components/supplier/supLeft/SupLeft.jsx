@@ -74,10 +74,11 @@ const SupLeft = (props) => {
   const [searchValue, setSearchValue] = useState("");
   let sortedUsers = [...data];
 
+  
   if (sortOption === "recent") {
     sortedUsers.sort((a, b) => b.sup_id - a.sup_id);
   } else if (sortOption === "highestAmount") {
-    sortedUsers.sort((a, b) => b.sup_amt - a.sup_amt);
+    sortedUsers.sort((a, b) => (b.sup_total_amt < 0 ? b.sup_total_amt * -1 : b.sup_total_amt) - (a.sup_total_amt < 0 ? a.sup_total_amt * -1 : a.sup_total_amt) );
   } else if (sortOption === "name") {
     sortedUsers.sort((a, b) => a.sup_name.localeCompare(b.sup_name));
   }
@@ -90,9 +91,9 @@ const SupLeft = (props) => {
       </div>
       <div className="giveget flex justify-between">
         <div className="give text-gray-500 flex gap-1 items-center">
-          You'll Give :{" "}
+          You'll Give :
           <span className="text-gray-700 font-bold">
-            ₹{" "}
+            ₹
             {total.length > 0 && total[0].payTotal !== null
               ? parseFloat(total[0].payTotal).toFixed(2)
               : 0}
@@ -100,17 +101,17 @@ const SupLeft = (props) => {
           <IconArrowUpRight className="text-red-600" />
         </div>
         <div className="give text-gray-500 flex gap-1 items-center">
-          You'll Get:{" "}
+          You'll Get:
           <span className="text-gray-700 font-bold">
-            ₹{" "}
-            {total.length && total[0].payRecieve !== null > 0
+            ₹
+            {total.length && total[0].receiveTotal !== null
               ? parseFloat(total[0].receiveTotal).toFixed(2)
               : 0}
           </span>
           <IconArrowDownLeft className="text-green-600" />
         </div>
         <button
-          className="flex gap-1"
+          className="flex gap-1 cursor-pointer items-center p-2 shadow shadow-green-600 text-green-600 rounded hover:bg-green-600 hover:text-white transition-all ease-in-out duration-500"
           onClick={props.add}
           disabled={parties === 2 || parties === 3 ? false : true}
         >

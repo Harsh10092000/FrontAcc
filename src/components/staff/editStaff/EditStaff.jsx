@@ -4,10 +4,10 @@ import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
 
 const EditStaff = (props) => {
-  const { changeChange, accountId, staffId } = useContext(UserContext);
+  const { changeChange, staffId } = useContext(UserContext);
   const [staffDataById, setStaffDataById] = useState({
     staff_name: "",
-    staff_number: "",
+    staff_email: "",
     staff_parties: "",
     staff_inventory: "",
     staff_bills: "",
@@ -21,42 +21,13 @@ const EditStaff = (props) => {
         setStaffDataById({
           ...staffDataById,
           staff_name: response.data[0].staff_name,
-          staff_number: response.data[0].staff_number,
+          staff_email: response.data[0].staff_email,
           staff_parties: response.data[0].staff_parties,
           staff_inventory: response.data[0].staff_inventory,
           staff_bills: response.data[0].staff_bills,
         });
       });
   }, [staffId]);
-
-  // const [inventory, setInventory] = useState("1");
-  // const [bills, setBills] = useState("1");
-  // const [parties, setParties] = useState("1");
-
-  // const [on, setOn] = useState(false);
-
-  // useEffect(() => {
-  //   if (
-  //     staffDataById.staff_parties === 3 &&
-  //     staffDataById.staff_inventory === 2 &&
-  //     staffDataById.staff_bills === 2
-  //   ) {
-  //     setOn(true);
-  //   }
-  // }, [staffDataById]);
-
-  // useEffect(() => {
-  //   console.log(on)
-  //   if (on === true) {
-  //     staffDataById.staff_parties = 3;
-  //     staffDataById.staff_inventory = 2;
-  //     staffDataById.staff_bills = 2;
-  //   } else {
-  //     staffDataById.staff_parties = 0;
-  //     staffDataById.staff_inventory = 0;
-  //     staffDataById.staff_bills = 0;
-  //   }
-  // }, [on]);
 
   const [err, setErr] = useState(null);
   const handleClick = async (e) => {
@@ -84,10 +55,10 @@ const EditStaff = (props) => {
 
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
-    console.log(staffDataById.staff_parties)
+    console.log(staffDataById.staff_parties);
     if (
       staffDataById.staff_name !== "" &&
-      staffDataById.staff_number !== "" &&
+      staffDataById.staff_email !== "" &&
       (staffDataById.staff_parties !== 0 ||
         staffDataById.staff_inventory !== 0 ||
         staffDataById.staff_bills !== 0)
@@ -98,7 +69,7 @@ const EditStaff = (props) => {
     }
   }, [
     staffDataById.staff_name,
-    staffDataById.staff_number,
+    staffDataById.staff_email,
     staffDataById.staff_parties,
     staffDataById.staff_inventory,
     staffDataById.staff_bills,
@@ -107,20 +78,13 @@ const EditStaff = (props) => {
   return (
     <form className="block overflow-hidden" method="post">
       <h1 className="heading font-semibold text-2xl flex justify-between items-center">
-        <div>Update Staff</div>
+        <div>Edit Staff</div>
       </h1>
 
-      <div className="cashout-section-wrapper">
+      <div className="cashout-section-wrapper pt-4">
         <div className="section-2">
-          <Box
-            sx={{
-              "& > :not(style)": { m: 1, width: "95%" },
-            }}
-            noValidate
-            autoComplete="off"
-            className="w-full p-6"
-          >
-            <Box className="box-sec">
+          <div className="w-full">
+            <Box className="box-sec px-4 py-2">
               <TextField
                 label="Staff Name"
                 id="outlined-basic"
@@ -140,210 +104,187 @@ const EditStaff = (props) => {
               />
             </Box>
 
-            <Box className="box-sec">
+            <Box className="box-sec px-4 py-2">
               <TextField
                 id="outlined-basic"
                 variant="outlined"
-                label="Phone Number"
-                name="staff_number"
+                label="Email"
+                name="staff_email"
                 className="w-full"
                 size="small"
-                inputProps={{ maxLength: 10, minLength: 10 }}
-                onChange={(e) =>
-                  setStaffDataById({
-                    ...staffDataById,
-                    staff_number: e.target.value.replace(/\D/g, ""),
-                  })
-                }
-                value={staffDataById.staff_number}
-                required
+                type="email"
+                value={staffDataById.staff_email}
+                disabled
               />
             </Box>
 
-            <div>Permissions</div>
-            {/* <div>
-              <div>Give full permission to Staff</div>
-              <div className="box-sec check-box-sec">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 mr-2 cursor-pointer"
-                  onChange={() => setOn(!on)}
-                  checked={on === true ? true : false}
-                />
-                
-                <span>Select All</span>
-                
-              </div>
-            </div> */}
-
-            <Box>
-              <div>
-                <div>Icon</div>
-                <div>Parties</div>
-                <div
-                  onClick={() =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_parties: 0,
-                    })
-                  }
-                >
-                  Remove
+            <div className="pt-4">
+              <div className="px-4 py-2 bg-slate-200 text-lg ">Permissions</div>
+              <div className="border-b border-slate-200 py-2 px-4">
+                <div className="flex p-2 justify-between">
+                  <div className="text-lg font-semibold">Parties</div>
+                  <div
+                    onClick={() =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_parties: 0,
+                      })
+                    }
+                    className="shadow shadow-rose-600 hover:bg-rose-600 hover:text-white transition-all ease-in-out duration-500 p-1 text-rose-600 cursor-pointer"
+                  >
+                    Remove
+                  </div>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="pr_1"
+                    name="parties"
+                    onChange={() =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_parties: 1,
+                      })
+                    }
+                    checked={staffDataById.staff_parties === 1}
+                  />
+                  <label htmlFor="pr_1">View Entries & Send Reminders</label>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="pr_2"
+                    name="parties"
+                    onChange={(e) =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_parties: 2,
+                      })
+                    }
+                    checked={staffDataById.staff_parties === 2}
+                  />
+                  <label htmlFor="pr_2">Add & View: Entries/Parties</label>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="pr_3"
+                    name="parties"
+                    onChange={() =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_parties: 3,
+                      })
+                    }
+                    checked={staffDataById.staff_parties === 3}
+                  />
+                  <label htmlFor="pr_3">
+                    Add, View, Edit & Delete: Entries/Parties & Reports
+                  </label>
                 </div>
               </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_1">View Entries & Send Reminders</label>
-                <input
-                  type="radio"
-                  id="pr_1"
-                  name="parties"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_parties: 1,
-                    })
-                  }
-                  checked={staffDataById.staff_parties === 1}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_2">Add & View: Entries/Parties</label>
-                <input
-                  type="radio"
-                  id="pr_2"
-                  name="parties"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_parties: 2,
-                    })
-                  }
-                  checked={staffDataById.staff_parties === 2}
-                />
-              </div>
+              <div className="border-b border-slate-200 py-2 px-4">
+                <div className="flex p-2 justify-between">
+                  <div className="text-lg font-semibold">Inventory</div>
+                  <div
+                    onClick={() =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_inventory: 0,
+                      })
+                    }
+                    className="shadow shadow-rose-600 hover:bg-rose-600 hover:text-white transition-all ease-in-out duration-500 p-1 text-rose-600 cursor-pointer"
+                  >
+                    Remove
+                  </div>
+                </div>
 
-              <div className="flex gap-2 p-2">
-                <label htmlFor="pr_3">
-                  Add, View, Edit & Delete: Entries/Parties & Reports
-                </label>
-                <input
-                  type="radio"
-                  id="pr_3"
-                  name="parties"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_parties: 3,
-                    })
-                  }
-                  checked={staffDataById.staff_parties === 3}
-                />
-              </div>
-            </Box>
-
-            <Box>
-              <div>
-                <div>Icon</div>
-                <div> Inventory</div>
-                <div
-                  onClick={() =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_inventory: 0,
-                    })
-                  }
-                >
-                  Remove
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="in_1"
+                    name="inventory"
+                    onChange={(e) =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_inventory: 1,
+                      })
+                    }
+                    checked={staffDataById.staff_inventory === 1}
+                  />
+                  <label htmlFor="in_1">Add Items & Stock In/Out</label>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="in_2"
+                    name="inventory"
+                    onChange={(e) =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_inventory: 2,
+                      })
+                    }
+                    checked={staffDataById.staff_inventory === 2}
+                  />
+                  <label htmlFor="in_2">
+                    Add, Edit & Delete: Items, Stock In/Out
+                  </label>
                 </div>
               </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="in_1">Add Items & Stock In/Out</label>
-                <input
-                  type="radio"
-                  id="in_1"
-                  name="inventory"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_inventory: 1,
-                    })
-                  }
-                  checked={staffDataById.staff_inventory === 1}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="in_2">
-                  Add, Edit & Delete: Items, Stock In/Out
-                </label>
-                <input
-                  type="radio"
-                  id="in_2"
-                  name="inventory"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_inventory: 2,
-                    })
-                  }
-                  checked={staffDataById.staff_inventory === 2}
-                />
-              </div>
-            </Box>
 
-            <Box>
-              <div>
-                <div>Icon</div>
-                <div> Bills</div>
-                <div
-                  onClick={() =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_bills: 0,
-                    })
-                  }
-                >
-                  Remove
+              <div className="border-b border-slate-200 py-2 px-4">
+                <div className="flex p-2 justify-between">
+                  <div className="text-lg font-semibold">Bills</div>
+                  <div
+                    onClick={() =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_bills: 0,
+                      })
+                    }
+                    className="shadow shadow-rose-600 hover:bg-rose-600 hover:text-white transition-all ease-in-out duration-500 p-1 text-rose-600 cursor-pointer"
+                  >
+                    Remove
+                  </div>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="bill_1"
+                    name="bills"
+                    onChange={(e) =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_bills: 1,
+                      })
+                    }
+                    checked={staffDataById.staff_bills === 1}
+                  />
+                  <label htmlFor="bill_1">
+                    View & Add for All Bills (Sales/Purchase/Returns) & Cashbook
+                  </label>
+                </div>
+                <div className="flex gap-2 p-2">
+                  <input
+                    type="radio"
+                    id="bill_2"
+                    name="bills"
+                    onChange={(e) =>
+                      setStaffDataById({
+                        ...staffDataById,
+                        staff_bills: 2,
+                      })
+                    }
+                    checked={staffDataById.staff_bills === 2}
+                  />
+                  <label htmlFor="bill_2">
+                    Add, Edit & Delete for Bills, Cashbook & Reports
+                  </label>
                 </div>
               </div>
-              <div>Select what Staff can do</div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="bill_1">
-                  View & Add for All Bills (Sales/Purchase/Returns) & Cashbook
-                </label>
-                <input
-                  type="radio"
-                  id="bill_1"
-                  name="bills"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_bills: 1,
-                    })
-                  }
-                  checked={staffDataById.staff_bills === 1}
-                />
-              </div>
-              <div className="flex gap-2 p-2">
-                <label htmlFor="bill_2">
-                  Add, Edit & Delete for Bills, Cashbook & Reports
-                </label>
-                <input
-                  type="radio"
-                  id="bill_2"
-                  name="bills"
-                  onChange={(e) =>
-                    setStaffDataById({
-                      ...staffDataById,
-                      staff_bills: 2,
-                    })
-                  }
-                  checked={staffDataById.staff_bills === 2}
-                />
-              </div>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -351,7 +292,7 @@ const EditStaff = (props) => {
         {submitDisabled ? (
           <button
             disabled={submitDisabled}
-            className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
+            className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px] transition-all ease-in"
           >
             Update Staff
           </button>

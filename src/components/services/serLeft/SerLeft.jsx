@@ -8,28 +8,30 @@ import products from "../../../pages/products/productsdata";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 const SerLeft = (props) => {
-  const { change , accountId} = useContext(UserContext);
+  const { change, accountId } = useContext(UserContext);
   const [filterByValue, setFilterByValue] = useState("All");
 
   const location = useLocation();
 
   const [result, setResult] = useState([]);
   const [data, setData] = useState([]);
-  const [serTranData , setSerTranData] = useState([]);
+  const [serTranData, setSerTranData] = useState([]);
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
       .then((res) => {
         setResult(res.data);
       });
-      axios
-    .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchSerTranData`)
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchSerTranData`)
       .then((res) => {
         setSerTranData(res.data);
       });
-      
+
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
+      )
       .then((response) => {
         setData(response.data);
       });
@@ -134,7 +136,10 @@ const SerLeft = (props) => {
             </Select>
           </FormControl>
         </div>
-        <button className="flex gap-1" onClick={props.add}>
+        <button
+          className="flex gap-1 cursor-pointer items-center p-2 shadow shadow-green-600 text-green-600 rounded hover:bg-green-600 hover:text-white transition-all ease-in-out duration-500"
+          onClick={props.add}
+        >
           <IconPlus /> Add Service
         </button>
       </div>
@@ -143,7 +148,7 @@ const SerLeft = (props) => {
         <div className="sprice text-slate-600">Sales Price</div>
         <div className="qty text-slate-600">No. Of Sales</div>
       </div>
-      
+
       <div className="cards">
         {sortedUsers
 
@@ -159,18 +164,19 @@ const SerLeft = (props) => {
           )
           .map((filteredItem, index) => {
             const sum = serTranData
-                .filter((item) => parseInt(item.sale_cnct_id) === parseInt(filteredItem.ser_id))
-                .reduce(function (prev, current) {
-                  
-                  if (current.ser_quantity) {
-                    return prev + +current.ser_quantity;
-                  } else {
-                    return prev - +current.ser_return;
-                  }
-                }, 0); return (
-            <SerCard key={index} data={filteredItem} totalSales={sum} />
-                )
-                })}
+              .filter(
+                (item) =>
+                  parseInt(item.sale_cnct_id) === parseInt(filteredItem.ser_id)
+              )
+              .reduce(function (prev, current) {
+                if (current.ser_quantity) {
+                  return prev + +current.ser_quantity;
+                } else {
+                  return prev - +current.ser_return;
+                }
+              }, 0);
+            return <SerCard key={index} data={filteredItem} totalSales={sum} />;
+          })}
       </div>
     </div>
   );

@@ -67,13 +67,13 @@ const Login = () => {
             changeBills(userData[0].staff_bills);
             changeInventory(userData[0].staff_inventory);
           }
-          
+
           if (
             parseInt(userData[0].access) !== 0 ||
             userData[0].access === undefined ||
             userData[0].access === null
           ) {
-            console.log(userData, userData[0].log_user, userData[0].access );
+            console.log(userData, userData[0].log_user, userData[0].access);
             if (userData[0].business_id) {
               navigate("/");
             } else {
@@ -83,7 +83,11 @@ const Login = () => {
             console.log("account restricted");
 
             //localStorage.setItem("user", JSON.stringify(""));
-            navigate(userData[0].log_user === 1 ? "/accountRestricted" : "/staffRestricted"); //navigate to restridted msg page
+            navigate(
+              userData[0].log_user === 1
+                ? "/accountRestricted"
+                : "/staffRestricted"
+            ); //navigate to restridted msg page
           }
         } catch (err) {
           console.log(err);
@@ -133,6 +137,7 @@ const Login = () => {
                   placeholder="mail@gmail.com"
                   whileTap={{ scale: 0.97 }}
                   onChange={(e) => setEmail(e.target.value)}
+                  readOnly={otpdrop}
                 />
               </div>
               <div>{cotp}</div>

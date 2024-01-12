@@ -77,7 +77,7 @@ const AddCustomer = (props) => {
       values.cust_number !== "" &&
       values.cust_number.length > 9 &&
       values.cust_amt !== "" &&
-      values.cust_amt > 0 &&
+      values.cust_amt >= 0 &&
       values.amt_type !== "" &&
       (values.cust_spin === "" || values.cust_spin.length > 5) &&
       (values.cust_bpin === "" || values.cust_bpin.length > 5)
@@ -107,7 +107,7 @@ const AddCustomer = (props) => {
                     className="w-full m-0"
                     size="small"
                     name="cust_name"
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 35 }}
                     value={values.cust_name}
                     onChange={(e) =>
                       setValues({
@@ -224,7 +224,7 @@ const AddCustomer = (props) => {
                         size="small"
                         name="cust_sflat"
                         value={values.cust_sflat}
-                        inputProps={{ maxLength: 40}}
+                        inputProps={{ maxLength: 35}}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -245,7 +245,7 @@ const AddCustomer = (props) => {
                         size="small"
                         name="cust_sarea"
                         value={values.cust_sarea}
-                        inputProps={{ maxLength: 40}}
+                        inputProps={{ maxLength: 35}}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -286,7 +286,7 @@ const AddCustomer = (props) => {
                         size="small"
                         name="cust_scity"
                         value={values.cust_scity}
-                        inputProps={{ maxLength: 30}}
+                        inputProps={{ maxLength: 35}}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -306,7 +306,7 @@ const AddCustomer = (props) => {
                         size="small"
                         name="cust_sstate"
                         value={values.cust_sstate}
-                        inputProps={{ maxLength: 30}}
+                        inputProps={{ maxLength: 35}}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -341,7 +341,7 @@ const AddCustomer = (props) => {
                           size="small"
                           name="cust_bflat"
                           value={values.cust_bflat}
-                          inputProps={{ maxLength: 40}}
+                          inputProps={{ maxLength: 35}}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -362,7 +362,7 @@ const AddCustomer = (props) => {
                           size="small"
                           name="cust_barea"
                           value={values.cust_barea}
-                          inputProps={{ maxLength: 40}}
+                          inputProps={{ maxLength: 35}}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -404,7 +404,7 @@ const AddCustomer = (props) => {
                           size="small"
                           name="cust_bcity"
                           value={values.cust_bcity}
-                          inputProps={{ maxLength: 30}}
+                          inputProps={{ maxLength: 35}}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -424,7 +424,7 @@ const AddCustomer = (props) => {
                           size="small"
                           name="cust_bstate"
                           value={values.cust_bstate}
-                          inputProps={{ maxLength: 30}}
+                          inputProps={{ maxLength: 35}}
                           onChange={(e) =>
                             setValues({
                               ...values,

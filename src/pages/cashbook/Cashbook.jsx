@@ -12,9 +12,8 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 import { UserContext } from "../../context/UserIdContext";
 import NoSelected from "../../components/cashbook/noSelected/NoSelected";
 const MyApp = () => {
-  const { cashId, change } = useContext(UserContext);
+  const { cashId } = useContext(UserContext);
   const { enqueueSnackbar } = useSnackbar();
-  const [active, setActive] = useState(false);
 
   const [state, setState] = useState({
     out: false,
@@ -78,12 +77,7 @@ const MyApp = () => {
       )}
     </Box>
   );
-  const check = () => {
-    cashId === 0 ? setActive(false) : setActive(true);
-  };
-  useEffect(() => {
-    check();
-  }, [cashId, change]);
+
   return (
     <React.Fragment>
       <Drawer
@@ -121,7 +115,7 @@ const MyApp = () => {
             out={toggleDrawer("out", true)}
             in={toggleDrawer("in", true)}
           />
-          {active ? (
+          {cashId > 0 ? (
             <CashRight
               snack={() =>
                 handleClickVariant(

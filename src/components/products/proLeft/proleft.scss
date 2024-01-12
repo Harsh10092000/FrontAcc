@@ -34,27 +34,14 @@
       }
     }
   }
-  .info{
+  .info {
     padding: 20px;
     border-bottom: 1px solid lightgrey;
-    button{
-      border: 1px solid #109E5B;
-      color: #109E5B;
-      padding: 6px 7px;
-      font-weight: 600;
-      border-radius: 4px;
-      transition: all 400ms ease-in;
-    }
-    button:hover{
-      background-color: #109E5B;
-      border: 1px solid transparent;
-      color: white;
-    }
   }
-  .filters{
+  .filters {
     padding: 0.75rem;
   }
-  .heading1{
+  .heading1 {
     padding: 0.75rem 2rem;
     border-bottom: 1px solid lightgrey;
     display: flex;
@@ -62,8 +49,8 @@
     background-color: rgb(247, 247, 247);
     text-transform: uppercase;
   }
-  .cards{
+  .cards {
     height: calc(100vh - 365px);
-    overflow-y:scroll;
+    overflow-y: scroll;
   }
 }

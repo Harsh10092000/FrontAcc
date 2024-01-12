@@ -10,7 +10,7 @@ import AddProduct from "../../components/products/addProduct/AddProduct";
 import StockOut from "../../components/products/stockOut/StockOut";
 import StockIn from "../../components/products/stockIn/StockIn";
 import EditProduct from "../../components/products/editProduct/EditProduct";
-import { SnackbarProvider,useSnackbar } from "notistack";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 const MyApp = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -29,35 +29,53 @@ const MyApp = () => {
     }
     setState({ ...state, [anchor]: open });
   };
-  const toggleDrawer1=(anchor,open)=>{
+  const toggleDrawer1 = (anchor, open) => {
     setState({ ...state, [anchor]: open });
-  }
-  const handleClickVariant =(variant,anchor1,msg)=> {
+  };
+  const handleClickVariant = (variant, anchor1, msg) => {
     // variant could be success, error, warning, info, or default
-    toggleDrawer1(anchor1,false);
+    toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
   const list = (anchor) => (
     <Box sx={{ width: 400 }} role="presentation">
-      {anchor === "add"
-        ? <AddProduct snack={()=>handleClickVariant('success',"add","Product Has been Added")}/>
-        : anchor === "edit"
-        ? <EditProduct snack={()=>handleClickVariant('success',"edit","Product Updated Successfully")} snackd={()=>handleClickVariant('success',"edit","Deleted Successfully")}/>
-        : anchor === "out"
-        ? <StockOut snack={()=>handleClickVariant('success',"out","Sale has been recorded")}/>
-        : anchor === "in"
-        ? <StockIn snack={()=>handleClickVariant('success',"in","Purchase has been recorded")}/>
-        : "-"}
+      {anchor === "add" ? (
+        <AddProduct
+          snack={() =>
+            handleClickVariant("success", "add", "Product Has been Added")
+          }
+        />
+      ) : anchor === "edit" ? (
+        <EditProduct
+          snack={() =>
+            handleClickVariant(
+              "success",
+              "edit",
+              "Product Updated Successfully"
+            )
+          }
+          snackd={() =>
+            handleClickVariant("success", "edit", "Deleted Successfully")
+          }
+        />
+      ) : anchor === "out" ? (
+        <StockOut
+          snack={() =>
+            handleClickVariant("success", "out", "Sale has been recorded")
+          }
+        />
+      ) : anchor === "in" ? (
+        <StockIn
+          snack={() =>
+            handleClickVariant("success", "in", "Purchase has been recorded")
+          }
+        />
+      ) : (
+        "-"
+      )}
     </Box>
   );
   const { pId } = useContext(UserContext);
-  const [active, setActive] = useState(false);
-  const update = () => {
-    pId > 0 ? setActive(true) : setActive(false);
-  };
-  useEffect(() => {
-    update();
-  }, [pId]);
   return (
     <React.Fragment>
       <Drawer
@@ -92,21 +110,28 @@ const MyApp = () => {
       <div className="items">
         <Navbar />
         <div className="content flex">
-          <ProLeft add={toggleDrawer("add", true)}/>
-          {active ? <ProRight edit={toggleDrawer("edit",true)} out={toggleDrawer("out",true)} in={toggleDrawer("in",true)}/> : <SelectProduct />}
+          <ProLeft add={toggleDrawer("add", true)} />
+          {pId > 0 ? (
+            <ProRight
+              edit={toggleDrawer("edit", true)}
+              out={toggleDrawer("out", true)}
+              in={toggleDrawer("in", true)}
+            />
+          ) : (
+            <SelectProduct />
+          )}
         </div>
       </div>
     </React.Fragment>
   );
 };
 
-
-const Products=()=>{
+const Products = () => {
   return (
     <SnackbarProvider maxSnack={1}>
-    <MyApp />
-  </SnackbarProvider>
-  )
-}
+      <MyApp />
+    </SnackbarProvider>
+  );
+};
 
 export default Products;

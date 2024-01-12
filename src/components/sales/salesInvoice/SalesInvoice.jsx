@@ -45,32 +45,23 @@ const SalesInvoice = () => {
     act_name: "",
   });
 
-  const [saleDataById , setSaleDataById] = useState([]);
-  const [paymentInData , setPaymentInData] = useState([]);
+  const [saleDataById, setSaleDataById] = useState([]);
+  const [paymentInData, setPaymentInData] = useState([]);
 
   useEffect(() => {
-    // axios
-    //   .get(import.meta.env.VITE_BACKEND + `/api/sale/fetchDataById/${sale_id}`)
-    //   .then((response) => {
-    //     setData({
-    //       ...data,
-    //       sale_id: response.data[0].sale_id,
-    //       cust_cnct_id: response.data[0].cust_cnct_id,
-    //       amtPaid: response.data[0].sale_amt_paid,
-    //       amtDue: response.data[0].sale_amt_due,
-    //     });
-    //   });
-      axios
-      .get(import.meta.env.VITE_BACKEND + `/api/sale/fetchDataByIdAndPaymentInId/${saleId}`)
+    axios
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/sale/fetchDataByIdAndPaymentInId/${saleId}`
+      )
       .then((response) => {
         setSaleDataById({
           ...saleDataById,
           sale_id: response.data[0].sale_id,
           cust_cnct_id: response.data[0].cust_cnct_id,
           sale_amt: response.data[0].sale_amt,
-          //amtDue: response.data[0].sale_amt_due,
         });
-        setPaymentInData(response.data)
+        setPaymentInData(response.data);
       });
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/sale/fetchSaleTran/${saleId}`)
@@ -108,7 +99,6 @@ const SalesInvoice = () => {
   }, 0);
   const date = new Date();
 
-
   const totalAmtPaid = paymentInData
     .filter(
       (filteredItem) =>
@@ -119,7 +109,7 @@ const SalesInvoice = () => {
       return prev + +current.sale_amt_paid;
     }, 0);
 
-    console.log("cust data " , custData , saleDataById.cust_cnct_id)
+  console.log("cust data ", custData, saleDataById.cust_cnct_id);
   return (
     <div className="container">
       <div className="flex p-2 items-center justify-around gap-32">
@@ -228,8 +218,11 @@ const SalesInvoice = () => {
                         <td>{item.sale_item_name}</td>
                         <td>₹ {item.sale_item_price}</td>
                         <td>
-                          {item.sale_item_disc_val ? item.sale_item_disc_val + "|" + item.sale_item_disc_unit : "-"}
-                          
+                          {item.sale_item_disc_val
+                            ? item.sale_item_disc_val +
+                              "|" +
+                              item.sale_item_disc_unit
+                            : "-"}
                         </td>
                         <td>{item.sale_item_qty}</td>
                         <td>
@@ -299,7 +292,10 @@ const SalesInvoice = () => {
                           Balance Due:
                         </div>
                         <div className="info-item-td text-end">
-                          ₹ {parseFloat(saleDataById.sale_amt - totalAmtPaid).toFixed(2)}
+                          ₹{" "}
+                          {parseFloat(
+                            saleDataById.sale_amt - totalAmtPaid
+                          ).toFixed(2)}
                         </div>
                       </div>
                     </>

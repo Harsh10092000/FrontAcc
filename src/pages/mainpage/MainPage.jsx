@@ -10,7 +10,6 @@ import AddCustomer from "../../components/mainpage/addCustomer/AddCustomer";
 import Pay from "../../components/mainpage/pay/Pay";
 import Receive from "../../components/mainpage/receive/Receive";
 import Edit from "../../components/mainpage/edit/Edit";
-import { useEffect } from "react";
 import { UserContext } from "../../context/UserIdContext";
 import { useContext } from "react";
 import { SnackbarProvider, useSnackbar } from "notistack";
@@ -40,7 +39,6 @@ const MyApp = () => {
     setState({ ...state, [anchor]: open });
   };
   const handleClickVariant = (variant, anchor1, msg) => {
-    // variant could be success, error, warning, info, or default
     toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
@@ -100,14 +98,8 @@ const MyApp = () => {
       )}
     </Box>
   );
-  const [active, setActive] = useState(false);
-  const { userId, change } = useContext(UserContext);
-  const checkActive = () => {
-    userId === 0 ? setActive(false) : setActive(true);
-  };
-  useEffect(() => {
-    checkActive();
-  }, [userId, change]);
+
+  const { userId } = useContext(UserContext);
   return (
     <React.Fragment>
       <Drawer
@@ -156,8 +148,7 @@ const MyApp = () => {
         <Navbar />
         <div className="content flex">
           <MainLeft add={toggleDrawer("add", true)} />
-
-          {active ? (
+          {userId > 0 ? (
             <MainRight
               edit={toggleDrawer("edit", true)}
               pay={toggleDrawer("pay", true)}

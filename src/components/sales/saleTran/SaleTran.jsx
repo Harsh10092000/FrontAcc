@@ -97,10 +97,11 @@ const SaleTran = (props) => {
             <div className="text-slate-600 justify-self-end font-semibold">
               ₹ {parseFloat(props.data.sale_amt).toFixed(2)}
             </div>
+            
             <div className="text-slate-700 text-xs">
               {totalAmtPaid === 0
                 ? "Unpaid"
-                : parseFloat(totalAmtPaid).toFixed(2) < parseFloat(props.data.sale_amt).toFixed(2)
+                : (parseFloat(totalAmtPaid) < parseFloat(props.data.sale_amt))
                 ? "Partially Paid"
                 : "Fully Paid"}
             </div>

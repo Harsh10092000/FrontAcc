@@ -1,5 +1,5 @@
 import React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
 import SerLeft from "../../components/services/serLeft/SerLeft";
 import SerRight from "../../components/services/serRight/SerRight";
@@ -10,9 +10,7 @@ import AddService from "../../components/services/addService/AddService";
 import RecordSale from "../../components/services/recordSale/RecordSale";
 import EditSale from "../../components/services/editSale/EditSale";
 import EditService from "../../components/services/editService/EditService";
-import { SnackbarProvider,useSnackbar } from "notistack";
-
-
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 const MyApp = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -21,7 +19,7 @@ const MyApp = () => {
     add: false,
     edit: false,
     record: false,
-    editSale:false,
+    editSale: false,
   });
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -32,38 +30,52 @@ const MyApp = () => {
     }
     setState({ ...state, [anchor]: open });
   };
-  const toggleDrawer1=(anchor,open)=>{
+  const toggleDrawer1 = (anchor, open) => {
     setState({ ...state, [anchor]: open });
-  }
-  const handleClickVariant =(variant,anchor1,msg)=> {
+  };
+  const handleClickVariant = (variant, anchor1, msg) => {
     // variant could be success, error, warning, info, or default
-    toggleDrawer1(anchor1,false);
+    toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
   const list = (anchor) => (
     <Box sx={{ width: 400 }} role="presentation">
       {anchor === "add" ? (
-        <AddService snack={()=>handleClickVariant('success',"add","Service Has been Added")}/>
+        <AddService
+          snack={() =>
+            handleClickVariant("success", "add", "Service Has been Added")
+          }
+        />
       ) : anchor === "edit" ? (
-        <EditService snackd={()=>handleClickVariant('success',"edit","Deleted Successfully")} snacku={()=>handleClickVariant('success',"edit","Updated Successfully")}/>
+        <EditService
+          snackd={() =>
+            handleClickVariant("success", "edit", "Deleted Successfully")
+          }
+          snacku={() =>
+            handleClickVariant("success", "edit", "Updated Successfully")
+          }
+        />
       ) : anchor === "record" ? (
-        <RecordSale snack={()=>handleClickVariant('success',"record","Sale Has been Recorded")}/>
+        <RecordSale
+          snack={() =>
+            handleClickVariant("success", "record", "Sale Has been Recorded")
+          }
+        />
       ) : anchor === "editSale" ? (
-        <EditSale snackd={()=>handleClickVariant('success',"editSale","Deleted Successfully")} snacku={()=>handleClickVariant('success',"editSale","Updated Successfully")}/>
+        <EditSale
+          snackd={() =>
+            handleClickVariant("success", "editSale", "Deleted Successfully")
+          }
+          snacku={() =>
+            handleClickVariant("success", "editSale", "Updated Successfully")
+          }
+        />
       ) : (
         "-"
       )}
     </Box>
   );
   const { serId } = useContext(UserContext);
-  const [active, setActive] = useState(false);
-  const update = () => {
-    serId > 0 ? setActive(true) : setActive(false);
-  };
-  useEffect(() => {
-    update();
-  }, [serId]);
-
   return (
     <React.Fragment>
       <Drawer
@@ -98,11 +110,11 @@ const MyApp = () => {
         <Navbar />
         <div className="content flex">
           <SerLeft add={toggleDrawer("add", true)} />
-          {active ? (
+          {serId > 0 ? (
             <SerRight
               edit={toggleDrawer("edit", true)}
               record={toggleDrawer("record", true)}
-              editSale={toggleDrawer("editSale",true)}
+              editSale={toggleDrawer("editSale", true)}
             />
           ) : (
             <SelectService />
@@ -113,12 +125,12 @@ const MyApp = () => {
   );
 };
 
-const Services =()=>{
-  return(
+const Services = () => {
+  return (
     <SnackbarProvider maxSnack={1}>
-      <MyApp/>
+      <MyApp />
     </SnackbarProvider>
-  )
-}
+  );
+};
 
 export default Services;

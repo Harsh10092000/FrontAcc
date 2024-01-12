@@ -2,10 +2,7 @@ import * as React from "react";
 import { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import {
-  IconX,
-  IconTrashFilled,
-} from "@tabler/icons-react";
+import { IconX, IconTrashFilled } from "@tabler/icons-react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -16,12 +13,12 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 
 const PaymentIn = (props) => {
-  const {change, changeChange, saleId, accountId } = useContext(UserContext);
+  const { change, changeChange, saleId, accountId } = useContext(UserContext);
   const [defaultPaymentPrefixNo, setDefaultPaymentPrefixNo] = useState(0);
-  const [paymentInData , setPaymentInData] = useState([]);
-  
+  const [paymentInData, setPaymentInData] = useState([]);
+
   const [saleData, setSaleData] = useState({
-    sale_name : "",
+    sale_name: "",
     sale_date: "",
     sale_prefix: "",
     sale_prefix_no: "",
@@ -33,7 +30,10 @@ const PaymentIn = (props) => {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/sale/fetchDataByIdAndPaymentInId/${saleId}`)
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/sale/fetchDataByIdAndPaymentInId/${saleId}`
+      )
       .then((response) => {
         setSaleData({
           ...saleData,
@@ -48,17 +48,17 @@ const PaymentIn = (props) => {
           sale_id: response.data[0].sale_id,
           sale_amt_paid: response.data[0].sale_amt_paid,
         });
-        setPaymentInData(response.data)
+        setPaymentInData(response.data);
       });
-      axios
-      .get(import.meta.env.VITE_BACKEND + `/api/sale/fetchPaymentPrefixData/${accountId}`)
+    axios
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/sale/fetchPaymentPrefixData/${accountId}`
+      )
       .then((response) => {
         setDefaultPaymentPrefixNo(response.data[0].sale_payment_in_prefix_no);
       });
   }, [change]);
-
-  
-  
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -82,42 +82,46 @@ const PaymentIn = (props) => {
 
   useEffect(() => {
     if (defaultPaymentPrefixNo === null) {
-      setPrefixNo(1)
+      setPrefixNo(1);
     } else {
-      setPrefixNo(parseInt(defaultPaymentPrefixNo) + 1)
+      setPrefixNo(parseInt(defaultPaymentPrefixNo) + 1);
     }
   }, [defaultPaymentPrefixNo]);
 
-  
-  const [amtIn , SetAmtIn] = useState(0);
+  const [amtIn, SetAmtIn] = useState(0);
   const [payMode, setPayMode] = useState("cash");
 
   const [error, setError] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
+ 
   useEffect(() => {
-    if (parseFloat(amtIn) !== 0 && parseFloat(amtIn) <= (parseFloat(saleData.sale_amt).toFixed(2) - parseFloat(totalAmtPaid)) && error === null ) {
+    if (
+      amtIn !== 0 && 
+      parseFloat(amtIn).toFixed(2) <=
+      (parseFloat(saleData.sale_amt) - parseFloat(totalAmtPaid)).toFixed(2)&&
+      error === null
+    ) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
   }, [amtIn, error]);
 
-
-  const [payData ,setPayData] = useState({
+  const [payData, setPayData] = useState({
     sale_prefix: "",
     sale_prefix_no: "",
-    sale_name : "",
-    sale_cnct_id : "",
-    sale_payment_in_prefix : "",
-    sale_payment_in_prefix_no : "",
-    sale_amt_in : "",
-    sale_amt_in_date : "",
-    sale_amt_in_mode : "",
-    sale_cust_cnct_id : "",
+    sale_name: "",
+    sale_cnct_id: "",
+    sale_payment_in_prefix: "",
+    sale_payment_in_prefix_no: "",
+    sale_amt_in: "",
+    sale_amt_in_date: "",
+    sale_amt_in_mode: "",
+    sale_cust_cnct_id: "",
     amt_paid: "",
-    amt_due : "",
-    sale_acc_id : "",
-  })
+    amt_due: "",
+    sale_acc_id: "",
+  });
 
   payData.sale_acc_id = accountId;
   payData.sale_prefix = saleData.sale_prefix;
@@ -137,10 +141,13 @@ const PaymentIn = (props) => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/sale/addSalePayment", payData);
-      //await axios.put("http://localhost:8000/api/sale/updateBalanceDue", payData);
+      await axios.post(
+        import.meta.env.VITE_BACKEND + "/api/sale/addSalePayment",
+        payData
+      );
+      
       changeChange();
-     props.snack();
+      props.snack();
     } catch (err) {
       console.log(err);
     }
@@ -149,12 +156,13 @@ const PaymentIn = (props) => {
   const totalAmtPaid = paymentInData
     .filter(
       (filteredItem) =>
-        parseInt(filteredItem.sale_payment_in_id) ===
-        parseInt(saleData.sale_id)
+        parseInt(filteredItem.sale_payment_in_id) === parseInt(saleData.sale_id)
     )
     .reduce(function (prev, current) {
       return prev + +current.sale_amt_paid;
     }, 0);
+
+    
 
   return (
     <div>
@@ -179,9 +187,8 @@ const PaymentIn = (props) => {
                   name="prefix_name"
                   className=" w-[65%]"
                   required
-                  
                 />
-                
+
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
@@ -216,14 +223,20 @@ const PaymentIn = (props) => {
                 </LocalizationProvider>
               </div>
             </div>
-           
+
             <div className="box-sec">
               <div>
                 <div>{saleData.sale_prefix}</div>
                 <div>{saleData.sale_prefix_no}</div>
               </div>
-              <div>Total Amount : {parseFloat(saleData.sale_amt).toFixed(2)}</div>
-              <div>Balance Due : {parseFloat(saleData.sale_amt).toFixed(2) - parseFloat(totalAmtPaid)}</div>
+              <div>
+                Total Amount : {parseFloat(saleData.sale_amt).toFixed(2)}
+              </div>
+              <div>
+                Balance Due :
+                {(parseFloat(saleData.sale_amt) -
+                  parseFloat(totalAmtPaid)).toFixed(2)}
+              </div>
             </div>
             <div className="box-sec">
               <TextField
@@ -234,16 +247,20 @@ const PaymentIn = (props) => {
                 size="small"
                 name="amt_received"
                 value={amtIn}
-                inputProps={{maxLength : 10}}
-                 onChange={(e) => SetAmtIn(e.target.value.replace(/^\.|[^0-9.]/g, "")
-                 .replace(/(\.\d*\.)/, "$1")
-                 .replace(/^(\d*\.\d{0,2}).*$/, "$1"))}
-                
+                inputProps={{ maxLength: 10 }}
+                onChange={(e) =>
+                  SetAmtIn(
+                    e.target.value
+                      .replace(/^\.|[^0-9.]/g, "")
+                      .replace(/(\.\d*\.)/, "$1")
+                      .replace(/^(\d*\.\d{0,2}).*$/, "$1")
+                  )
+                }
                 required
               />
             </div>
             <div>
-            <div>
+              <div>
                 <label>Payment Mode</label>
               </div>
               <div className="flex gap-2 p-2">
@@ -265,7 +282,12 @@ const PaymentIn = (props) => {
               </div>
             </div>
             <div>
-              Remaning Amount : {((parseFloat(saleData.sale_amt).toFixed(2) - parseFloat(totalAmtPaid)) - parseFloat(amtIn)).toFixed(2)}
+              Remaning Amount :
+              {(
+                (parseFloat(saleData.sale_amt) -
+                parseFloat(totalAmtPaid)).toFixed(2) -
+                parseFloat(amtIn ? amtIn : 0)
+              ).toFixed(2) }
             </div>
           </Box>
           <div className="cashout-btn-wrapper">

@@ -40,11 +40,6 @@ const SalesForm = () => {
   ];
 
   const gst = [
-    // {
-    //   value: "taxExempted",
-    //   label1: "Tax Exempted",
-    //   label2: "(NO GST)",
-    // },
     {
       value: "gst0",
       label1: 0,
@@ -182,6 +177,9 @@ const SalesForm = () => {
     }
     setState({ ...state, [anchor]: open });
   };
+  const closeDrawer = () => {
+    setState(false);
+  };
 
   useEffect(() => {
     axios
@@ -195,8 +193,6 @@ const SalesForm = () => {
         setSacCodes(response.data);
       });
   }, [state]);
-
- 
 
   const [custData, setCustData] = useState({
     cust_id: "",
@@ -227,14 +223,11 @@ const SalesForm = () => {
   const [prefixValue, setPrefixValue] = useState("");
   const [temp, setTemp] = useState("");
 
+  const [addNewPrefix, setAddNewPrefix] = useState(false);
   const [prefixSelected, setprefixSelected] = useState(true);
   const prefixSelectorHandler = () => {
     setprefixSelected(!prefixSelected);
   };
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  var i = 0;
   let [nerArr, setNerArr] = useState([]);
 
   const handleChange2 = (item) => {
@@ -386,39 +379,6 @@ const SalesForm = () => {
       )
     );
   };
-
-  const handleHsnChange = (productId, hsn, desc, igst, sgst, cgst) => {
-    setNerArr((nerArr) =>
-      nerArr.map((item) =>
-        productId === item.item_id
-          ? {
-              ...item,
-              item_code: hsn,
-              item_desc: desc,
-              item_igst: igst,
-              item_cgst: cgst,
-            }
-          : item
-      )
-    );
-  };
-
-  // const handleCustomGstChange = (productId, igst, cess) => {
-  //   console.log(productId, igst, cess);
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.item_id
-  //         ? {
-  //             ...item,
-  //             item_igst: parseFloat(igst),
-  //             item_cgst: parseFloat(igst) / 2,
-  //             item_cess: cess,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
   const handleCustomGstChange = (productId, igst) => {
     console.log(productId, igst);
     setNerArr((nerArr) =>
@@ -433,7 +393,6 @@ const SalesForm = () => {
       )
     );
   };
-
   const handleCustomCessChange = (productId, cess) => {
     console.log(productId, cess);
     setNerArr((nerArr) =>
@@ -447,7 +406,6 @@ const SalesForm = () => {
       )
     );
   };
-
   const handleIncrease = (productId) => {
     addProducts
       ? setProductList((productList) =>
@@ -471,7 +429,6 @@ const SalesForm = () => {
           )
         );
   };
-
   const handleIncrease2 = (productId) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
@@ -484,7 +441,6 @@ const SalesForm = () => {
       )
     );
   };
-
   const handleIncrease3 = (productId) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
@@ -497,7 +453,6 @@ const SalesForm = () => {
       )
     );
   };
-
   const handleDecrease = (productId) => {
     addProducts
       ? setProductList((productList) =>
@@ -521,28 +476,21 @@ const SalesForm = () => {
           )
         );
   };
-
   const handleDecrease2 = (productId) => {
     setNerArr((nerArr) =>
-      nerArr.map(
-        (item) =>
-          productId === item.item_id &&
-          item.item_qty >= 1 &&
-          item.item_cat === 1
-            ? {
-                ...item,
-                item_qty: item.item_qty - 1,
-              }
-            : item
-        //nerArr.pop(nerArr[productId])
+      nerArr.map((item) =>
+        productId === item.item_id && item.item_qty >= 1 && item.item_cat === 1
+          ? {
+              ...item,
+              item_qty: item.item_qty - 1,
+            }
+          : item
       )
     );
   };
-
   useEffect(() => {
     setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   }, [nerArr]);
-
   const handleDecrease3 = (productId) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
@@ -555,36 +503,32 @@ const SalesForm = () => {
       )
     );
   };
-
   const [isGstBusiness, setIsGstBusiness] = useState(true);
   const handleBusinessGst = () => {
     setIsGstBusiness(isGstBusiness ? false : true);
   };
-
   const [prefixNo, setPrefixNo] = useState(0);
   useEffect(() => {
     salesPrefixData
       .filter((code) => code.sale_prefix === prefixValue)
       .map((item) => setPrefixNo(parseInt(item.sale_prefix_no) + 1));
   }, [addPrefix]);
-
   const [addProducts, setAddProducts] = useState(true);
   const [addServices, setAddServices] = useState(false);
   const [invoiceItems, setInvoiceItems] = useState({
     in_serial_no: 0,
-    in_items: "Ghee",
-    in_hsn_sac: "4533",
-    in_qty: "6",
-    in_unit: "KG",
-    in_sale_price: "500",
-    in_discount_value: "10%",
-    in_discount_price: "450",
-    in_discount_unit: "%",
-    in_gst_prectentage: "10",
-    in_gst_amt: "50",
-    in_total_amt: "500",
+    in_items: "",
+    in_hsn_sac: "",
+    in_qty: "",
+    in_unit: "",
+    in_sale_price: "",
+    in_discount_value: "",
+    in_discount_price: "",
+    in_discount_unit: "",
+    in_gst_prectentage: "",
+    in_gst_amt: "",
+    in_total_amt: "",
   });
-
   const handleContinue2 = () => {
     setInvoiceItems({
       in_items: "",
@@ -638,22 +582,20 @@ const SalesForm = () => {
           : invoiceItems
       )
     );
+    closeDrawer();
   };
-
   const check1 = (item_discount_unit, item_price, item_discount_value) => {
     const discount_value = item_discount_value ? item_discount_value : 0;
     return item_discount_unit === "percentage"
       ? parseFloat(item_price) - (item_price * discount_value) / 100
       : item_price - discount_value;
   };
-
   const check2 = (item_discount_unit, item_price, item_discount_value) => {
     const discount_value = item_discount_value ? item_discount_value : 0;
     return item_discount_unit === "percentage"
       ? ((item_price / (tax / 100 + 1)) * (100 - discount_value)) / 100
       : item_price / (tax / 100 + 1) - discount_value;
   };
-
   const check3 = (
     item_discount_unit,
     item_price,
@@ -669,7 +611,6 @@ const SalesForm = () => {
       100
     );
   };
-
   const check4 = (
     item_discount_unit,
     item_price,
@@ -685,8 +626,7 @@ const SalesForm = () => {
           100
       : item_price - item_price / (tax / 100 + 1);
   };
-
-  const handleContinue3 = () => {
+  const handleContinue3 = (e) => {
     setInvoiceItems({
       in_items: "",
       in_hsn_sac: "",
@@ -764,15 +704,14 @@ const SalesForm = () => {
           : invoiceItems
       )
     );
+    closeDrawer();
   };
-
   const filteredInvoiceItems = [];
   for (let i = 0; i < invoiceItems.length; i++) {
     if (invoiceItems[i].in_qty !== "") {
       filteredInvoiceItems.push(invoiceItems[i]);
     }
   }
-
   const totalGrossValue = filteredInvoiceItems
     .map(
       (item) =>
@@ -783,16 +722,11 @@ const SalesForm = () => {
     .reduce((acc, current) => {
       return acc + current;
     }, 0);
-
   const [amtPayMethod, setAmtPayMethod] = useState("unpaid");
   const handlePayStatus = (event) => {
     setAmtPayMethod(event.target.value);
   };
-
   const [amountPaid, setAmountPaid] = useState(0);
-
-
-
   const [saleData, setSaleData] = useState({
     cust_cnct_id: "",
     sale_prefix: "",
@@ -809,7 +743,6 @@ const SalesForm = () => {
     payment_in_prefix_no: "",
     sale_acc_id: "",
   });
-
   const total_amt = filteredInvoiceItems
     .map(
       (item) =>
@@ -820,7 +753,6 @@ const SalesForm = () => {
     .reduce((acc, current) => {
       return acc + current;
     }, 0);
-
   const list = (anchor) => (
     <Box sx={{ width: 450 }} role="presentation">
       {anchor === "add" ? (
@@ -1016,8 +948,6 @@ const SalesForm = () => {
                               ).map((item) => (
                                 <div>
                                   <div>
-                                    
-
                                     <Box className="box-sec margin-top-zero ">
                                       <label className="pl-2 ">
                                         Tax Included?
@@ -1145,16 +1075,16 @@ const SalesForm = () => {
                                             setSearchCode(e.target.value);
                                           }}
                                         />
-                                        
-                                      
-                                         {searchCode !== null &&
-                                        (searchCode !== "") === true &&
-                                        (addProducts ? hsnCodes : sacCodes)
 
-                                              .filter(
-                                                (code) =>                                              
-                                                code.hsn_code.toString().startsWith(searchCode)
-                                                  ||
+                                        {searchCode !== null &&
+                                          (searchCode !== "") === true &&
+                                          (addProducts ? hsnCodes : sacCodes)
+
+                                            .filter(
+                                              (code) =>
+                                                code.hsn_code
+                                                  .toString()
+                                                  .startsWith(searchCode) ||
                                                 code.hsn_desc
                                                   .toString()
                                                   .toLowerCase()
@@ -1163,47 +1093,44 @@ const SalesForm = () => {
                                                       .toString()
                                                       .toLowerCase()
                                                   )
-                                              )
-                                              .map((filteredItem) => (
-                                                <div
-                                                  key={filteredItem.id}
-                                                  className="flex card-sec"
-                                                  onClick={() => {
-                                                    setSearchCode("");
-                                                    setProductData({
-                                                      ...productData,
-                                                      igst: filteredItem.igst,
-                                                      cgst: filteredItem.cgst,
-                                                      sgst: filteredItem.sgst,
-                                                      cess: filteredItem.cess,
-                                                      hsn_code:
-                                                        typeof filteredItem.hsn_code ===
-                                                        "number"
-                                                          ? filteredItem.hsn_code
-                                                          : null,
-                                                      hsn_desc:
-                                                        filteredItem.hsn_desc,
-                                                    });
-                                                    setIsClicked(false);
-                                                  }}
-                                                >
-                                                  <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
-                                                    <div className="flex gap-6 pb-4">
-                                                      <h2 className=" rounded bg-slate-300 px-6 py-1 ">
-                                                        {filteredItem.hsn_code}
-                                                      </h2>
-                                                      <h2 className=" rounded bg-slate-300 px-4 py-1 ">
-                                                        {filteredItem.igst +
-                                                          "% GST"}
-                                                      </h2>
-                                                    </div>
-                                                    <p>
-                                                      {filteredItem.hsn_desc}
-                                                    </p>
+                                            )
+                                            .map((filteredItem) => (
+                                              <div
+                                                key={filteredItem.id}
+                                                className="flex card-sec"
+                                                onClick={() => {
+                                                  setSearchCode("");
+                                                  setProductData({
+                                                    ...productData,
+                                                    igst: filteredItem.igst,
+                                                    cgst: filteredItem.cgst,
+                                                    sgst: filteredItem.sgst,
+                                                    cess: filteredItem.cess,
+                                                    hsn_code:
+                                                      typeof filteredItem.hsn_code ===
+                                                      "number"
+                                                        ? filteredItem.hsn_code
+                                                        : null,
+                                                    hsn_desc:
+                                                      filteredItem.hsn_desc,
+                                                  });
+                                                  setIsClicked(false);
+                                                }}
+                                              >
+                                                <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
+                                                  <div className="flex gap-6 pb-4">
+                                                    <h2 className=" rounded bg-slate-300 px-6 py-1 ">
+                                                      {filteredItem.hsn_code}
+                                                    </h2>
+                                                    <h2 className=" rounded bg-slate-300 px-4 py-1 ">
+                                                      {filteredItem.igst +
+                                                        "% GST"}
+                                                    </h2>
                                                   </div>
+                                                  <p>{filteredItem.hsn_desc}</p>
                                                 </div>
-                                              ))
-                                          }
+                                              </div>
+                                            ))}
                                       </>
                                     ) : (
                                       <span className="m-0"></span>
@@ -1269,7 +1196,9 @@ const SalesForm = () => {
                                           size="small"
                                           required
                                           inputProps={{ maxLength: 10 }}
-                                          value={item.item_igst ? item.item_igst : 0}
+                                          value={
+                                            item.item_igst ? item.item_igst : 0
+                                          }
                                           onChange={(e) => {
                                             handleCustomGstChange(
                                               item.item_id,
@@ -1289,7 +1218,6 @@ const SalesForm = () => {
                                           required
                                           inputProps={{ maxLength: 10 }}
                                           value={item.item_cess}
-                                         
                                           onChange={(e) => {
                                             handleCustomCessChange(
                                               item.item_id,
@@ -1301,20 +1229,6 @@ const SalesForm = () => {
                                           }}
                                         />
                                       </Box>
-                                      {/* <Box className="box-sec">
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault(),
-                                              handleCustomGstChange(
-                                                item.item_id,
-                                                customGst,
-                                                customeCess ? customeCess : 0
-                                              );
-                                          }}
-                                        >
-                                          Add Custom Gst
-                                        </button>
-                                      </Box> */}
                                     </>
                                   ) : (
                                     <div></div>
@@ -1569,8 +1483,27 @@ const SalesForm = () => {
                         ? parseInt(defaultPrefixNo) + 1
                         : prefixNo
                     }
+                    // onChange={(e) =>
+                    //   setPrefixNo(
+                    //     salesPrefixData.find(
+                    //       (item) =>
+                    //         (item.sale_prefix_no ===
+                    //         e.target.value.replace(/[^0-9]/g, "") && item.sale_prefix === (prefixValue))
+                    //     )
+                    //       ? setAddNewPrefix(true)
+                    //       : (setAddNewPrefix(false),
+                    //         e.target.value.replace(/[^0-9]/g, ""))
+                    //   )
+                    // }
+                    helperText={
+                      addNewPrefix
+                        ? "Prefix Number Already Exists"
+                        : ""
+                    }
+                    // onChange={(e)=> setPrefixNo(e.target.value)}
                     name="prefix_number"
                   />
+                  
                 </div>
                 <div className=" absolute z-10 bg-white">
                   {addPrefix ? (

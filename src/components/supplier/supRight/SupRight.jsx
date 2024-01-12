@@ -27,10 +27,7 @@ const SupRight = (props) => {
       .then((response) => {
         setSupAmtType(response.data[0].sup_amt_type);
       });
-    
-  }, [supId, change ]);
-
-
+  }, [supId, change]);
 
   return (
     <div className="supright">
@@ -67,7 +64,7 @@ const SupRight = (props) => {
       </div>
 
       <div className="transactions">
-        {result.length > 0 ? (
+        {result.length > 0  ? (
           result.map((item, index) => {
             if (supAmtType === "receive") {
               const sum = result
@@ -122,33 +119,31 @@ const SupRight = (props) => {
           </div>
         )}
       </div>
-      {/* <div className="btn shadow-lg">
-        <button className="pay text-red-600" onClick={props.pay}>
-          Pay ₹
-        </button>
-        <button className="receive text-green-600" onClick={props.receive}>
-          Receive ₹
-        </button>
-      </div> */}
-      {parties === 2 || parties === 3 ? 
-      <div className="btn shadow-lg">
-        <button className="pay text-red-600" onClick={props.pay} >
-          Pay ₹
-        </button>
-        <button className="receive text-green-600 " onClick={props.receive} >
-          Receive ₹
-        </button>
-      </div>
-      : 
-      <div className="btn shadow-lg  text-slate-600">
-      <button className=" w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]" disabled>
-        Pay ₹
-      </button>
-      <button className="w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]" disabled>
-        Receive ₹
-      </button>
-    </div>
-      }
+      {parties === 2 || parties === 3 ? (
+        <div className="btn shadow-lg">
+          <button className="pay text-red-600" onClick={props.pay}>
+            Pay ₹
+          </button>
+          <button className="receive text-green-600 " onClick={props.receive}>
+            Receive ₹
+          </button>
+        </div>
+      ) : (
+        <div className="btn shadow-lg  text-slate-600">
+          <button
+            className=" w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]"
+            disabled
+          >
+            Pay ₹
+          </button>
+          <button
+            className="w-full cursor-not-allowed text-slate-600 bg-slate-200 p-3 rounded-[5px]"
+            disabled
+          >
+            Receive ₹
+          </button>
+        </div>
+      )}
     </div>
   );
 };

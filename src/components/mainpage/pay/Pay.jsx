@@ -49,7 +49,7 @@ const Pay = (props) => {
         formData
       );
       changeChange();
-      //props.snack();
+      props.snack();
     } catch (err) {
       console.log(err);
     }
@@ -88,22 +88,14 @@ const Pay = (props) => {
       setFormatError(false);
     }
   };
-
-  //const [dragActive, setDragActive] = useState(false);
   const handleDrag = function (e) {
     e.preventDefault();
     e.stopPropagation();
-    // if (e.type === "dragenter" || e.type === "dragover") {
-    //   setDragActive(true);
-    // } else if (e.type === "dragleave") {
-    //   setDragActive(false);
-    // }
   };
 
   const handleDrop = function (e) {
     e.preventDefault();
     e.stopPropagation();
-    //setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       console.log("e.dataTransfer.files : ", e.dataTransfer.files);
       handleImage(e.dataTransfer.files);
@@ -139,8 +131,6 @@ const Pay = (props) => {
                 onChange={(e) =>
                   setValues({
                     ...values,
-
-                    //tran_pay: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1")
                     tran_pay: e.target.value.replace(numberValidation, "$1"),
                   })
                 }
@@ -236,14 +226,13 @@ const Pay = (props) => {
                       setFormatError(false);
                     }}
                   >
-                    <IconX className= " static h-4 w-4" />
+                    <IconX className=" static h-4 w-4" />
                   </button>
                 </div>
               </div>
             ) : (
               <div></div>
             )}
-
 
             {fileSizeExceeded && (
               <p className="error">

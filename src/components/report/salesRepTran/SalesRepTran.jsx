@@ -1,5 +1,3 @@
-import React from "react";
-
 const SalesRepTran = (props) => {
   return (
     <div className="grid grid-cols-7 text-center border-b border-slate-300 hover:shadow hover:bg-blue-100/50 cursor-pointer">

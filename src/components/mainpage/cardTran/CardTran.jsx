@@ -4,21 +4,22 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { Skeleton } from "@mui/material";
+import { Link } from "react-router-dom";
 const CardTran = (props) => {
   const { userId, change, parties } = useContext(UserContext);
   const [result, setResult] = useState([]);
   const [skeleton, setSkeleton] = useState(true);
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchDataUsingId/${userId}`
+      )
       .then((response) => {
         setResult(response.data);
         setSkeleton(false);
       });
-  }, [change , userId]);
+  }, [change, userId]);
 
-  
-  //var parties = "1";
   return (
     <div>
       <div>
@@ -57,58 +58,65 @@ const CardTran = (props) => {
             </div>
             <div>
               <div className="flex items-center gap-6 buttons">
-                <button >
+                <button>
                   <IconChecklist className="w-10" />
                   Report
                 </button>
-                <button >
+                <button>
                   <IconSettings />
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          
-              <div
-                className="flex justify-between space-x-6 items-center p-6"
-                key={userId}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="icon2">
-                    <IconUser className="text-blue-500" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-xl">{result[0].cust_name}</span>
-
-                    <span className="text-slate-500 text-xs">
-                      {result[0].cust_number}
-                    </span>
-                  </div>
-                </div>
-                <div>
-
-                {parties === 3 ?  
-                  <div className="flex items-center gap-6 buttons ">
-                    <button >
+          <div
+            className="flex justify-between space-x-6 items-center p-6"
+            key={userId}
+          >
+            <div className="flex items-center gap-4">
+              <div className="icon2">
+                <IconUser className="text-blue-500" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl">{result[0].cust_name}</span>
+                <span className="text-slate-500 text-xs">
+                  {result[0].cust_number}
+                </span>
+              </div>
+            </div>
+            <div>
+              {parties === 3 ? (
+                <div className="flex items-center gap-6 buttons">
+                  <Link to="/custReport">
+                    <button>
                       <IconChecklist className="w-10" />
                       Report
                     </button>
-                    <button onClick={props.edit} >
-                      <IconSettings />
-                    </button>
-                  </div>
-                  : <div className="flex items-center gap-6 buttons ">
-                  <button disabled className="hover:!bg-slate-200 !border-none flex gap-1 cursor-not-allowed !text-slate-400 bg-slate-200">
+                  </Link>
+                  <button onClick={props.edit}>
+                    <IconSettings />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-6 buttons ">
+                  <button
+                    disabled
+                    className="hover:!bg-slate-200 !border-none flex gap-1 cursor-not-allowed !text-slate-400 bg-slate-200"
+                  >
                     <IconChecklist className="w-10" />
                     Report
                   </button>
-                  <button onClick={props.edit} disabled className=" hover:!bg-slate-200 !border-none flex gap-1 !text-slate-400 bg-slate-200 cursor-not-allowed" >
+                  <button
+                    onClick={props.edit}
+                    disabled
+                    className=" hover:!bg-slate-200 !border-none flex gap-1 !text-slate-400 bg-slate-200 cursor-not-allowed"
+                  >
                     <IconSettings />
                   </button>
-                </div> }
                 </div>
-              </div>
-            
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>

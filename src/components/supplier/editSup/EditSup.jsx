@@ -24,6 +24,8 @@ import { useContext } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { Skeleton } from "@mui/material";
+import Tooltip from '@mui/material/Tooltip';
+
 const EditSup = (props) => {
   const [skeleton, setSkeleton] = useState(true);
 
@@ -217,7 +219,7 @@ const EditSup = (props) => {
                     <div className="customer-info-text">
                       <h2>Shipping Address</h2>
                       <p className=" font-medium">
-                        {" "}
+                        
                         <Skeleton
                           variant="rectangular"
                           width={80}
@@ -264,7 +266,9 @@ const EditSup = (props) => {
                     <div className="">
                       <div className="flex items-center justify-between">
                         <h2 className="text-lg font-normal text-gray-700 -mt-1">
+                           
                           {item.sup_name}
+                          
                         </h2>
                       </div>
                       <p className="text-gray-500  bg-slate-200 rounded text-center">
@@ -327,7 +331,9 @@ const EditSup = (props) => {
                         <div className="customer-info-text">
                           <h2>Shipping Address</h2>
                           <p className=" font-medium">
+                          {/* <Tooltip title={item.sup_sflat}> */}
                             {item.sup_sflat ? item.sup_sflat + "," : ""}
+                            {/* </Tooltip> */}
                             {item.sup_sarea ? " " + item.sup_sarea + "," : ""}
                             {item.sup_scity ? " " + item.sup_scity + "," : ""}
                             {item.sup_sstate ? " " + item.sup_sstate + "," : ""}
@@ -343,7 +349,7 @@ const EditSup = (props) => {
                         <div className="customer-info-text">
                           <h2>Billing Address</h2>
                           <p className=" font-medium">
-                            {item.sup_bflat ? item.sup_bflat + "," : ""}
+                            {item.sup_bflat ? item.sup_bflat.slice(0,30) + "," : ""}
                             {item.sup_barea ? " " + item.sup_barea + "," : ""}
                             {item.sup_bcity ? " " + item.sup_bcity + "," : ""}
                             {item.sup_bstate ? " " + item.sup_bstate + "," : ""}
@@ -450,7 +456,7 @@ const EditSup = (props) => {
                               ),
                             })
                           }
-                          inputProps={{ maxLength: 20 }}
+                          inputProps={{ maxLength: 35 }}
                           required
                         />
                       </Box>
@@ -549,7 +555,7 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_sflat}
-                              inputProps={{ maxLength: 40 }}
+                              inputProps={{ maxLength: 35 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -570,7 +576,7 @@ const EditSup = (props) => {
                               className="w-full"
                               size="small"
                               value={info.sup_sarea}
-                              inputProps={{ maxLength: 40 }}
+                              inputProps={{ maxLength: 35 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -610,7 +616,7 @@ const EditSup = (props) => {
                               className="sec-1 w-full"
                               size="small"
                               value={info.sup_scity}
-                              inputProps={{ maxLength: 30 }}
+                              inputProps={{ maxLength: 35 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -629,7 +635,7 @@ const EditSup = (props) => {
                               className="sec-2"
                               size="small"
                               value={info.sup_sstate}
-                              inputProps={{ maxLength: 30 }}
+                              inputProps={{ maxLength: 35 }}
                               onChange={(e) =>
                                 setInfo({
                                   ...info,
@@ -669,7 +675,7 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_bflat}
-                                inputProps={{ maxLength: 40 }}
+                                inputProps={{ maxLength: 35 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -689,7 +695,7 @@ const EditSup = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={info.sup_barea}
-                                inputProps={{ maxLength: 40 }}
+                                inputProps={{ maxLength: 35 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -729,7 +735,7 @@ const EditSup = (props) => {
                                 className="sec-1"
                                 size="small"
                                 value={info.sup_bcity}
-                                inputProps={{ maxLength: 30 }}
+                                inputProps={{ maxLength: 35 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,
@@ -748,7 +754,7 @@ const EditSup = (props) => {
                                 className="sec-2"
                                 size="small"
                                 value={info.sup_bstate}
-                                inputProps={{ maxLength: 30 }}
+                                inputProps={{ maxLength: 35 }}
                                 onChange={(e) =>
                                   setInfo({
                                     ...info,

@@ -81,17 +81,16 @@ export default function AddAccount() {
         import.meta.env.VITE_BACKEND + "/api/act/sendData",
         formData
       );
-      
+
       changeAccountId(res.data);
       changeChange();
-      
+
       navigate("/settings/account");
     } catch (err) {
       console.log(err);
     }
   };
 
-  
   //const uId = 5;
   // const [info, setInfo] = useState([]);
 
@@ -259,12 +258,12 @@ export default function AddAccount() {
 
   useEffect(() => {
     if (
-      (data.business_acc_no.length > 0 && data.business_acc_no.length < 15 ) ||
+      (data.business_acc_no.length > 0 && data.business_acc_no.length < 15) ||
       data.business_bank_name.length > 0 ||
-      (data.business_ifsc_code.length > 0 && data.business_ifsc_code.length < 10  ) ||
+      (data.business_ifsc_code.length > 0 &&
+        data.business_ifsc_code.length < 10) ||
       data.business_payee_name.length > 0
     ) {
-      
       setBankDetails(true);
     } else if (
       data.business_acc_no.length > 16 &&
@@ -272,18 +271,19 @@ export default function AddAccount() {
       data.business_ifsc_code.length > 10 &&
       data.business_payee_name.length > 0
     ) {
-      
       setBankDetails(false);
     }
-  }, [data.business_bank_name , data.business_acc_no, data.business_ifsc_code, data.business_payee_name]);
-
-  
+  }, [
+    data.business_bank_name,
+    data.business_acc_no,
+    data.business_ifsc_code,
+    data.business_payee_name,
+  ]);
 
   return (
     <div className="b-form ">
       <Navbar />
       <div className="business_acc_section-wrapper">
-        
         <div className="section-1">
           <Box
             component="form"
@@ -309,7 +309,7 @@ export default function AddAccount() {
                 onChange={(e) =>
                   setData({
                     ...data,
-                    business_name: e.target.value.replace(/[^A-Z a-z]/g, ""),
+                    business_name: e.target.value.replace(/[^A-Z a-z .]/g, ""),
                   })
                 }
                 required
@@ -330,7 +330,7 @@ export default function AddAccount() {
                   setData({
                     ...data,
                     business_address: e.target.value.replace(
-                      /[^0-9A-Z a-z /]/g,
+                      /[^0-9A-Z a-z , . /]/g,
                       ""
                     ),
                   })
@@ -622,7 +622,6 @@ export default function AddAccount() {
             </div>
           </Box>
         </div>
-        {/* )} */}
       </div>
     </div>
   );

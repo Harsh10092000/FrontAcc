@@ -73,7 +73,7 @@ const AddSupplier = (props) => {
       values.sup_number !== "" &&
       values.sup_number.length > 9 &&
       values.sup_amt !== "" &&
-      values.sup_amt > 0 &&
+      values.sup_amt >= 0 &&
       values.sup_amt_type !== "" &&
       (values.sup_spin === "" || values.sup_spin.length > 5) &&
       (values.sup_bpin === "" || values.sup_bpin.length > 5)
@@ -108,7 +108,7 @@ const AddSupplier = (props) => {
                     className="w-full"
                     size="small"
                     name="sup_name"
-                    inputProps={{ maxLength: 20 }}
+                    inputProps={{ maxLength: 35 }}
                     value={values.sup_name}
                     onChange={(e) =>
                       setValues({
@@ -228,7 +228,7 @@ const AddSupplier = (props) => {
                         className="w-full"
                         size="small"
                         name="sup_sflat"
-                        inputProps={{ maxLength: 40 }}
+                        inputProps={{ maxLength: 35 }}
                         value={values.sup_sflat}
                         onChange={(e) =>
                           setValues({
@@ -250,7 +250,7 @@ const AddSupplier = (props) => {
                         size="small"
                         name="sup_sarea"
                         value={values.sup_sarea}
-                        inputProps={{ maxLength: 40 }}
+                        inputProps={{ maxLength: 35 }}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -289,7 +289,7 @@ const AddSupplier = (props) => {
                         size="small"
                         name="sup_scity"
                         value={values.sup_scity}
-                        inputProps={{ maxLength: 30 }}
+                        inputProps={{ maxLength: 35 }}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -309,7 +309,7 @@ const AddSupplier = (props) => {
                         size="small"
                         name="sup_sstate"
                         value={values.sup_sstate}
-                        inputProps={{ maxLength: 30 }}
+                        inputProps={{ maxLength: 35 }}
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -351,7 +351,7 @@ const AddSupplier = (props) => {
                           size="small"
                           name="sup_bflat"
                           value={values.sup_bflat}
-                          inputProps={{ maxLength: 40 }}
+                          inputProps={{ maxLength: 35 }}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -372,7 +372,7 @@ const AddSupplier = (props) => {
                           size="small"
                           name="sup_barea"
                           value={values.sup_barea}
-                          inputProps={{ maxLength: 40 }}
+                          inputProps={{ maxLength: 35 }}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -411,7 +411,7 @@ const AddSupplier = (props) => {
                           size="small"
                           name="sup_bcity"
                           value={values.sup_bcity}
-                          inputProps={{ maxLength: 30 }}
+                          inputProps={{ maxLength: 35 }}
                           onChange={(e) =>
                             setValues({
                               ...values,
@@ -431,7 +431,7 @@ const AddSupplier = (props) => {
                           size="small"
                           name="sup_bstate"
                           value={values.sup_bstate}
-                          inputProps={{ maxLength: 30 }}
+                          inputProps={{ maxLength: 35 }}
                           onChange={(e) =>
                             setValues({
                               ...values,

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Navbar from "../../components/navbar/Navbar";
 import SupLeft from "../../components/supplier/supLeft/SupLeft";
 import SupRight from "../../components/supplier/supRight/SupRight";
@@ -100,16 +100,7 @@ const MyApp = () => {
       )}
     </Box>
   );
-
-  const [active, setActive] = useState(false);
   const { supId } = useContext(UserContext);
-  const update = () => {
-    supId > 0 ? setActive(true) : setActive(false);
-  };
-  useEffect(() => {
-    update();
-  }, [supId]);
-
   return (
     <React.Fragment>
       <Drawer
@@ -158,7 +149,7 @@ const MyApp = () => {
         <Navbar />
         <div className="scontent flex">
           <SupLeft add={toggleDrawer("add", true)} />
-          {active ? (
+          {supId > 0 ? (
             <SupRight
               edit={toggleDrawer("edit", true)}
               pay={toggleDrawer("pay", true)}

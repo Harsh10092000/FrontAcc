@@ -67,14 +67,15 @@ export const UserContextProvider = ({ children }) => {
     setStaffId(staffId);
   };
 
-  const [uId, setUId] = useState(1);
-  const changeUId = (uId) => {
-    setUId(uId);
-  };
-
   const [testId, setTestId] = useState(0);
   const changeTestId = (uId) => {
     setTestId(uId);
+  };
+
+  //user
+  const [uId, setUId] = useState(1);
+  const changeUId = (uId) => {
+    setUId(uId);
   };
 
   const [access, setAccess] = useState(1);
@@ -87,30 +88,40 @@ export const UserContextProvider = ({ children }) => {
     setUserType(userType);
   };
 
-  
-  //  const { currentUser } = useContext(AuthContext);
+  //gst code
+  const [hsnId, setHsnId] = useState(0);
+  const changeHsnId = (hsnId) => {
+    setHsnId(hsnId);
+  };
 
-  //  useEffect(() => {
-  //   if (currentUser) {
-  //     setAccountId(currentUser[0].business_id);
-  //     changeUId(userData[0].log_id)
-  //     if (currentUser[0].log_user === 0) {
-  //       changeParties(currentUser[0].staff_parties);
-  //       changeBills(currentUser[0].staff_bills);
-  //       changeInventory(currentUser[0].staff_inventory);
-  //     }
-  //   }
-  //  } , []);
+  const [sacId, setSacId] = useState(0);
+  const changeSacId = (sacId) => {
+    setSacId(sacId);
+  };
 
+  //admin
+  const [adminAccess, setAdminAccess] = useState(0);
+  const changeAdminAccess = (adminAccess) => {
+    setAdminAccess(adminAccess);
+  };
+
+  const [adminId, setAdminId] = useState(0);
+  const changeAdminId = (adminId) => {
+    setAdminId(adminId);
+  };
+
+  const [adminType, setAdminType] = useState(0);
+  const changeAdminType = (adminType) => {
+    setAdminType(adminType);
+  };
   const { currentUser } = useContext(AuthContext);
-
   useEffect(() => {
     if (currentUser) {
       setAccountId(currentUser[0].business_id);
       changeUId(currentUser[0].log_id);
-      changeAccess(currentUser[0].access)
-      changeUserType(currentUser[0].log_user)
-      console.log(currentUser[0].log_user, currentUser[0].access)
+      changeAccess(currentUser[0].access);
+      changeUserType(currentUser[0].log_user);
+      console.log(currentUser[0].log_user, currentUser[0].access);
       if (currentUser[0].log_user === 0) {
         changeParties(currentUser[0].staff_parties);
         changeBills(currentUser[0].staff_bills);
@@ -118,8 +129,6 @@ export const UserContextProvider = ({ children }) => {
       }
     }
   }, []);
-
-  
 
   return (
     <UserContext.Provider
@@ -162,6 +171,16 @@ export const UserContextProvider = ({ children }) => {
         changeAccess,
         userType,
         changeUserType,
+        sacId,
+        changeSacId,
+        hsnId,
+        changeHsnId,
+        adminAccess,
+        changeAdminAccess,
+        adminId,
+        changeAdminId,
+        adminType,
+        changeAdminType,
       }}
     >
       {children}

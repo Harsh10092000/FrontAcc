@@ -7,11 +7,13 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const ExLeft = (props) => {
-  const { change, expId , accountId } = useContext(UserContext);
+  const { change, expId, accountId } = useContext(UserContext);
   const [result, setResult] = useState([]);
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/exp/fetchExpensesData/${accountId}`)
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/exp/fetchExpensesData/${accountId}`
+      )
       .then((response) => {
         setResult(response.data);
       });
@@ -117,7 +119,7 @@ const ExLeft = (props) => {
       </div>
       <div className="expbtn px-6 py-4">
         <button
-          className="rounded-lg p-2 w-full text-emerald-600 hover:text-white hover:bg-emerald-600"
+          className="rounded-lg p-2 w-full shadow shadow-emerald-600 text-emerald-600 hover:text-white hover:bg-emerald-600 transition-all ease-in-out duration-300"
           onClick={props.add}
         >
           Add Expense
