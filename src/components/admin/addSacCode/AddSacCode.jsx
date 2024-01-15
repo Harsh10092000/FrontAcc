@@ -1,10 +1,9 @@
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
-
 import { UserContext } from "../../../context/UserIdContext";
-import axios from "axios";
 
-export const AddSacCode = (props) => {
+const AddSacCode = () => {
   const { changeChange } = useContext(UserContext);
 
   const [values, setValues] = useState({
@@ -35,7 +34,6 @@ export const AddSacCode = (props) => {
       setSubmitDisabled(false);
     } else setSubmitDisabled(true);
   }, [values.sac_code, values.sac_desc]);
-
   return (
     <form className="block overflow-hidden" method="post">
       <h1 className="text_left heading text-green-500 font-semibold text-lg">
@@ -115,7 +113,6 @@ export const AddSacCode = (props) => {
                 }
               />
             </Box>
-            
           </Box>
         </div>
       </div>
@@ -135,3 +132,5 @@ export const AddSacCode = (props) => {
     </form>
   );
 };
+
+export default AddSacCode;

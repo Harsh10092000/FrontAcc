@@ -4,7 +4,7 @@ import {
   IconUser,
   IconAlertOctagonFilled,
 } from "@tabler/icons-react";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -18,7 +18,7 @@ import {
 import { useSnackbar } from "notistack";
 
 const SettingAcCard = (props) => {
-  const { accountId, changeChange, changeAccountId, userType } =
+  const { accountId, changeChange, changeAccountId, userType, changeAccess } =
     useContext(UserContext);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -45,13 +45,16 @@ const SettingAcCard = (props) => {
   const access_validation = parseInt(props.data.access) !== 0;
   const user_validation = parseInt(userType) !== 0;
 
+
   const deleteAc = async () => {
     await axios.delete(
       import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
     );
+   
+    changeAccountId(0)
+    
     handleClickVariant("success", "Deleted Successfully");
     changeChange();
-    //changeAccountId(0);
     closeDialog();
   };
 

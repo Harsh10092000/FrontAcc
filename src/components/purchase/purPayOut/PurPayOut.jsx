@@ -282,12 +282,11 @@ const PayOut = (props) => {
             <div>
               Remaning Amount :{" "}
               {(
-                (parseFloat(purchaseDataById.purchase_amt) -
-                parseFloat(totalAmtPaid)).toFixed(2) -
-                parseFloat(amtOut ? amtOut : 0)
+                parseFloat(purchaseDataById.purchase_amt).toFixed(2) -
+                parseFloat(totalAmtPaid) -
+                parseFloat(amtOut)
               ).toFixed(2)}
             </div>
-            
           </Box>
           <div className="cashout-btn-wrapper">
             {submitDisabled ? (

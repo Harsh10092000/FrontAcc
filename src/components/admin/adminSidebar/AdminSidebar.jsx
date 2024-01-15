@@ -20,12 +20,12 @@ const AdminSidebar = () => {
       icon: <IconBrandDatabricks />,
     },
     {
-      linkto: "/admin/payplan",
+      linkto: "/payplan",
       name: "Payment Plan",
       icon: <IconWallet />,
     },
     {
-      linkto: "/admin/moderator",
+      linkto: "/moderator",
       name: "Moderator",
       icon: <IconBrandAmongUs />,
     },
@@ -40,7 +40,7 @@ const AdminSidebar = () => {
       icon: <IconDevices2 />,
     },
     {
-      linkto: "/admin/logout",
+      linkto: "/logout",
       name: "Logout",
       icon: <IconLogout2 />,
     },

@@ -2,17 +2,14 @@ import React from "react";
 import AdminHsnCard from "../adminHsnCard/AdminHsnCard";
 import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
-import { AddHsnCode } from "../addHsnCode/AadHsnCode";
-import { EditHsnCode } from "../editHsnCode/EditHsnCode";
+import AddHsnCode from "../addHsnCode/AddHsnCode";
 import { useSnackbar } from "notistack";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import { IconPlus } from "@tabler/icons-react";
 import { UserContext } from "../../../context/UserIdContext";
-
-
+import EditHsnCode from "../editHsnCode/EditHsnCode";
 const AdminHsn = () => {
-  
   const [visibleItems, setVisibleItems] = useState(15);
   const containerRef = useRef(null);
   const handleIntersection = (entries, observer) => {
@@ -41,17 +38,14 @@ const AdminHsn = () => {
   let a = false;
   useEffect(() => {
     if (a === false) {
-      
       axios
         .get(import.meta.env.VITE_BACKEND + `/api/ad/fetchHsnCodes`)
         .then((response) => {
           setHsnData(response.data);
-        })
+        });
       a = true;
     }
   }, [change]);
-
-
 
   const { enqueueSnackbar } = useSnackbar();
   const [state, setState] = useState({
@@ -80,8 +74,8 @@ const AdminHsn = () => {
   const handleSort = (e) => {
     setSortOption(e.target.value);
   };
-  const data = hsnData.slice(hsnData.length - 10 , hsnData.length);
-  console.log("data : " , data)
+  const data = hsnData.slice(hsnData.length - 10, hsnData.length);
+  console.log("data : ", data);
   let sortedUsers = [...hsnData];
 
   if (sortOption === "recent") {
@@ -194,40 +188,42 @@ const AdminHsn = () => {
           </div>
           <div className="flex flex-col gap-3 h-full overflow-y-scroll p-1">
             {
-            // searchValue !== null && (searchValue !== "") === true &&
-             sortedUsers.slice(0, visibleItems)
-              .filter((code) => {
-                if (filter === "0") {
-                  return parseInt(code.igst) === 0;
-                } else if (filter === "5") {
-                  return parseInt(code.igst) === 5;
-                } else if (filter === "12") {
-                  return parseInt(code.igst) === 12;
-                } else if (filter === "18") {
-                  return parseInt(code.igst) === 18;
-                } else if (filter === "28") {
-                  return parseInt(code.igst) === 28;
-                } else if (filter === "35") {
-                  return parseInt(code.igst) === 35;
-                } else if (filter === "all") {
-                  return true;
-                }
-              })
-              .filter(
-                (code) =>
-                  code.hsn_code.toString().startsWith(searchValue) ||
-                  code.hsn_desc
-                    .toLowerCase()
-                    .startsWith(searchValue.toLowerCase())
-              )
-              .map((item) => (
-                <AdminHsnCard
-                  data={item}
-                  add={toggleDrawer("add", true)}
-                  edit={toggleDrawer("edit", true)}
-                />
-              ))}
-              <div ref={containerRef}></div>
+              // searchValue !== null && (searchValue !== "") === true &&
+              sortedUsers
+                .slice(0, visibleItems)
+                .filter((code) => {
+                  if (filter === "0") {
+                    return parseInt(code.igst) === 0;
+                  } else if (filter === "5") {
+                    return parseInt(code.igst) === 5;
+                  } else if (filter === "12") {
+                    return parseInt(code.igst) === 12;
+                  } else if (filter === "18") {
+                    return parseInt(code.igst) === 18;
+                  } else if (filter === "28") {
+                    return parseInt(code.igst) === 28;
+                  } else if (filter === "35") {
+                    return parseInt(code.igst) === 35;
+                  } else if (filter === "all") {
+                    return true;
+                  }
+                })
+                .filter(
+                  (code) =>
+                    code.hsn_code.toString().startsWith(searchValue) ||
+                    code.hsn_desc
+                      .toLowerCase()
+                      .startsWith(searchValue.toLowerCase())
+                )
+                .map((item) => (
+                  <AdminHsnCard
+                    data={item}
+                    add={toggleDrawer("add", true)}
+                    edit={toggleDrawer("edit", true)}
+                  />
+                ))
+            }
+            <div ref={containerRef}></div>
           </div>
         </div>
       </div>

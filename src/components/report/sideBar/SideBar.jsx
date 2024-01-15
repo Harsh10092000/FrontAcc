@@ -38,15 +38,15 @@ const SideBar = () => {
     },
   ];
   return (
-    <div className="w-[20vw]">
-      <div className="options p-5 flex flex-col gap-5 ">
+    <div className="w-[15vw]">
+      <div className="pr-5 py-4 flex flex-col gap-5 ">
         {options.map((item, index) => (
           <Link to={item.linkto} key={index}>
             <div
               className={
                 location.pathname === item.linkto
-                  ? "item bg-blue-300/25 flex rounded-xl px-4 py-2 gap-4 items-center text-blue-500 cursor-pointer"
-                  : "item hover:bg-blue-300/25 flex rounded-xl px-4 py-2 gap-4 items-center text-blue-500 cursor-pointer"
+                  ? "item bg-blue-300/25 flex rounded-e-xl px-4 py-2 gap-4 items-center text-blue-500 cursor-pointer"
+                  : "item hover:bg-blue-300/25 flex rounded-e-xl px-4 py-2 gap-4 items-center text-blue-500 cursor-pointer"
               }
               key={index}
               style={{ transition: "all 200ms ease-in-out" }}

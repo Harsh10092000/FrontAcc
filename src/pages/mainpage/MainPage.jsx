@@ -148,6 +148,7 @@ const MyApp = () => {
         <Navbar />
         <div className="content flex">
           <MainLeft add={toggleDrawer("add", true)} />
+
           {userId > 0 ? (
             <MainRight
               edit={toggleDrawer("edit", true)}

@@ -179,6 +179,7 @@ const PurchaseForm = () => {
   });
 
   const [searchValue, setSearchValue] = useState("");
+  const [searchCode, setSearchCode] = useState("");
 
   const today = new Date();
   const month = today.getMonth() + 1;
@@ -344,20 +345,6 @@ const PurchaseForm = () => {
     );
   };
 
-  const handleCustomGstChange = (productId, igst, cess) => {
-    setNerArr((nerArr) =>
-      nerArr.map((item) =>
-        productId === item.product_id
-          ? {
-              ...item,
-              igst: igst,
-              cgst: igst / 2,
-              cess: cess,
-            }
-          : item
-      )
-    );
-  };
 
   const handleIncrease = (productId) => {
     setProductList((productList) =>
@@ -370,7 +357,6 @@ const PurchaseForm = () => {
           : item
       )
     );
-    console.log("product list : ", productList, nerArr);
   };
 
   const handleIncrease2 = (productId) => {
@@ -415,11 +401,35 @@ const PurchaseForm = () => {
     );
   };
 
-  // for (let i = 0; i < nerArr.length; i++) {
-  //   if (nerArr[i].item_qty === 0) {
-  //     nerArr.pop(nerArr[i]);
-  //   }
-  // }
+
+  const handleCustomGstChange = (productId, igst) => {
+    setNerArr((nerArr) =>
+      nerArr.map((item) =>
+        productId === item.product_id
+          ? {
+              ...item,
+              igst: igst ? parseFloat(igst) : 0,
+              cgst: igst ? parseFloat(igst) / 2 : 0,
+            }
+          : item
+      )
+    );
+  };
+
+  const handleCustomCessChange = (productId, cess) => {
+    setNerArr((nerArr) =>
+      nerArr.map((item) =>
+        productId === item.product_id
+          ? {
+              ...item,
+              cess: cess ? parseFloat(cess) : 0,
+            }
+          : item
+      )
+    );
+  };
+
+
 
   useEffect(() => {
     setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
@@ -506,7 +516,6 @@ const PurchaseForm = () => {
   };
 
   const check1 = (item_discount_unit, purchase_price, item_discount_value) => {
-    console.log("check1")
     return item_discount_unit === "percentage"
       ? parseFloat(purchase_price) -
           (purchase_price * (item_discount_value ? item_discount_value : 1)) /
@@ -515,28 +524,35 @@ const PurchaseForm = () => {
   };
 
   const check2 = (
-    igst,
+    item_igst,
+    item_cess,
     item_discount_unit,
     purchase_price,
     item_discount_value
   ) => {
-    console.log("check2")
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return item_discount_unit === "percentage"
-      ? ((purchase_price / (igst / 100 + 1)) *
+      ? ((purchase_price / (tax / 100 + 1)) *
           (100 - (item_discount_value ? item_discount_value : 0))) /
           100
-      : purchase_price / (igst / 100 + 1) -
+      : purchase_price / (tax / 100 + 1) -
           (item_discount_value ? item_discount_value : 0);
   };
 
   const check3 = (
-    igst,
+    item_igst,
+    item_cess,
     item_discount_unit,
     purchase_price,
     item_discount_value
   ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return (
-      (igst *
+      (tax *
         (item_discount_unit === "percentage"
           ? purchase_price - (purchase_price * item_discount_value) / 100
           : purchase_price)) /
@@ -545,17 +561,21 @@ const PurchaseForm = () => {
   };
 
   const check4 = (
-    igst,
+    item_igst,
+    item_cess,
     item_discount_unit,
     purchase_price,
     item_discount_value
   ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return item_discount_unit === "percentage"
-      ? ((purchase_price / (igst / 100 + 1)) *
+      ? ((purchase_price / (tax / 100 + 1)) *
           ((100 - item_discount_value) / 100) *
-          igst) /
+          tax) /
           100
-      : purchase_price - purchase_price / (igst / 100 + 1);
+      : purchase_price - purchase_price / (tax / 100 + 1);
   };
 
   const handleContinue3 = () => {
@@ -569,6 +589,7 @@ const PurchaseForm = () => {
       in_discount_price: "",
       in_discount_unit: "amount",
       in_gst_prectentage: "",
+      in_cess_prectentage: "",
       in_gst_amt: "",
       in_total_amt: "",
       in_cat: "",
@@ -601,23 +622,31 @@ const PurchaseForm = () => {
                       item.igst,
                       item.item_discount_unit,
                       item.purchase_price,
-                      item.item_discount_value
+                      item.item_discount_value,
+                      item.cess
                     ),
 
               in_discount_unit: item.item_discount_unit
                 ? item.item_discount_unit
                 : "amount",
-
-              in_gst_prectentage: item.igst ? item.igst : "-",
+                // in_gst_prectentage:
+                // item.igst || item.item_cess
+                //   ? ((item.igst ? parseFloat(item.igst) : 0) + ( item.cess ? parseFloat(item.cess) : 0 ) )
+                //   : "-",
+                in_gst_prectentage: item.igst ? parseFloat(item.igst) : 0,
+              in_cess_prectentage: item.cess ? parseFloat(item.cess) : 0,
+              // in_gst_prectentage: item.igst ? item.igst : "-",
               in_gst_amt:
                 item.tax === "0"
                   ? check3(
+                      item.cess,
                       item.igst,
                       item.item_discount_unit,
                       item.purchase_price,
                       item.item_discount_value
                     )
                   : check4(
+                      item.cess,
                       item.igst,
                       item.item_discount_unit,
                       item.purchase_price,
@@ -737,7 +766,6 @@ const PurchaseForm = () => {
                 >
                   <Box>
                     <TextField
-                     
                       {...fieldAtt}
                       placeholder="Search for an expense item "
                       onChange={(e) => {
@@ -785,8 +813,6 @@ const PurchaseForm = () => {
                                           handleDecrease2(
                                             filteredItem.product_id
                                           );
-
-                                        
                                       }}
                                       className="px-3 text-blue-600  hover:bg-blue-200 transition-all ease-in"
                                     >
@@ -950,17 +976,15 @@ const PurchaseForm = () => {
                                           }
                                           helperText={
                                             item.igst > 0 || item.cess > 0
-                                              
-                                                ? "(" +
-                                                  item.cgst +
-                                                  "% CGST + " +
-                                                  item.cgst +
-                                                  "% SGST/UT GST ; " +
-                                                  item.igst +
-                                                  "% IGST ; " +
-                                                  item.cess +
-                                                  "% CESS )"
-                                                
+                                              ? "(" +
+                                                item.cgst +
+                                                "% CGST + " +
+                                                item.cgst +
+                                                "% SGST/UT GST ; " +
+                                                item.igst +
+                                                "% IGST ; " +
+                                                item.cess +
+                                                "% CESS )"
                                               : ""
                                           }
                                           className="sec-2 w-full"
@@ -982,26 +1006,34 @@ const PurchaseForm = () => {
                                           <TextField
                                             label="Search By"
                                             className=" my-0 z-0"
-                                            {...fieldAtt}
+                                           
                                             placeholder="HSN Code or Product Name "
                                             onChange={(e) => {
-                                              setSearchValue(e.target.value);
+                                              setSearchCode(e.target.value);
                                             }}
                                           />
-
-                                          {hsnCodes
+                                         
+                                         
+                                          {searchCode !== null &&
+                                          searchCode !== "" &&
+                                          hsnCodes      
                                             .filter(
                                               (code) =>
                                                 code.hsn_code
                                                   .toString()
-                                                  .startsWith(searchValue) ||
-                                                code.hsn_desc.startsWith(
-                                                  searchValue
-                                                )
+                                                  .startsWith(searchCode) ||
+                                                code.hsn_desc
+                                                  .toString()
+                                                  .toLowerCase()
+                                                  .startsWith(
+                                                    searchCode
+                                                      .toString()
+                                                      .toLowerCase()
+                                                  )
                                             )
                                             .map((hsnItem) => (
                                               <div
-                                                key={hsnItem.hsn_code}
+                                                key={hsnItem.id}
                                                 className="flex card-sec"
                                                 onClick={() => {
                                                   handleAddHsnCode(
@@ -1091,10 +1123,22 @@ const PurchaseForm = () => {
                                             className="sec-1 w-full"
                                             {...fieldAtt}
                                             required
-                                            value={customGst}
+                                            value={
+                                              item.igst ? item.igst : 0
+                                            }
                                             inputProps={{ maxLength: 10 }}
+                                            // onChange={(e) => {
+                                            //   setcustomGst(
+                                            //     e.target.value.replace(
+                                            //       numberValidation,
+                                            //       "$1"
+                                            //     )
+                                            //   );
+                                            // }}
                                             onChange={(e) => {
-                                              setcustomGst(
+                                              handleCustomGstChange
+                                              (
+                                                item.product_id,
                                                 e.target.value.replace(
                                                   numberValidation,
                                                   "$1"
@@ -1107,18 +1151,30 @@ const PurchaseForm = () => {
                                             className="sec-2 w-full"
                                             {...fieldAtt}
                                             required
+                                            value={
+                                              item.cess ? item.cess : 0
+                                            }
                                             inputProps={{ maxLength: 10 }}
+                                            // onChange={(e) => {
+                                            //   setCustomeCess(
+                                            //     e.target.value.replace(
+                                            //       /\D/g,
+                                            //       ""
+                                            //     )
+                                            //   );
+                                            // }}
                                             onChange={(e) => {
-                                              setCustomeCess(
+                                              handleCustomCessChange(
+                                                item.product_id,
                                                 e.target.value.replace(
-                                                  /\D/g,
-                                                  ""
+                                                  numberValidation,
+                                                  "$1"
                                                 )
                                               );
                                             }}
                                           />
                                         </Box>
-                                        <Box className="box-sec">
+                                        {/* <Box className="box-sec">
                                           <button
                                             onClick={(e) => {
                                               e.preventDefault(),
@@ -1131,7 +1187,7 @@ const PurchaseForm = () => {
                                           >
                                             Add Custome Gst
                                           </button>
-                                        </Box>
+                                        </Box> */}
                                       </>
                                     ) : (
                                       <div></div>

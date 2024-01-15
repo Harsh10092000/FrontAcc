@@ -39,7 +39,6 @@ import AdminSac from "./components/admin/adminSac/AdminSac";
 import AdminHsn from "./components/admin/adminHsn/AdminHsn";
 import AdminLogin from "./pages/adminLogin/AdminLogin";
 
-
 const App = () => {
   const { currentUser } = useContext(AuthContext);
   const ProtectedRoute = ({ children }) => {
@@ -48,8 +47,6 @@ const App = () => {
     }
     return children;
   };
-
- 
   const router = createBrowserRouter([
     {
       path: "/login",

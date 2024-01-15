@@ -89,7 +89,7 @@ const SalesInvoice = () => {
       .then((response) => {
         setCustData(response.data);
       });
-  }, [data]);
+  }, [saleDataById]);
   const totalRate = saleRightTranData.reduce(function (prev, current) {
     return prev + +current.sale_item_disc_price * current.sale_item_qty;
   }, 0);
@@ -109,7 +109,7 @@ const SalesInvoice = () => {
       return prev + +current.sale_amt_paid;
     }, 0);
 
-  console.log("cust data ", custData, saleDataById.cust_cnct_id);
+
   return (
     <div className="container">
       <div className="flex p-2 items-center justify-around gap-32">

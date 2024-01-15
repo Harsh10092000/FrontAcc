@@ -243,7 +243,7 @@ const SalesEdit = () => {
               item_qty: item.sale_item_qty,
               item_igst: item.sale_item_gst,
               item_cgst: item.sale_item_gst / 2,
-              item_cess: item.sale_item_gst / 2,
+              item_cess: item.sale_item_cess,
               item_discount_value: item.sale_item_disc_val,
               item_discount_unit: item.sale_item_disc_unit,
               add_hsn: false,
@@ -430,33 +430,17 @@ const SalesEdit = () => {
           : item
       )
     );
-    console.log(nerArr);
   };
 
-  // const handleCustomGstChange = (productId, igst, cess) => {
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.item_id
-  //         ? {
-  //             ...item,
-  //             item_igst: parseFloat(igst),
-  //             item_cgst: parseFloat(igst) / 2,
-  //             item_cess: parseFloat(cess),
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
 
   const handleCustomGstChange = (productId, igst) => {
-    console.log(productId, igst);
     setNerArr((nerArr) =>
       nerArr.map((item) =>
         productId === item.item_id
           ? {
               ...item,
-              item_igst: parseFloat(igst),
-              item_cgst: parseFloat(igst) / 2,
+              item_igst: igst > 0 ? parseFloat(igst) : 0,
+              item_cgst: igst > 0 ? parseFloat(igst) / 2 : 0,
             }
           : item
       )
@@ -464,13 +448,13 @@ const SalesEdit = () => {
   };
 
   const handleCustomCessChange = (productId, cess) => {
-    console.log(productId, cess);
+
     setNerArr((nerArr) =>
       nerArr.map((item) =>
         productId === item.item_id
           ? {
               ...item,
-              item_cess: cess,
+              item_cess: cess ? cess : 0,
             }
           : item
       )
@@ -693,6 +677,41 @@ const SalesEdit = () => {
           (item_discount_value ? item_discount_value : 0);
   };
 
+  // const check3 = (
+  //   item_discount_unit,
+  //   item_price,
+  //   item_discount_value,
+  //   item_igst,
+  //   item_cess
+  // ) => {
+  //   return (
+  //     (parseFloat(item_igst) +
+  //       parseFloat(item_cess) *
+  //         (item_discount_unit === "percentage"
+  //           ? item_price - (item_price * item_discount_value) / 100
+  //           : item_price)) /
+  //     100
+  //   );
+  // };
+
+  // const check4 = (
+  //   item_discount_unit,
+  //   item_price,
+  //   item_discount_value,
+  //   item_igst,
+  //   item_cess
+  // ) => {
+  //   const tax =
+  //     (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+  //     (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
+  //   return item_discount_unit === "percentage"
+  //     ? ((item_price / (tax / 100 + 1)) *
+  //         ((100 - item_discount_value) / 100) *
+  //         tax) /
+  //         100
+  //     : item_price - item_price / ((item_igst !== "-" ? tax : 0) / 100 + 1);
+  // };
+
   const check3 = (
     item_discount_unit,
     item_price,
@@ -700,9 +719,11 @@ const SalesEdit = () => {
     item_igst,
     item_cess
   ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return (
-      (parseFloat(item_igst) +
-        parseFloat(item_cess) *
+      (tax *
           (item_discount_unit === "percentage"
             ? item_price - (item_price * item_discount_value) / 100
             : item_price)) /
@@ -739,6 +760,7 @@ const SalesEdit = () => {
       in_discount_price: "",
       in_discount_unit: "amount",
       in_gst_prectentage: "",
+      in_cess_prectentage: "",
       in_gst_amt: "",
       in_total_amt: "",
       in_cat: "",
@@ -778,9 +800,15 @@ const SalesEdit = () => {
                 ? item.item_discount_unit
                 : "amount",
 
-              in_gst_prectentage: item.item_igst
-                ? parseFloat(item.item_igst) + parseFloat(item.item_cess)
-                : "-",
+              // in_gst_prectentage: item.item_igst
+              //   ? ((item.item_igst ? parseFloat(item.item_igst) : 0) + ( item.item_cess ? parseFloat(item.item_cess) : 0 ) )
+              //   : "-",
+              in_gst_prectentage:
+                item.item_igst ? parseFloat(item.item_igst) : 0,
+                
+              in_cess_prectentage:
+                item.item_cess ? parseFloat(item.item_cess) : 0,
+                
               in_gst_amt:
                 item.item_tax === "0"
                   ? check3(
@@ -1165,16 +1193,29 @@ const SalesEdit = () => {
                                             : "GST %"
                                         }
                                         
+                                        // helperText={
+                                        //   "(" +
+                                        //   item.item_cgst +
+                                        //   "% CGST + " +
+                                        //   item.item_cgst +
+                                        //   "% SGST/UT GST ; " +
+                                        //   item.item_igst +
+                                        //   "% IGST ; " +
+                                        //   item.item_cess +
+                                        //   "% CESS )"
+                                        // }
                                         helperText={
-                                          "(" +
-                                          item.item_cgst +
-                                          "% CGST + " +
-                                          item.item_cgst +
-                                          "% SGST/UT GST ; " +
-                                          item.item_igst +
-                                          "% IGST ; " +
-                                          item.item_cess +
-                                          "% CESS )"
+                                        item.item_igst > 0 || item.item_cess > 0 ? 
+                                        "(" +
+                                        item.item_cgst +
+                                        "% CGST + " +
+                                        item.item_cgst +
+                                        "% SGST/UT GST ; " +
+                                        item.item_igst +
+                                        "% IGST ; " +
+                                        item.item_cess +
+                                        "% CESS )"
+                                      : ""
                                         }
                                         className="sec-2 w-full"
                                         size="small"
@@ -1318,7 +1359,7 @@ const SalesEdit = () => {
                                           required
                                           
                                           inputProps={{ maxLength: 10 }}
-                                          value={item.item_igst}
+                                          value={item.item_igst ? item.item_igst : 0}
                                           onChange={(e) => {
                                             handleCustomGstChange(
                                               item.item_id,

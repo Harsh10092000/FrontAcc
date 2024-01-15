@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
-
-import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import { UserContext } from "../../../context/UserIdContext";
+const AddHsnCode = (props) => {
+  const { changeChange } = useContext(UserContext);
 
-const EditHsnCode = () => {
-  const { hsnId, changeChange } = useContext(UserContext);
   const [values, setValues] = useState({
     hsn_code: "",
     hsn_desc: "",
@@ -13,31 +12,17 @@ const EditHsnCode = () => {
     hsn_cess: "",
   });
 
-  useEffect(() => {
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/ad/fetchHsnCodeById/${hsnId}`)
-      .then((response) => {
-        setValues({
-          ...values,
-          hsn_code: response.data[0].hsn_code,
-          hsn_desc: response.data[0].hsn_desc,
-          hsn_gst: response.data[0].igst,
-          hsn_cess: response.data[0].cess,
-        });
-      });
-  }, []);
-
   const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
-  const updateHsn = async (e) => {
+  const addHsn = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        import.meta.env.VITE_BACKEND + `/api/ad/updateHsnCode/${hsnId}`,
+      await axios.post(
+        import.meta.env.VITE_BACKEND + `/api/ad/addHsnCode`,
         values
       );
       changeChange();
-      props.snacku();
+      props.snack();
     } catch (err) {
       console.log(err);
     }
@@ -52,7 +37,7 @@ const EditHsnCode = () => {
   return (
     <form className="block overflow-hidden" method="post">
       <h1 className="text_left heading text-green-500 font-semibold text-lg">
-        Update Entry
+        Add New Entry
       </h1>
 
       <div className="section-wrapper-2">
@@ -128,7 +113,6 @@ const EditHsnCode = () => {
                 }
               />
             </Box>
-
             <Box className="box-sec">
               <TextField
                 label="CESS %"
@@ -152,18 +136,18 @@ const EditHsnCode = () => {
 
       <div className="add-customer-btn-wrapper1">
         <button
-          onClick={submitDisabled ? "" : updateHsn}
+          onClick={submitDisabled ? "" : addHsn}
           className={
             submitDisabled
               ? "cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
               : "text-green-600 bg-green-200 w-full p-3 rounded-[5px] hover:text-white hover:bg-green-600 transition-all ease-in"
           }
         >
-          Update Entry
+          Add Hsn Code
         </button>
       </div>
     </form>
   );
 };
 
-export default EditHsnCode;
+export default AddHsnCode;

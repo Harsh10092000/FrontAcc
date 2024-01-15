@@ -243,6 +243,7 @@ const PurchaseEdit = () => {
   }, [purchaseDataById]);
 
   const [searchValue, setSearchValue] = useState("");
+  const [searchCode, setSearchCode] = useState("");
 
   const today = new Date();
   const month = today.getMonth() + 1;
@@ -292,7 +293,7 @@ const PurchaseEdit = () => {
               item_qty: item.purchase_item_qty,
               igst: item.purchase_item_gst,
               cgst: item.purchase_item_gst / 2,
-              cess: item.purchase_item_gst / 2,
+              cess: item.purchase_item_cess,
               item_discount_value: item.purchase_item_disc_val,
               item_discount_unit: item.purchase_item_disc_unit,
               add_hsn: false,
@@ -440,15 +441,42 @@ const PurchaseEdit = () => {
     );
   };
 
-  const handleCustomGstChange = (productId, igst, cess) => {
+  // const handleCustomGstChange = (productId, igst, cess) => {
+  //   setNerArr((nerArr) =>
+  //     nerArr.map((item) =>
+  //       productId === item.product_id
+  //         ? {
+  //             ...item,
+  //             igst: igst,
+  //             cgst: igst / 2,
+  //             cess: cess,
+  //           }
+  //         : item
+  //     )
+  //   );
+  // };
+
+  const handleCustomGstChange = (productId, igst) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
         productId === item.product_id
           ? {
               ...item,
-              igst: igst,
-              cgst: igst / 2,
-              cess: cess,
+              igst: igst ? parseFloat(igst) : 0,
+              cgst: igst ? parseFloat(igst) / 2 : 0,
+            }
+          : item
+      )
+    );
+  };
+
+  const handleCustomCessChange = (productId, cess) => {
+    setNerArr((nerArr) =>
+      nerArr.map((item) =>
+        productId === item.product_id
+          ? {
+              ...item,
+              cess: cess ? parseFloat(cess) : 0,
             }
           : item
       )
@@ -586,6 +614,69 @@ const PurchaseEdit = () => {
     );
   };
 
+  const check1 = (item_discount_unit, purchase_price, item_discount_value) => {
+    return item_discount_unit === "percentage"
+      ? parseFloat(purchase_price) -
+          (purchase_price * (item_discount_value ? item_discount_value : 1)) /
+            100
+      : purchase_price - (item_discount_value ? item_discount_value : 0);
+  };
+
+  const check2 = (
+    item_discount_unit,
+    purchase_price,
+    item_discount_value,
+    item_igst,
+    item_cess
+  ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
+    return item_discount_unit === "percentage"
+      ? ((purchase_price / (tax / 100 + 1)) *
+          (100 - (item_discount_value ? item_discount_value : 0))) /
+          100
+      : purchase_price / (tax / 100 + 1) -
+          (item_discount_value ? item_discount_value : 0);
+  };
+
+  const check3 = (
+    item_discount_unit,
+    purchase_price,
+    item_discount_value,
+    item_igst,
+    item_cess
+  ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
+    return (
+      (tax *
+        (item_discount_unit === "percentage"
+          ? purchase_price - (purchase_price * item_discount_value) / 100
+          : purchase_price)) /
+      100
+    );
+  };
+
+  const check4 = (
+    item_discount_unit,
+    purchase_price,
+    item_discount_value,
+    item_igst,
+    item_cess
+  ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
+    return item_discount_unit === "percentage"
+      ? ((purchase_price / (tax / 100 + 1)) *
+          ((100 - item_discount_value) / 100) *
+          tax) /
+          100
+      : purchase_price - purchase_price / (tax / 100 + 1);
+  };
+
   const handleContinue3 = () => {
     setInvoiceItems({
       in_items: "",
@@ -597,6 +688,7 @@ const PurchaseEdit = () => {
       in_discount_price: "",
       in_discount_unit: "amount",
       in_gst_prectentage: "",
+      in_cess_prectentage: "",
       in_gst_amt: "",
       in_total_amt: "",
       in_cat: "",
@@ -619,45 +711,84 @@ const PurchaseEdit = () => {
 
               in_discount_price:
                 item.tax === "0"
-                  ? item.item_discount_unit === "percentage"
-                    ? parseFloat(item.purchase_price) -
-                      (item.purchase_price *
-                        (item.item_discount_value
-                          ? item.item_discount_value
-                          : 1)) /
-                        100
-                    : item.purchase_price -
-                      (item.item_discount_value ? item.item_discount_value : 0)
-                  : item.discount_unit === "percentage"
-                  ? ((item.purchase_price / (item.igst / 100 + 1)) *
-                      (100 -
-                        (item.item_discount_value
-                          ? item.item_discount_value
-                          : 0))) /
-                    100
-                  : item.purchase_price / (item.igst / 100 + 1) -
-                    (item.item_discount_value ? item.item_discount_value : 0),
+                  ? check1(
+                      item.item_discount_unit,
+                      item.purchase_price,
+                      item.item_discount_value
+                    )
+                  : check2(
+                      item.item_discount_unit,
+                      item.purchase_price,
+                      item.item_discount_value,
+                      item.igst,
+                      item.cess
+                    ),
+
+              // in_discount_price:
+              //   item.tax === "0"
+              //     ? item.item_discount_unit === "percentage"
+              //       ? parseFloat(item.purchase_price) -
+              //         (item.purchase_price *
+              //           (item.item_discount_value
+              //             ? item.item_discount_value
+              //             : 1)) /
+              //           100
+              //       : item.purchase_price -
+              //         (item.item_discount_value ? item.item_discount_value : 0)
+              //     : item.discount_unit === "percentage"
+              //     ? ((item.purchase_price / (item.igst / 100 + 1)) *
+              //         (100 -
+              //           (item.item_discount_value
+              //             ? item.item_discount_value
+              //             : 0))) /
+              //       100
+              //     : item.purchase_price / (item.igst / 100 + 1) -
+              //       (item.item_discount_value ? item.item_discount_value : 0),
 
               in_discount_unit: item.item_discount_unit
                 ? item.item_discount_unit
                 : "amount",
 
-              in_gst_prectentage: item.igst ? item.igst : "-",
+              // in_gst_prectentage: item.igst ? item.igst : "-",
+              // in_gst_prectentage: item.igst
+              //   ? (item.igst ? parseFloat(item.igst) : 0) +
+              //     (item.cess ? parseFloat(item.cess) : 0)
+              //   : "-",
+              in_gst_prectentage: item.igst ? parseFloat(item.igst) : 0,
+              in_cess_prectentage: item.cess ? parseFloat(item.cess) : 0,
+              // in_gst_amt:
+              //   item.tax === "0"
+              //     ? (item.igst *
+              //         (item.item_discount_unit === "percentage"
+              //           ? item.purchase_price -
+              //             (item.purchase_price * item.item_discount_value) / 100
+              //           : item.purchase_price)) /
+              //       100
+              //     : item.item_discount_unit === "percentage"
+              //     ? ((item.purchase_price / (item.igst / 100 + 1)) *
+              //         ((100 - item.item_discount_value) / 100) *
+              //         item.igst) /
+              //       100
+              //     : item.purchase_price -
+              //       item.purchase_price / (item.igst / 100 + 1),
+
               in_gst_amt:
                 item.tax === "0"
-                  ? (item.igst *
-                      (item.item_discount_unit === "percentage"
-                        ? item.purchase_price -
-                          (item.purchase_price * item.item_discount_value) / 100
-                        : item.purchase_price)) /
-                    100
-                  : item.item_discount_unit === "percentage"
-                  ? ((item.purchase_price / (item.igst / 100 + 1)) *
-                      ((100 - item.item_discount_value) / 100) *
-                      item.igst) /
-                    100
-                  : item.purchase_price -
-                    item.purchase_price / (item.igst / 100 + 1),
+                  ? check3(
+                      item.item_discount_unit,
+                      item.purchase_price,
+                      item.item_discount_value,
+                      item.igst,
+                      item.cess
+                    )
+                  : check4(
+                      item.item_discount_unit,
+                      item.purchase_price,
+                      item.item_discount_value,
+                      item.igst,
+                      item.cess
+                    ),
+
               in_total_amt: "",
               in_cat: item.item_cat,
             }
@@ -705,6 +836,8 @@ const PurchaseEdit = () => {
     purchase_id: "",
     purchase_acc_id: "",
   });
+
+  const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
   const total_amt = filteredInvoiceItems
     .map(
@@ -1012,26 +1145,39 @@ const PurchaseEdit = () => {
                                               : "GST %"
                                           }
                                           helperText={
-                                            item.igst !== "" && item.cess === ""
-                                              ? item.cess !== ""
-                                                ? "(" +
-                                                  item.cgst +
-                                                  "% CGST + " +
-                                                  item.cgst +
-                                                  "% SGST/UT GST ; " +
-                                                  item.igst +
-                                                  "% IGST ; " +
-                                                  item.cess +
-                                                  "% CESS )"
-                                                : "(" +
-                                                  item.cgst +
-                                                  "% CGST + " +
-                                                  item.cgst +
-                                                  "% SGST/UT GST ; " +
-                                                  item.igst +
-                                                  "% IGST ; )"
+                                            item.igst > 0 || item.cess > 0
+                                              ? "(" +
+                                                item.cgst +
+                                                "% CGST + " +
+                                                item.cgst +
+                                                "% SGST/UT GST ; " +
+                                                item.igst +
+                                                "% IGST ; " +
+                                                item.cess +
+                                                "% CESS )"
                                               : ""
                                           }
+                                          // helperText={
+                                          //   item.igst !== "" && item.cess === ""
+                                          //     ? item.cess !== ""
+                                          //       ? "(" +
+                                          //         item.cgst +
+                                          //         "% CGST + " +
+                                          //         item.cgst +
+                                          //         "% SGST/UT GST ; " +
+                                          //         item.igst +
+                                          //         "% IGST ; " +
+                                          //         item.cess +
+                                          //         "% CESS )"
+                                          //       : "(" +
+                                          //         item.cgst +
+                                          //         "% CGST + " +
+                                          //         item.cgst +
+                                          //         "% SGST/UT GST ; " +
+                                          //         item.igst +
+                                          //         "% IGST ; )"
+                                          //     : ""
+                                          // }
                                           className="sec-2 w-full"
                                           size="small"
                                           InputProps={{
@@ -1056,23 +1202,25 @@ const PurchaseEdit = () => {
                                             size="small"
                                             placeholder="HSN Code or Product Name "
                                             onChange={(e) => {
-                                              setSearchValue(e.target.value);
+                                              setSearchCode(e.target.value);
                                             }}
                                           />
 
-                                          {hsnCodes
+                                          {searchCode !== null &&
+                                          (searchCode !== "") === true && 
+                                          hsnCodes
                                             .filter(
                                               (code) =>
                                                 code.hsn_code
                                                   .toString()
-                                                  .startsWith(searchValue) ||
+                                                  .startsWith(searchCode) ||
                                                 code.hsn_desc.startsWith(
-                                                  searchValue
+                                                  searchCode
                                                 )
                                             )
                                             .map((hsnItem) => (
                                               <div
-                                                key={hsnItem.hsn_code}
+                                                key={hsnItem.id}
                                                 className="flex card-sec"
                                                 onClick={() => {
                                                   handleAddHsnCode(
@@ -1164,11 +1312,24 @@ const PurchaseEdit = () => {
                                             className="sec-1 w-full"
                                             size="small"
                                             required
+                                            // value={
+                                            //   item.igst ? item.igst : 0
+                                            // }
+                                            // onChange={(e) => {
+                                            //   setcustomGst(
+                                            //     e.target.value.replace(
+                                            //       /\D/g,
+                                            //       ""
+                                            //     )
+                                            //   );
+                                            // }}
+                                            value={item.igst}
                                             onChange={(e) => {
-                                              setcustomGst(
+                                              handleCustomGstChange(
+                                                item.product_id,
                                                 e.target.value.replace(
-                                                  /\D/g,
-                                                  ""
+                                                  numberValidation,
+                                                  "$1"
                                                 )
                                               );
                                             }}
@@ -1180,17 +1341,19 @@ const PurchaseEdit = () => {
                                             className="sec-2 w-full"
                                             size="small"
                                             required
+                                            value={item.cess ? item.cess : 0}
                                             onChange={(e) => {
-                                              setCustomeCess(
+                                              handleCustomCessChange(
+                                                item.product_id,
                                                 e.target.value.replace(
-                                                  /\D/g,
-                                                  ""
+                                                  numberValidation,
+                                                  "$1"
                                                 )
                                               );
                                             }}
                                           />
                                         </Box>
-                                        <Box className="box-sec">
+                                        {/* <Box className="box-sec">
                                           <button
                                             onClick={(e) => {
                                               e.preventDefault(),
@@ -1203,7 +1366,7 @@ const PurchaseEdit = () => {
                                           >
                                             Add Custome Gst
                                           </button>
-                                        </Box>
+                                        </Box> */}
                                       </>
                                     ) : (
                                       <div></div>
@@ -1295,7 +1458,6 @@ const PurchaseEdit = () => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
     if (
-      
       filteredInvoiceItems.length > 0 &&
       purchaseData.purchase_amt_paid >= 0 &&
       purchaseData.purchase_amt_paid < purchaseData.purchase_amt
@@ -1304,10 +1466,7 @@ const PurchaseEdit = () => {
     } else {
       setSubmitDisabled(true);
     }
-  }, [
-    filteredInvoiceItems,
-    purchaseData.purchase_amt_paid,
-  ]);
+  }, [filteredInvoiceItems, purchaseData.purchase_amt_paid]);
   return (
     <React.Fragment>
       <Drawer

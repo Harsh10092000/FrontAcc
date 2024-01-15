@@ -55,14 +55,15 @@ const CardItem = (props) => {
               className={
                 total === 0 ? "text-slate-600 font-semibold text-lg" :
                 total < 0
-                  ? "text-green-600 font-semibold text-lg"
-                  : "text-red-600 font-semibold text-lg"
+                  
+                  ? "text-red-600 font-semibold text-lg"
+                  : "text-green-600 font-semibold text-lg"
               }
             >
               {total === 0 ? "₹0.00" : total > 0 ? "₹ " + total.toFixed(2) : "₹ " + (total * -1).toFixed(2)}
             </div>
             <div className="text-slate-700 text-xs">
-              {total === 0 ? "" : total > 0 ? "You'll Pay" : "You'll Receive"}
+              {total === 0 ? "" : total > 0 ? "To Pay" : "To Receive"}
             </div>
           </div>
         </div>

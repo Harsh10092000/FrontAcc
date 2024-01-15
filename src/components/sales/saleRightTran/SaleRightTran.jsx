@@ -31,7 +31,7 @@ const SaleRightTran = (props) => {
 
             <div className="text-sm text-slate-500">
               {props.data.sale_item_disc_val != null
-                ? props.data.sale_item_disc_unit === "Amount"
+                ? props.data.sale_item_disc_unit === "amount"
                   ? "Discount ₹ " + props.data.sale_item_disc_val
                   : "Discount " + props.data.sale_item_disc_val + "%"
                 : ""}

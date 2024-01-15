@@ -296,6 +296,23 @@ const SalesForm = () => {
     );
   };
 
+
+  const handleHsnChange = (productId, hsn, desc, igst, sgst, cgst) => {
+    setNerArr((nerArr) =>
+      nerArr.map((item) =>
+        productId === item.item_id
+          ? {
+              ...item,
+              item_code: hsn,
+              item_desc: desc,
+              item_igst: igst,
+              item_cgst: cgst,
+            }
+          : item
+      )
+    );
+  };
+
   const handleAddGst = (productId) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
@@ -386,8 +403,8 @@ const SalesForm = () => {
         productId === item.item_id
           ? {
               ...item,
-              item_igst: parseFloat(igst),
-              item_cgst: parseFloat(igst) / 2,
+              item_igst: igst ? parseFloat(igst) : 0,
+              item_cgst: igst ? parseFloat(igst) / 2 : 0,
             }
           : item
       )
@@ -400,7 +417,7 @@ const SalesForm = () => {
         productId === item.item_id
           ? {
               ...item,
-              item_cess: cess,
+              item_cess: cess ? cess : 0,
             }
           : item
       )
@@ -488,9 +505,6 @@ const SalesForm = () => {
       )
     );
   };
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
   const handleDecrease3 = (productId) => {
     setNerArr((nerArr) =>
       nerArr.map((item) =>
@@ -503,6 +517,10 @@ const SalesForm = () => {
       )
     );
   };
+
+  useEffect(() => {
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  }, [nerArr]);
   const [isGstBusiness, setIsGstBusiness] = useState(true);
   const handleBusinessGst = () => {
     setIsGstBusiness(isGstBusiness ? false : true);
@@ -590,12 +608,25 @@ const SalesForm = () => {
       ? parseFloat(item_price) - (item_price * discount_value) / 100
       : item_price - discount_value;
   };
-  const check2 = (item_discount_unit, item_price, item_discount_value) => {
-    const discount_value = item_discount_value ? item_discount_value : 0;
+
+  const check2 = (
+    item_discount_unit,
+    item_price,
+    item_discount_value,
+    item_igst,
+    item_cess
+  ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return item_discount_unit === "percentage"
-      ? ((item_price / (tax / 100 + 1)) * (100 - discount_value)) / 100
-      : item_price / (tax / 100 + 1) - discount_value;
+      ? ((item_price / (tax / 100 + 1)) *
+          (100 - (item_discount_value ? item_discount_value : 0))) /
+          100
+      : item_price / (tax / 100 + 1) -
+          (item_discount_value ? item_discount_value : 0);
   };
+
   const check3 = (
     item_discount_unit,
     item_price,
@@ -603,14 +634,18 @@ const SalesForm = () => {
     item_igst,
     item_cess
   ) => {
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return (
-      ((parseFloat(item_igst) + parseFloat(item_cess)) *
+      (tax *
         (item_discount_unit === "percentage"
           ? item_price - (item_price * item_discount_value) / 100
           : item_price)) /
       100
     );
   };
+
   const check4 = (
     item_discount_unit,
     item_price,
@@ -618,14 +653,17 @@ const SalesForm = () => {
     item_igst,
     item_cess
   ) => {
-    const tax = parseFloat(item_igst) + parseFloat(item_cess);
+    const tax =
+      (parseFloat(item_igst) ? parseFloat(item_igst) : 0) +
+      (parseFloat(item_cess) ? parseFloat(item_cess) : 0);
     return item_discount_unit === "percentage"
       ? ((item_price / (tax / 100 + 1)) *
           ((100 - item_discount_value) / 100) *
           tax) /
           100
-      : item_price - item_price / (tax / 100 + 1);
+      : item_price - item_price / ((item_igst !== "-" ? tax : 0) / 100 + 1);
   };
+
   const handleContinue3 = (e) => {
     setInvoiceItems({
       in_items: "",
@@ -637,6 +675,7 @@ const SalesForm = () => {
       in_discount_price: "",
       in_discount_unit: "amount",
       in_gst_prectentage: "",
+      in_cess_prectentage: "",
       in_gst_amt: "",
       in_total_amt: "",
       in_cat: "",
@@ -669,17 +708,26 @@ const SalesForm = () => {
                   : check2(
                       item.item_discount_unit,
                       item.item_price,
-                      item.item_discount_value
+                      item.item_discount_value,
+                      item.item_igst,
+                      item.item_cess
                     ),
 
               in_discount_unit: item.item_discount_unit
                 ? item.item_discount_unit
                 : "amount",
 
-              in_gst_prectentage:
-                item.item_igst || item.item_cess
-                  ? parseFloat(item.item_igst) + parseFloat(item.item_cess)
-                  : "-",
+              // in_gst_prectentage:
+              //   item.item_igst || item.item_cess
+              //     ? ((item.item_igst ? parseFloat(item.item_igst) : 0) + ( item.item_cess ? parseFloat(item.item_cess) : 0 ) )
+              //     : "-",
+              in_gst_prectentage: item.item_igst
+                ? parseFloat(item.item_igst)
+                : 0,
+
+              in_cess_prectentage: item.item_cess
+                ? parseFloat(item.item_cess)
+                : 0,
 
               in_gst_amt:
                 item.item_tax === "0"
@@ -1038,16 +1086,26 @@ const SalesForm = () => {
                                             : "GST %"
                                         }
                                         helperText={
-                                          "(" +
-                                          item.item_cgst +
-                                          "% CGST + " +
-                                          item.item_cgst +
-                                          "% SGST/UT GST ; " +
-                                          item.item_igst +
-                                          "% IGST ; " +
-                                          item.item_cess +
-                                          "% CESS )"
+                                          item.item_igst > 0 ||
+                                          item.item_cess > 0
+                                            ? "(" +
+                                              item.item_cgst +
+                                              "% CGST + " +
+                                              item.item_cgst +
+                                              "% SGST/UT GST ; " +
+                                              item.item_igst +
+                                              "% IGST ; " +
+                                              item.item_cess +
+                                              "% CESS )"
+                                            : ""
                                         }
+                                        // helperText={
+                                        //   productData.item.item_cess !== ""
+                                        //     ? custom_gst_details
+                                        //     : productData.item.item_igst !== ""
+                                        //     ? gst_details
+                                        //     : ""
+                                        // }
                                         className="sec-2 w-full"
                                         size="small"
                                         InputProps={{
@@ -1094,40 +1152,51 @@ const SalesForm = () => {
                                                       .toLowerCase()
                                                   )
                                             )
-                                            .map((filteredItem) => (
+                                            .map((hsnItem) => (
                                               <div
-                                                key={filteredItem.id}
+                                                key={hsnItem.id}
                                                 className="flex card-sec"
                                                 onClick={() => {
-                                                  setSearchCode("");
-                                                  setProductData({
-                                                    ...productData,
-                                                    igst: filteredItem.igst,
-                                                    cgst: filteredItem.cgst,
-                                                    sgst: filteredItem.sgst,
-                                                    cess: filteredItem.cess,
-                                                    hsn_code:
-                                                      typeof filteredItem.hsn_code ===
-                                                      "number"
-                                                        ? filteredItem.hsn_code
-                                                        : null,
-                                                    hsn_desc:
-                                                      filteredItem.hsn_desc,
-                                                  });
-                                                  setIsClicked(false);
+                                                  // setSearchCode("");
+                                                  // setProductData({
+                                                  //   ...productData,
+                                                  //   igst: hsnItem.igst,
+                                                  //   cgst: hsnItem.cgst,
+                                                  //   sgst: hsnItem.sgst,
+                                                  //   cess: hsnItem.cess,
+                                                  //   hsn_code:
+                                                  //     typeof hsnItem.hsn_code ===
+                                                  //     "number"
+                                                  //       ? hsnItem.hsn_code
+                                                  //       : null,
+                                                  //   hsn_desc:
+                                                  //     hsnItem.hsn_desc,
+                                                  // });
+                                                  handleAddHsnCode(
+                                                    item.item_id
+                                                  );
+                                                  handleHsnChange(
+                                                    item.item_id,
+                                                    hsnItem.hsn_code,
+                                                    hsnItem.hsn_desc,
+                                                    hsnItem.igst,
+                                                    hsnItem.cgst,
+                                                    hsnItem.sgst
+                                                  );
+                                                  
                                                 }}
                                               >
                                                 <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
                                                   <div className="flex gap-6 pb-4">
                                                     <h2 className=" rounded bg-slate-300 px-6 py-1 ">
-                                                      {filteredItem.hsn_code}
+                                                      {hsnItem.hsn_code}
                                                     </h2>
                                                     <h2 className=" rounded bg-slate-300 px-4 py-1 ">
-                                                      {filteredItem.igst +
+                                                      {hsnItem.igst +
                                                         "% GST"}
                                                     </h2>
                                                   </div>
-                                                  <p>{filteredItem.hsn_desc}</p>
+                                                  <p>{hsnItem.hsn_desc}</p>
                                                 </div>
                                               </div>
                                             ))}
@@ -1186,7 +1255,7 @@ const SalesForm = () => {
                                         </div>
                                       </Box>
                                       <div>Custom Tax %</div>
-                                      {console.log(item.item_igst)}
+
                                       <Box className="box-sec">
                                         <TextField
                                           label="GST"
@@ -1496,14 +1565,11 @@ const SalesForm = () => {
                     //   )
                     // }
                     helperText={
-                      addNewPrefix
-                        ? "Prefix Number Already Exists"
-                        : ""
+                      addNewPrefix ? "Prefix Number Already Exists" : ""
                     }
                     // onChange={(e)=> setPrefixNo(e.target.value)}
                     name="prefix_number"
                   />
-                  
                 </div>
                 <div className=" absolute z-10 bg-white">
                   {addPrefix ? (

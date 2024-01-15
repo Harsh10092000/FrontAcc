@@ -5,7 +5,9 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import { Link } from "react-router-dom";
 import SettingAcCard from "../settingAcCard/SettingAcCard";
+import { useNavigate } from "react-router-dom";
 const SettingAccount = () => {
+  const navigate  = useNavigate()
   const { currentUser } = useContext(AuthContext);
   const {
     changeAccountId,
@@ -22,6 +24,7 @@ const SettingAccount = () => {
     changeAccess,
     userType,
     change,
+    accountId
   } = useContext(UserContext);
 
   const [info, setInfo] = useState([]);
@@ -60,8 +63,6 @@ const SettingAccount = () => {
     }
   }, [staffData, change]);
 
-
-
   const [userData, setUserData] = useState([]);
   useEffect(() => {
     axios
@@ -72,10 +73,9 @@ const SettingAccount = () => {
       .then((res) => {
         setUserData(res.data);
       });
-  }, []);
+  }, [change]);
 
   useEffect(() => {
-    console.log(userData, currentUser);
     if (parseInt(currentUser[0].log_user) === 1) {
       changeAccess(
         parseInt(currentUser[0].access) === 1 ? currentUser[0].access : 1
@@ -96,6 +96,27 @@ const SettingAccount = () => {
     changePurchaseId(0);
     changeStaffId(0);
   };
+
+  // const [currUser , setCurrUser] = useState([]);
+  // ()=>setCurrUser(localStorage.getItem("lastname"));
+  // // let a = 0;
+  // useEffect(() => {
+  //   a = info.length;
+  //   console.log("a : ", a)
+  // }, [info])
+  
+  //console.log("info.length : " , info.length)
+
+  useEffect(() => {
+    const info_length = info.length
+    console.log("accountId : " , accountId,info_length )
+    // if(info_length === 0 ) {
+    //   navigate('/addAccount')
+    // } 
+    accountId === 0 ? changeAccountId(info[info_length-1]?.business_id) : "" ;
+    
+  }, [info ])
+
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 p-5 justify-between">
@@ -131,7 +152,9 @@ const SettingAccount = () => {
             <SettingAcCard
               data={item}
               key={index}
+              
               change={() => changeId(item.business_id)}
+              
             />
           ))}
         </div>

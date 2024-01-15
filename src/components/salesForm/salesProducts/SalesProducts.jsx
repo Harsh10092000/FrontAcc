@@ -17,7 +17,7 @@ const SalesProducts = (props) => {
             {item.in_qty} | {item.in_unit}
           </div>
           <div className="border-r border-slate-300 p-4">
-            {item.in_sale_price} |{" "}
+            {item.in_sale_price} |
             {parseFloat(item.in_discount_price).toFixed(2)}
           </div>
           {item.in_discount_value ? (
@@ -30,10 +30,18 @@ const SalesProducts = (props) => {
           )}
 
           <div className="border-r border-slate-300 p-4">
-            {item.in_gst_prectentage &&
-            item.in_gst_prectentage !== null &&
-            item.in_gst_prectentage !== "-"
+
+            {item.in_cess_prectentage > 0 && item.in_gst_prectentage > 0
               ? item.in_gst_prectentage +
+                item.in_cess_prectentage +
+                "% |" +
+                parseFloat(item.in_gst_amt).toFixed(2)
+              : item.in_gst_prectentage > 0
+              ? item.in_gst_prectentage +
+                "% |" +
+                parseFloat(item.in_gst_amt).toFixed(2)
+              : item.in_cess_prectentage > 0
+              ? item.in_cess_prectentage +
                 "% |" +
                 parseFloat(item.in_gst_amt).toFixed(2)
               : "-"}
