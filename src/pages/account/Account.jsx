@@ -232,7 +232,6 @@ export default function AddAccount() {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
       handleImage(e.dataTransfer.files);
     }
   };
@@ -241,7 +240,6 @@ export default function AddAccount() {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      console.log("e.dataTransfer.files : ", e.dataTransfer.files);
       handleImage1(e.dataTransfer.files);
     }
   };

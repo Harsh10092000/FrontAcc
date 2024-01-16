@@ -23,20 +23,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [otpdrop, setOtpdrop] = useState(false);
   const [otpmsg, setOtpmsg] = useState("Next");
-  const { currentUser } = useContext(AuthContext);
-  const [data, setData] = useState([]);
-  if (currentUser) {
-    useEffect(() => {
-      axios
-        .get(
-          import.meta.env.VITE_BACKEND +
-            `/api/act/checkAcc/${currentUser[0].log_id}`
-        )
-        .then((res) => {
-          setData(res.data);
-        });
-    }, [currentUser]);
-  }
+  const [otpError, setOtpError] = useState(false);
+  const [seconds, setSeconds] = useState(5);
 
   const fetchOtp = () => {
     try {
@@ -51,13 +39,14 @@ const Login = () => {
       console.log(err);
     }
   };
+
   let userData = 0;
   const checklogin = async () => {
-    if (cotp > 0) {
-      if (otp == cotp) {
-        try {
-          userData = await login(email);
-
+    if (otp.length > 5) {
+      try {
+        userData = await login(email, otp);
+        if (userData !== 0) {
+          setOtpError(false);
           changeAccountId(userData[0].business_id);
           changeUId(userData[0].log_id);
           changeAccess(userData[0].access);
@@ -67,37 +56,51 @@ const Login = () => {
             changeBills(userData[0].staff_bills);
             changeInventory(userData[0].staff_inventory);
           }
-
           if (
             parseInt(userData[0].access) !== 0 ||
             userData[0].access === undefined ||
             userData[0].access === null
           ) {
-            console.log(userData, userData[0].log_user, userData[0].access);
             if (userData[0].business_id) {
               navigate("/");
             } else {
               navigate("/addAccount");
             }
           } else {
-            console.log("account restricted");
-
-            //localStorage.setItem("user", JSON.stringify(""));
             navigate(
               userData[0].log_user === 1
                 ? "/accountRestricted"
                 : "/staffRestricted"
             ); //navigate to restridted msg page
           }
-        } catch (err) {
-          console.log(err);
+        } else {
+          setOtpError(true);
         }
+      } catch (err) {
+        console.log(err);
       }
     }
   };
+
   useEffect(() => {
-    checklogin();
+    if (otp.length === 6) {
+      checklogin();
+    }
   }, [otp]);
+
+  useEffect(() => {
+    
+      const interval = setInterval(() => {
+        
+        setSeconds(seconds - 1);
+        if (seconds === 0) {
+          clearInterval(interval);
+        }
+      
+      }, 1000);
+  return () => clearInterval(interval);
+
+  }, [fetchOtp]);
 
   return (
     <motion.div className="bg-no-repeat bg-cover bg-center relative front">
@@ -139,8 +142,9 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   readOnly={otpdrop}
                 />
+                <p>{cotp !== 0 ? cotp : "" }</p>
               </div>
-              <div>{cotp}</div>
+              
               {otpdrop ? (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 tracking-wide">
@@ -153,13 +157,22 @@ const Login = () => {
                     whileTap={{ scale: 0.97 }}
                     onChange={(e) => setOtp(e.target.value)}
                   />
+                  {seconds > 0 ? (
+                    <p>
+                      Time Remaining: {seconds}
+                    </p>
+                  ) : (
+                    <p>Didn't recieve code?</p>
+                  )}
+                  <span>{otpError ? "Login Failed" : ""}</span>
                 </div>
               ) : (
                 <div></div>
               )}
+              {console.log(seconds)}
               <div>
                 <motion.button
-                  className="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"
+                  className={seconds === 0 ? "w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition" : "w-full flex justify-center bg-slate-400 hover:bg-slate-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"}
                   whileTap={{ scale: 0.9 }}
                   onClick={fetchOtp}
                 >
