@@ -114,7 +114,6 @@ const SettingAccount = () => {
     //   navigate('/addAccount')
     // } 
     accountId === 0 ? changeAccountId(info[info_length-1]?.business_id) : "" ;
-    
   }, [info ])
 
   return (

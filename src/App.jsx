@@ -38,6 +38,7 @@ import AdminAccount from "./components/admin/adminAccount/AdminAccount";
 import AdminSac from "./components/admin/adminSac/AdminSac";
 import AdminHsn from "./components/admin/adminHsn/AdminHsn";
 import AdminLogin from "./pages/adminLogin/AdminLogin";
+import Subscription from "./pages/subscription/Subscription";
 
 const App = () => {
   const { currentUser } = useContext(AuthContext);
@@ -241,6 +242,10 @@ const App = () => {
           path: "account",
           element: <SettingAccount />,
         },
+        {
+          path: "subscription",
+          element: <Subscription />,
+        },
       ],
     },
     {
@@ -291,6 +296,7 @@ const App = () => {
           path: "hsn",
           element: <AdminHsn />,
         },
+       
       ],
     },
     {

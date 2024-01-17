@@ -1,4 +1,4 @@
-import { useContext, useDebugValue, useEffect, useState } from "react";
+import { useContext, useRef, useEffect, useState } from "react";
 import CardTran from "../cardTran/CardTran";
 import Transaction from "../transaction/Transaction";
 import "./mainright.scss";
@@ -21,6 +21,35 @@ const MainRight = (props) => {
         setCustAmtType(response.data[0].amt_type);
       });
   }, [change, userId]);
+
+
+  // const [visibleItems, setVisibleItems] = useState(10);
+  // const containerRef = useRef(null);
+  // const handleIntersection = (entries, observer) => {
+    
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
+  //     }
+      
+  //   });
+  // };
+
+
+  // useEffect(() => {
+  //   const options = {
+  //     threshold: 0.50,
+  //   };
+  //   const observer = new IntersectionObserver(handleIntersection, options);
+  //   if (containerRef.current) {
+  //     observer.observe(containerRef.current);
+  //   }
+  //   return () => {
+  //     observer.disconnect();
+  //   };
+  // }, []);
+
+
   return (
     <div className="right bg-white shadow-xl w-full">
       <div className="customer">
@@ -36,7 +65,9 @@ const MainRight = (props) => {
 
       <div className="transactions">
         {result.length > 0 ? (
-          result.map((item, index) => {
+          result
+          // .slice(0, visibleItems)
+          .map((item, index) => {
             if (custAmtType === "receive") {
               const sum = result
                 .filter((filteredItem) => filteredItem.tran_id <= item.tran_id)
@@ -77,6 +108,7 @@ const MainRight = (props) => {
               );
             }
           })
+          
         ) : (
           <div className="w-[100%] h-[100%] flex items-center justify-center flex-col">
             <div>
@@ -85,6 +117,7 @@ const MainRight = (props) => {
             <div>No Entries Added</div>
           </div>
         )}
+        {/* <div ref={containerRef}></div> */}
       </div>
       {parties === 2 || parties === 3 ? (
         <div className="btn shadow-lg">

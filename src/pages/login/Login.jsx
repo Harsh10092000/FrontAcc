@@ -24,7 +24,8 @@ const Login = () => {
   const [otpdrop, setOtpdrop] = useState(false);
   const [otpmsg, setOtpmsg] = useState("Next");
   const [otpError, setOtpError] = useState(false);
-  const [seconds, setSeconds] = useState(5);
+
+  
 
   const fetchOtp = () => {
     try {
@@ -88,19 +89,28 @@ const Login = () => {
     }
   }, [otp]);
 
+ 
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(30);
   useEffect(() => {
-    
-      const interval = setInterval(() => {
-        
+    const myInterval = setInterval(() => {
+      if (seconds > 0) {
         setSeconds(seconds - 1);
-        if (seconds === 0) {
-          clearInterval(interval);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(myInterval);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
         }
-      
-      }, 1000);
-  return () => clearInterval(interval);
-
+      }
+    }, 1000);
+    return () => {
+      clearInterval(myInterval);
+    };
   }, [fetchOtp]);
+ 
 
   return (
     <motion.div className="bg-no-repeat bg-cover bg-center relative front">
@@ -142,9 +152,12 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   readOnly={otpdrop}
                 />
-                <p>{cotp !== 0 ? cotp : "" }</p>
+                <p>{cotp !== 0 ? cotp : ""}</p>
               </div>
-              
+              <div>
+                {console.log(seconds)}
+               
+              </div>
               {otpdrop ? (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 tracking-wide">
@@ -157,10 +170,9 @@ const Login = () => {
                     whileTap={{ scale: 0.97 }}
                     onChange={(e) => setOtp(e.target.value)}
                   />
-                  {seconds > 0 ? (
-                    <p>
-                      Time Remaining: {seconds}
-                    </p>
+                  {console.log(seconds)}
+                  {seconds !== 0 ? (
+                    <p>Time Remaining: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</p>
                   ) : (
                     <p>Didn't recieve code?</p>
                   )}
@@ -169,10 +181,10 @@ const Login = () => {
               ) : (
                 <div></div>
               )}
-              {console.log(seconds)}
+
               <div>
                 <motion.button
-                  className={seconds === 0 ? "w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition" : "w-full flex justify-center bg-slate-400 hover:bg-slate-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"}
+                  className="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"
                   whileTap={{ scale: 0.9 }}
                   onClick={fetchOtp}
                 >

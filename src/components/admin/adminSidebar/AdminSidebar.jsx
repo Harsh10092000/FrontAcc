@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   IconBoxSeam,
@@ -9,8 +9,31 @@ import {
   IconUserHexagon,
   IconWallet,
 } from "@tabler/icons-react";
-
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../context/UserIdContext";
 const AdminSidebar = () => {
+  const { changeAdminAccess, changeAdminId, changeAdminType } =
+    useContext(UserContext);
+  const navigate = useNavigate();
+
+  const [adminData, setAdminData] = useState([]);
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("admin"));
+    if (items) {
+      setAdminData(items);
+    } else {
+      navigate("/adminlogin");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (adminData.length > 0) {
+      changeAdminId(adminData[0].super_id),
+        changeAdminType(adminData[0].super_type);
+      changeAdminAccess(adminData[0].super_access);
+    }
+  }, [adminData]);
+
   const location = useLocation();
 
   const options = [
@@ -39,12 +62,12 @@ const AdminSidebar = () => {
       name: "SAC Codes",
       icon: <IconDevices2 />,
     },
-    {
-      linkto: "/logout",
-      name: "Logout",
-      icon: <IconLogout2 />,
-    },
   ];
+
+  const logout = () => {
+    localStorage.removeItem("admin");
+    navigate("/adminlogin");
+  };
   return (
     <div className="w-[20vw]">
       <div className="flex items-center p-5">
@@ -73,6 +96,15 @@ const AdminSidebar = () => {
             </div>
           </Link>
         ))}
+
+        <div
+          onClick={logout}
+          className="item hover:bg-blue-300/25 flex rounded-xl px-4 py-2 gap-4 items-center text-blue-500 cursor-pointer"
+          style={{ transition: "all 200ms ease-in-out" }}
+        >
+          <IconLogout2 />
+          <div className="text-lg">Logout</div>
+        </div>
       </div>
     </div>
   );

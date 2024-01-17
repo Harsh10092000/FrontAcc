@@ -24,6 +24,10 @@ const CardItem = (props) => {
   //   ? console.log("Skeletion is true")
   //   : console.log("skeleton is false");
   return (
+    // <div>
+    //   {console.log("props.users : " , props.users)}
+    //    {props.users !== 0 ?
+    
     <div
       className={
         userId === props.users.cust_id
@@ -32,6 +36,8 @@ const CardItem = (props) => {
       }
       onClick={() => changeUser(props.users.cust_id)}
     >
+      {console.log("props.users : " , props.users !== null)}
+     
       <div
         className="flex justify-between  items-center p-3 "
         style={{ borderBottom: "1px solid rgb(245 245 245" }}
@@ -68,7 +74,10 @@ const CardItem = (props) => {
           </div>
         </div>
       </div>
+ 
     </div>
+    // : "serac" }
+    // </div>
   );
 };
 export default CardItem;

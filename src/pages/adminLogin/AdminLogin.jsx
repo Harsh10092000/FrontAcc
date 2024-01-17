@@ -1,16 +1,13 @@
-import { useContext, useState } from "react";
-
+import { useContext, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { UserContext } from "../../context/UserIdContext";
 
 const AdminLogin = () => {
   const {
     changeAdminAccess,
     changeAdminId,
-
     changeAdminType,
   } = useContext(UserContext);
   const navigate = useNavigate();
@@ -27,11 +24,17 @@ const AdminLogin = () => {
       .then((res) => {
         SetAdminData(res.data);
         changeAdminId(res.data[0].super_id),
-          changeAdminType(res.data[0].super_type);
+        changeAdminType(res.data[0].super_type);
         changeAdminAccess(res.data[0].super_access);
-        navigate("/admin/account");
       });
   };
+
+  useEffect(() => {
+    if (adminData.length > 0) {
+      localStorage.setItem("admin", JSON.stringify(adminData));
+      navigate("/admin/account");
+    }
+  }, [adminData]);
   return (
     <motion.div className="bg-no-repeat bg-cover bg-center relative front">
       <div className="absolute bg-gradient-to-b from-blue-500 to-blue-400 opacity-75 inset-0 z-0"></div>

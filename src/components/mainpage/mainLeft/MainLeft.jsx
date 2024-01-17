@@ -6,7 +6,7 @@ import {
 } from "@tabler/icons-react";
 import CardItem from "../cardItem/CardItem";
 import "./mainleft.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
   FormControl,
   InputLabel,
@@ -23,6 +23,8 @@ const MainLeft = (props) => {
   const [tran, setTran] = useState([]);
   const [skeleton, setSkeleton] = useState(true);
   const [total, setTotal] = useState([]);
+
+
 
   useEffect(() => {
     axios
@@ -61,6 +63,30 @@ const MainLeft = (props) => {
   } else if (sortOption === "name") {
     sortedUsers.sort((a, b) => a.cust_name.localeCompare(b.cust_name));
   }
+
+  // const [visibleItems, setVisibleItems] = useState(10);
+  // const containerRef = useRef(null);
+  // const handleIntersection = (entries, observer) => {
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
+  //     }
+  //   });
+  // };
+
+  // console.log("intersaction : ", visibleItems)
+  // useEffect(() => {
+  //   const options = {
+  //     threshold: 0.50,
+  //   };
+  //   const observer = new IntersectionObserver(handleIntersection, options);
+  //   if (containerRef.current) {
+  //     observer.observe(containerRef.current);
+  //   }
+  //   return () => {
+  //     observer.disconnect();
+  //   };
+  // }, []);
 
   return (
     <div className="left bg-pri shadow-lg w-full flex flex-col h-full">
@@ -194,8 +220,8 @@ const MainLeft = (props) => {
             </div>
           </div>
         ) : (
+          // sortedUsers.slice(0, visibleItems)
           sortedUsers
-
             .filter((code) => {
               if (filter2 === "pay") {
                 return code.cust_total_amt < 0;
@@ -217,10 +243,11 @@ const MainLeft = (props) => {
                 key={index}
                 result={tran}
                 click={props.click}
-                users={filteredItem}
+                users={(filteredItem.length !== 0 && filteredItem !== null ? filteredItem : 0)}
               />
             ))
         )}
+        {/* <div ref={containerRef}></div> */}
       </div>
     </div>
   );

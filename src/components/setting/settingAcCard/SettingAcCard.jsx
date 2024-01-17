@@ -50,9 +50,7 @@ const SettingAcCard = (props) => {
     await axios.delete(
       import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
     );
-   
     changeAccountId(0)
-    
     handleClickVariant("success", "Deleted Successfully");
     changeChange();
     closeDialog();
