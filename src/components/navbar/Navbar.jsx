@@ -21,7 +21,7 @@ import { useAnimate, stagger, motion } from "framer-motion";
 import { UserContext } from "../../context/UserIdContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../../context/AuthContext";
+
 
 const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
@@ -57,7 +57,6 @@ function useMenuAnimation(isOpen) {
   return scope;
 }
 const Navbar = () => {
-  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const { parties, inventory, bills, access, accountId, userType } =
     useContext(UserContext);
@@ -65,28 +64,17 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const scope = useMenuAnimation(isOpen);
 
-  // const [loginData, setLoginData] = useState([]);
-  // useEffect(() => {
-  //   const items1 = JSON.parse(localStorage.getItem("user"));
-  //   if (items1) {
-  //     console.log("items1 : " , items1)
-  //     setLoginData(items1);
-  //   } else {
-  //     console.log("no items present")
-  //     navigate("/login");
-  //   }
-  // }, []);
-
-  // const items1 = JSON.parse(localStorage.getItem("user"));
-  //console.log("items1 : " , items1)
+  useEffect(() => {
+    const items1 = window.localStorage.getItem("user");
+    if (items1) {
+      console.log("items1 : " , items1)
+    } else {
+      console.log("no items present")
+      navigate("/login");
+    }
+  }, []);
 
 
-  // useEffect(() => {
-  //   console.log("currentUser : " ,currentUser)
-  //   if(!currentUser) {
-  //     navigate("/login");
-  //   }
-  // }, [])
 
   useEffect(() => {
     axios
