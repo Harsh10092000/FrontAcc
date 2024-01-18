@@ -23,7 +23,7 @@ import PurchaseReport from "./pages/purchaseReport/PurchaseReport";
 import Staff from "./pages/staff/Staff";
 import Setting from "./pages/setting/Setting";
 import SettingAccount from "./components/setting/settingAccount/SettingAccount";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
 import AddAccount from "./pages/account/Account";
@@ -48,6 +48,9 @@ const App = () => {
     }
     return children;
   };
+
+  
+
   const router = createBrowserRouter([
     {
       path: "/login",

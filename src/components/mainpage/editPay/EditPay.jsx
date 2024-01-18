@@ -25,7 +25,7 @@ import {
 } from "@tabler/icons-react";
 import "./editpay.scss";
 import axios from "axios";
-
+import { helpertext } from "../../HelperText";
 const EditPay = (props) => {
   const { userId, changeChange, parties } = useContext(UserContext);
 
@@ -583,6 +583,11 @@ const EditPay = (props) => {
                                 }}
                                 onError={(newError) => {
                                   setSubmitDisabled(true), setError(newError);
+                                }}
+                                slotProps={{
+                                  textField: {
+                                    helperText: error ? helpertext[3].date : "",
+                                  },
                                 }}
                               />
                             </DemoContainer>

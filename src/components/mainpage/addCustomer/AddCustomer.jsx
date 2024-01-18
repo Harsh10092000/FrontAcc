@@ -3,15 +3,14 @@ import "./addcustomer.scss";
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
-import dayjs from "dayjs";
-
+import { helpertext } from "../../HelperText";
 const AddCustomer = (props) => {
   const { changeChange, accountId } = useContext(UserContext);
   const [values, setValues] = useState({
     cust_name: "",
     cust_number: "",
     cust_amt: "",
-    amt_type: "",
+    amt_type: "pay",
     cust_gstin: "",
     cust_sflat: "",
     cust_sarea: "",
@@ -79,6 +78,7 @@ const AddCustomer = (props) => {
       values.cust_amt !== "" &&
       values.cust_amt >= 0 &&
       values.amt_type !== "" &&
+      (values.cust_gstin === "" || values.cust_gstin.length > 14) &&
       (values.cust_spin === "" || values.cust_spin.length > 5) &&
       (values.cust_bpin === "" || values.cust_bpin.length > 5)
     ) {
@@ -86,7 +86,7 @@ const AddCustomer = (props) => {
     } else {
       setSubmitDisabled(true);
     }
-  }, [values.cust_name, values.cust_number, values.cust_amt, values.amt_type, values.cust_spin, values.cust_bpin]);
+  }, [values.cust_name, values.cust_number, values.cust_amt, values.amt_type, values.cust_spin, values.cust_bpin , values.cust_gstin]);
 
   
   return (
@@ -112,7 +112,7 @@ const AddCustomer = (props) => {
                     onChange={(e) =>
                       setValues({
                         ...values,
-                        cust_name: e.target.value.replace(/[^A-Z a-z.]/g, ""),
+                        cust_name: e.target.value.replace(/[^A-Z a-z]/g, ""),
                       })
                     }
                     required
@@ -137,6 +137,7 @@ const AddCustomer = (props) => {
                     }
                    
                     value={values.cust_number}
+                    helperText={values.cust_number.length < 10 ? helpertext[2].phoneNumber : "" }
                     required
                   />
                   <div className="text-red-600 text-sm ml-2">{err && err}</div>
@@ -156,6 +157,7 @@ const AddCustomer = (props) => {
                         cust_amt: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                       })
                     }
+                    
                     value={values.cust_amt}
                     required
                   />
@@ -169,13 +171,13 @@ const AddCustomer = (props) => {
                     onChange={handleChange}
                     defaultValue=""
                   >
-                    <option value="" disabled>
+                    {/* <option value="" disabled>
                       Select
-                    </option>
-                    <option value="pay" onClick={() => setSelect(false)}>
+                    </option> */}
+                    <option value="pay" onClick={() => setSelect(true)}>
                       Pay
                     </option>
-                    <option value="receive" onClick={() => setSelect(true)}>
+                    <option value="receive" onClick={() => setSelect(false)}>
                       Receive
                     </option>
                   </select>
@@ -186,6 +188,7 @@ const AddCustomer = (props) => {
                   type="checkbox"
                   className="w-4 h-4 mr-2 cursor-pointer"
                   onChange={handleOnChange}
+
                 />
                 <span>Add GSTIN & GST</span>
               </div>
@@ -207,11 +210,12 @@ const AddCustomer = (props) => {
                           setValues({
                             ...values,
                             cust_gstin: e.target.value.replace(
-                              /[^A-Z0-9]/g,
+                              /[^0-9A-Za-z]/g,
                               ""
                             ),
                           })
                         }
+                        helperText={values.cust_gstin.length < 15 && values.cust_gstin !== ""  ? helpertext[1].gstIn : "" }
                       />
                     </div>
                     <p className="text-left mt-2">Shipping Address</p>
@@ -273,7 +277,7 @@ const AddCustomer = (props) => {
                             cust_spin: e.target.value.replace(/[^0-9]/g, ""),
                           })
                         }
-                        //error={values.cust_spin.length > 5 ?  false : true}
+                        helperText={values.cust_spin.length < 6 && values.cust_spin !== ""  ? helpertext[0].pinCode : "" }
 
                       />
                     </div>
@@ -384,6 +388,7 @@ const AddCustomer = (props) => {
                           name="cust_bpin"
                           inputProps={{ maxLength: 6 }}
                           value={values.cust_bpin}
+                          helperText={values.cust_bpin.length < 6 && values.cust_bpin !== ""  ? helpertext[0].pinCode : "" }
                           onChange={(e) =>
                             setValues({
                               ...values,

@@ -3,14 +3,16 @@ import { IconUser } from "@tabler/icons-react";
 import "./carditem.scss";
 import { UserContext } from "../../../context/UserIdContext";
 
+
 const CardItem = (props) => {
+
   const { changeUser, userId } = useContext(UserContext);
-  const pay = props.result
+  const pay = props.message === null && props.result
     .filter((person) => person.cnct_id === props.users.cust_id)
     .reduce(function (prev, current) {
       return prev + +current.tran_pay;
     }, 0);
-  const receive = props.result
+  const receive = props.message === null && props.result
     .filter((person) => person.cnct_id === props.users.cust_id)
     .reduce(function (prev, current) {
       return prev + +current.tran_receive;
@@ -23,21 +25,21 @@ const CardItem = (props) => {
   // props.skeleton
   //   ? console.log("Skeletion is true")
   //   : console.log("skeleton is false");
+
   return (
-    // <div>
-    //   {console.log("props.users : " , props.users)}
-    //    {props.users !== 0 ?
+
+    <div>
+ {props.message === null ? 
     
     <div
       className={
-        userId === props.users.cust_id
+        userId === props.users?.cust_id
           ? "bg-[#e8f0fe] cardItem cursor-pointer shadow"
           : "cardItem cursor-pointer"
       }
-      onClick={() => changeUser(props.users.cust_id)}
+      onClick={() => changeUser(props.users?.cust_id)}
     >
-      {console.log("props.users : " , props.users !== null)}
-     
+    
       <div
         className="flex justify-between  items-center p-3 "
         style={{ borderBottom: "1px solid rgb(245 245 245" }}
@@ -74,10 +76,10 @@ const CardItem = (props) => {
           </div>
         </div>
       </div>
- 
+      
     </div>
-    // : "serac" }
-    // </div>
+    : props.message }
+    </div>
   );
 };
 export default CardItem;

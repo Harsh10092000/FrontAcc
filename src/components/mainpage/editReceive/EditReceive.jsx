@@ -25,7 +25,7 @@ import {
 import "./editreceive.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
-
+import { helpertext } from "../../HelperText";
 const EditReceive = (props) => {
   const { userId, changeChange } = useContext(UserContext);
   const { tranId } = useContext(UserContext);
@@ -559,6 +559,11 @@ const EditReceive = (props) => {
                                 }}
                                 onError={(newError) => {
                                   setSubmitDisabled(true), setError(newError);
+                                }}
+                                slotProps={{
+                                  textField: {
+                                    helperText: error ? helpertext[3].date : "",
+                                  },
                                 }}
                               />
                             </DemoContainer>

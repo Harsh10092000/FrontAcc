@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import { helpertext } from "../../HelperText";
 const Receive = (props) => {
   const { userId, changeChange } = useContext(UserContext);
   const today = new Date();
@@ -184,6 +185,11 @@ const Receive = (props) => {
                     maxDate={todaysDate}
                     onError={(newError) => {
                       setSubmitDisabled(true), setError(newError);
+                    }}
+                    slotProps={{
+                      textField: {
+                        helperText: error ? helpertext[3].date : "",
+                      },
                     }}
                   />
                 </DemoContainer>

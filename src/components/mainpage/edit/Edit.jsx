@@ -129,6 +129,7 @@ const Edit = (props) => {
       data.cust_name !== "" &&
       data.cust_number !== "" &&
       data.cust_number > 9 &&
+      (data.cust_gstin === "" || data.cust_gstin.length > 14) &&
       (data.cust_spin === "" || data.cust_spin.length > 5) &&
       (data.cust_bpin === "" || data.cust_bpin.length > 5)
     ) {
@@ -136,7 +137,7 @@ const Edit = (props) => {
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.cust_name, data.cust_number,data.cust_spin, data.cust_bpin]);
+  }, [data.cust_name, data.cust_number,data.cust_spin, data.cust_bpin, data.cust_gstin]);
 
   return (
     <Box sx={{ width: 400 }} role="presentation">
@@ -475,7 +476,7 @@ const Edit = (props) => {
                           size="small"
                           value={data.cust_name}
                           onChange={(e) =>
-                            setData({ ...data, cust_name: e.target.value.replace(/[^A-Z a-z.]/g, "") })
+                            setData({ ...data, cust_name: e.target.value.replace(/[^A-Z a-z]/g, "") })
                           }
                           required
                         />
@@ -497,6 +498,7 @@ const Edit = (props) => {
                               cust_number: e.target.value.replace(/[^0-9]/g, ""),
                             })
                           }
+                          helperText={data.cust_number.length < 10 ? "Please Enter valid mobile number" : "" }
                           required
                         />
                       </div>
@@ -557,10 +559,11 @@ const Edit = (props) => {
                               inputProps={{ maxLength: 15}}
                               onChange={(e) =>
                                 setData({ ...data, cust_gstin: e.target.value.replace(
-                                  /[^A-Z0-9]/g,
+                                  /[^A-Z0-9a-z]/g,
                                   ""
                                 ), })
                               }
+                              helperText={data.cust_gstin.length < 15 && data.cust_gstin !== ""  ? "Please Enter valid GST Number" : "" }
                               size="small"
                             />
                           </div>
@@ -612,6 +615,7 @@ const Edit = (props) => {
                               onChange={(e) =>
                                 setData({ ...data, cust_spin: e.target.value.replace(/[^0-9]/g, ""), })
                               }
+                              helperText={data.cust_spin.length < 6 && data.cust_spin !== ""  ? "Please Enter valid PIN Code" : "" }
                             />
                           </div>
                           <div className="box-sec">
@@ -728,6 +732,7 @@ const Edit = (props) => {
                                     ),
                                   })
                                 }
+                                helperText={data.cust_spin.length < 6 && data.cust_spin !== ""  ? "Please Enter valid PIN Code" : "" }
                               />
                             </div>
                             <div className="box-sec">

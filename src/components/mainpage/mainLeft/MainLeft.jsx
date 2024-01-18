@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { UserContext } from "../../../context/UserIdContext";
+import { helpertext } from "../../HelperText";
 
 const MainLeft = (props) => {
   const { change, accountId, parties } = useContext(UserContext);
@@ -24,7 +25,7 @@ const MainLeft = (props) => {
   const [skeleton, setSkeleton] = useState(true);
   const [total, setTotal] = useState([]);
 
-
+console.log(helpertext)
 
   useEffect(() => {
     axios
@@ -88,6 +89,26 @@ const MainLeft = (props) => {
   //   };
   // }, []);
 
+
+  const filteredData  = sortedUsers
+  .filter((code) => {
+    if (filter2 === "pay") {
+      return code.cust_total_amt < 0;
+    } else if (filter2 === "receive") {
+      return code.cust_total_amt > 0;
+    } else if (filter2 === "All") {
+      return true;
+    }
+  })
+  .filter(
+    (code) =>
+      code.cust_number.startsWith(searchValue) ||
+      code.cust_name
+        .toLowerCase()
+        .startsWith(searchValue.toLowerCase())
+  )
+  const msg = filteredData.length === 0 ? "No Customer data available" : null;
+
   return (
     <div className="left bg-pri shadow-lg w-full flex flex-col h-full">
       <div className="heading text-xl font-semibold">
@@ -98,7 +119,7 @@ const MainLeft = (props) => {
         <div className="give text-gray-500 flex gap-1 items-center">
           Total Paid :
           <span className="text-gray-700 font-bold">
-            ₹{" "}
+            ₹
             {total.length > 0 && total[0].payTotal !== null
               ? parseFloat(total[0].payTotal).toFixed(2)
               : 0}
@@ -108,7 +129,7 @@ const MainLeft = (props) => {
         <div className="give text-gray-500 flex gap-1 items-center">
           Total Recieved:
           <span className="text-gray-700 font-bold">
-            ₹{" "}
+            ₹
             {total.length > 0 && total[0].receiveTotal !== null
               ? parseFloat(total[0].receiveTotal).toFixed(2)
               : 0}
@@ -220,32 +241,20 @@ const MainLeft = (props) => {
             </div>
           </div>
         ) : (
-          // sortedUsers.slice(0, visibleItems)
-          sortedUsers
-            .filter((code) => {
-              if (filter2 === "pay") {
-                return code.cust_total_amt < 0;
-              } else if (filter2 === "receive") {
-                return code.cust_total_amt > 0;
-              } else if (filter2 === "All") {
-                return true;
-              }
-            })
-            .filter(
-              (code) =>
-                code.cust_number.startsWith(searchValue) ||
-                code.cust_name
-                  .toLowerCase()
-                  .startsWith(searchValue.toLowerCase())
-            )
+          filteredData.length > 0 ?
+          filteredData
             .map((filteredItem, index) => (
               <CardItem
                 key={index}
                 result={tran}
                 click={props.click}
-                users={(filteredItem.length !== 0 && filteredItem !== null ? filteredItem : 0)}
+                users={filteredItem}
+                message={msg}
               />
             ))
+            : <CardItem
+            message={msg}
+          />
         )}
         {/* <div ref={containerRef}></div> */}
       </div>

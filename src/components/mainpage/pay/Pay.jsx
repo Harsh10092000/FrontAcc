@@ -8,6 +8,7 @@ import "./pay.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { IconX } from "@tabler/icons-react";
+import { helpertext } from "../../HelperText";
 
 const Pay = (props) => {
   const { userId, changeChange } = useContext(UserContext);
@@ -134,6 +135,7 @@ const Pay = (props) => {
                     tran_pay: e.target.value.replace(numberValidation, "$1"),
                   })
                 }
+                
                 required
               />
             </Box>
@@ -169,10 +171,16 @@ const Pay = (props) => {
                     onError={(newError) => {
                       setError(newError);
                     }}
+                    slotProps={{
+                      textField: {
+                        helperText: error ? helpertext[3].date : "",
+                      },
+                    }}
                   />
                 </DemoContainer>
               </LocalizationProvider>
             </Box>
+           
           </Box>
 
           <div className="w-[80%]">
