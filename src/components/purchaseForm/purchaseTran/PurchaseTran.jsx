@@ -5,7 +5,7 @@ const PurchaseTran = (props) => {
   return (
     <>
       {props.filteredInvoiceItems.map((item) => (
-        <div className="grid grid-cols-9 text-center border-b border-slate-300 hover:shadow hover:bg-slate-100">
+        <div className="grid grid-cols-8 text-center border-b border-slate-300 hover:shadow hover:bg-slate-100">
           <div className="border-r border-slate-300 p-4">{i++}</div>
           <div className="border-r border-slate-300 p-4">{item.in_items}</div>
 
@@ -52,11 +52,11 @@ const PurchaseTran = (props) => {
                 parseFloat(item.in_gst_amt ? item.in_gst_amt : 0))
             ).toFixed(2)}
           </div>
-          <div className="grid place-items-center">
+          {/* <div className="grid place-items-center">
             <div className="border border-red-600 p-2 text-red-600 hover:bg-red-600 hover:text-white cursor-pointer rounded-lg transition-all ease-in-out w-10">
               <IconTrash />
             </div>
-          </div>
+          </div> */}
         </div>
       ))}
     </>

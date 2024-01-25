@@ -5,4 +5,5 @@ export const helpertext = [
     {gstIn: "Please Enter valid GST Number"},
     {phoneNumber: "Please Enter valid mobile number"},
     {date: "Please Enter valid Date"},
+    {noData: "No data available"},
 ];

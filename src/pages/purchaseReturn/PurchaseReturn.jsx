@@ -81,7 +81,7 @@ const PurchaseReturn = () => {
           purchase_amt_due: response.data[0].purchase_amt_due,
           purchase_amt_type: response.data[0].purchase_amt_type,
         });
-        setAmtPayMethod(response.data[0].purchase_amt_type);
+        //setAmtPayMethod(response.data[0].purchase_amt_type);
       });
   }, []);
 
@@ -122,59 +122,7 @@ const PurchaseReturn = () => {
 
   const [nerArr, setNerArr] = useState([]);
 
-  // const handleIncrease = (productId) => {
-  //   setProductList((productList) =>
-  //     productList.map((item) =>
-  //       productId === item.product_id
-  //         ? {
-  //             ...item,
-  //             qty: item.qty + 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
 
-  // const handleIncrease2 = (productId) => {
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.product_id && item.item_cat === 1
-  //         ? {
-  //             ...item,
-  //             item_qty: item.item_qty + 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  // const handleDecrease = (productId) => {
-  //   setProductList((productList) =>
-  //     productList.map((item) =>
-  //       productId === item.product_id
-  //         ? {
-  //             ...item,
-  //             qty: item.qty - 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  // const handleDecrease2 = (productId) => {
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.product_id &&
-  //       item.item_qty >= 1 &&
-  //       item.item_cat === 1
-  //         ? {
-  //             ...item,
-  //             item_qty: item.item_qty - 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
 
   useEffect(() => {
     setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
@@ -185,12 +133,12 @@ const PurchaseReturn = () => {
     setIsGstBusiness(isGstBusiness ? false : true);
   };
 
-  const [amtPayMethod, setAmtPayMethod] = useState("unpaid");
+  const [amtPayMethod, setAmtPayMethod] = useState("");
   const handlePayStatus = (event) => {
     setAmtPayMethod(event.target.value);
   };
 
-  const [amountPaid, setAmountPaid] = useState(0);
+  //const [amountPaid, setAmountPaid] = useState(0);
 
   const navigate = useNavigate();
 
@@ -534,17 +482,19 @@ const PurchaseReturn = () => {
                   value={amtPayMethod}
                   onChange={handlePayStatus}
                 >
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="unpaid"
                     control={<Radio />}
                     label="unpaid"
-                  />
+                  /> */}
                   <FormControlLabel
                     value="online"
+                    checked = {amtPayMethod === "online" || amtPayMethod === "" ? true : false }
                     control={<Radio />}
                     label="Online"
                   />
                   <FormControlLabel
+                  checked = {amtPayMethod === "cash" ? true : false }
                     value="cash"
                     control={<Radio />}
                     label="Cash"

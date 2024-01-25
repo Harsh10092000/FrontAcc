@@ -10,12 +10,12 @@ import { UserContext } from "../../../context/UserIdContext";
 import EditSacCode from "../editSacCode/EditSacCode";
 
 const AdminSac = () => {
-  const [visibleItems, setVisibleItems] = useState(15);
+  const [visibleItems, setVisibleItems] = useState(20);
   const containerRef = useRef(null);
   const handleIntersection = (entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        setVisibleItems((prevVisibleItems) => prevVisibleItems + 15);
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + 30);
       }
     });
   };
@@ -187,7 +187,7 @@ const AdminSac = () => {
           </div>
           <div className="flex flex-col gap-2 h-full overflow-y-scroll p-1">
             {sortedUsers
-              .slice(0, visibleItems)
+              
               .filter((code) => {
                 if (filter === "0") {
                   return parseInt(code.sac_igst) === 0;
@@ -211,7 +211,7 @@ const AdminSac = () => {
                   code.sac_desc
                     .toLowerCase()
                     .startsWith(searchValue.toLowerCase())
-              )
+              ).slice(0, visibleItems)
               .map((item) => (
                 <AdminSacCard
                   data={item}

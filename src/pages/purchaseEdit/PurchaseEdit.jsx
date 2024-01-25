@@ -110,17 +110,11 @@ const PurchaseEdit = () => {
 
   const label = { inputProps: { "aria-label": "Switch demo" } };
 
-  const [customGst, setcustomGst] = useState("");
-  const [customeCess, setCustomeCess] = useState(null);
-
   const [supplierData, setSupplierData] = useState({});
   const [productList, setProductList] = useState([]);
   const [productListInItems, setProductListInItems] = useState([]);
-  const [businessdata, setBusinessdata] = useState([]);
   const [purchaseDataById, setPurchaseDataById] = useState([]);
-
   const [hsnCodes, setHsnCodes] = useState([]);
-
   const [businessGst, setBusinessGst] = useState("");
   const [paymentOutPrefixNo, setPaymentOutPrefixNo] = useState("");
   const [invoiceItemList, setInvoiceItemList] = useState([]);
@@ -134,6 +128,28 @@ const PurchaseEdit = () => {
 
   const [amountPaid, setAmountPaid] = useState(0);
   const [payOutAmt, setPayOutAmt] = useState(0);
+
+  const [isGstBusiness, setIsGstBusiness] = useState(true);
+  const handleBusinessGst = () => {
+    setIsGstBusiness(isGstBusiness ? false : true);
+  };
+
+  useEffect(() => {
+    setInvoiceItems({
+      in_serial_no: 0,
+      in_items: "",
+      in_hsn_sac: "",
+      in_qty: "",
+      in_unit: "",
+      in_sale_price: "",
+      in_discount_value: "",
+      in_discount_price: "",
+      in_discount_unit: "",
+      in_gst_prectentage: "",
+      in_gst_amt: "",
+      in_total_amt: "",
+    });
+  }, [isGstBusiness]);
 
   useEffect(() => {
     axios
@@ -154,7 +170,6 @@ const PurchaseEdit = () => {
     axios
       .get(import.meta.env.VITE_BACKEND + "/api/act/fetchData")
       .then((response) => {
-        setBusinessdata(response.data);
         setBusinessGst(response.data[0].business_gst);
       });
     axios
@@ -176,8 +191,10 @@ const PurchaseEdit = () => {
           purchase_amt_type: response.data[0].purchase_amt_type,
           purchase_pay_out_id: response.data[0].purchase_pay_out_id,
         });
-        setAmtPayMethod(response.data[0].purchase_amt_type);
-        setAmountPaid(response.data[0].purchase_amt_paid);
+        // setAmtPayMethod(response.data[0].purchase_amt_type);
+        // setAmountPaid(response.data[0].purchase_amt_paid);
+        setAmtPayMethod("unpaid");
+        setAmountPaid(0);
       });
 
     axios
@@ -256,7 +273,6 @@ const PurchaseEdit = () => {
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
 
-  const { enqueueSnackbar } = useSnackbar();
   const [nerArr, setNerArr] = useState({
     product_id: "",
     product_name: "",
@@ -543,11 +559,6 @@ const PurchaseEdit = () => {
     setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   }, [nerArr]);
 
-  const [isGstBusiness, setIsGstBusiness] = useState(true);
-  const handleBusinessGst = () => {
-    setIsGstBusiness(isGstBusiness ? false : true);
-  };
-
   const [invoiceItems, setInvoiceItems] = useState({
     in_serial_no: 0,
     in_items: "Ghee",
@@ -562,6 +573,10 @@ const PurchaseEdit = () => {
     in_gst_amt: "50",
     in_total_amt: "500",
   });
+
+  const closeDrawer = () => {
+    setState(false);
+  };
 
   const handleContinue2 = () => {
     setInvoiceItems({
@@ -612,6 +627,7 @@ const PurchaseEdit = () => {
           : invoiceItems
       )
     );
+    closeDrawer();
   };
 
   const check1 = (item_discount_unit, purchase_price, item_discount_value) => {
@@ -795,6 +811,7 @@ const PurchaseEdit = () => {
           : invoiceItems
       )
     );
+    closeDrawer();
   };
 
   const filteredInvoiceItems = [];
@@ -911,13 +928,14 @@ const PurchaseEdit = () => {
                     />
                   </Box>
 
+{console.log("productListInItems : " , productListInItems)}
                   <Box>
                     {productListInItems
-                      //   .filter((code) =>
-                      //     code.purchase_item_name
-                      //       .toLowerCase()
-                      //       .startsWith(searchValue.toLowerCase())
-                      //   )
+                        .filter((code) =>
+                          code.purchase_item_name
+                            .toLowerCase()
+                            .startsWith(searchValue.toLowerCase())
+                        )
                       .map((filteredItem) => (
                         <div
                           key={filteredItem.purchase_item_cnct_id}
@@ -1032,27 +1050,18 @@ const PurchaseEdit = () => {
                                 .map((item) => (
                                   <div>
                                     <div>
-                                      {item.tax === "1" ? (
+                                      {isGstBusiness && (
                                         <Box className="box-sec margin-top-zero ">
                                           <label className="pl-2 ">
                                             Tax Included?
                                           </label>
                                           <Switch
                                             {...label}
-                                            defaultChecked
-                                            color="success"
-                                            onChange={() =>
-                                              handleTaxIncluded(item.product_id)
+                                            defaultChecked={
+                                              item.item_tax === "1"
+                                                ? true
+                                                : false
                                             }
-                                          />
-                                        </Box>
-                                      ) : (
-                                        <Box className="box-sec margin-top-zero ">
-                                          <label className="pl-2 ">
-                                            Tax Included?
-                                          </label>
-                                          <Switch
-                                            {...label}
                                             color="success"
                                             onChange={() =>
                                               handleTaxIncluded(item.product_id)
@@ -1207,48 +1216,48 @@ const PurchaseEdit = () => {
                                           />
 
                                           {searchCode !== null &&
-                                          (searchCode !== "") === true && 
-                                          hsnCodes
-                                            .filter(
-                                              (code) =>
-                                                code.hsn_code
-                                                  .toString()
-                                                  .startsWith(searchCode) ||
-                                                code.hsn_desc.startsWith(
-                                                  searchCode
-                                                )
-                                            )
-                                            .map((hsnItem) => (
-                                              <div
-                                                key={hsnItem.id}
-                                                className="flex card-sec"
-                                                onClick={() => {
-                                                  handleAddHsnCode(
-                                                    item.product_id
-                                                  );
-                                                  handleHsnChange(
-                                                    item.product_id,
-                                                    hsnItem.hsn_code,
-                                                    hsnItem.hsn_desc,
-                                                    hsnItem.igst,
-                                                    hsnItem.cgst,
-                                                    hsnItem.sgst
-                                                  );
-                                                }}
-                                              >
-                                                <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
-                                                  <div className="flex gap-6 pb-4">
-                                                    <h2 className=" rounded bg-slate-300 px-6 py-1 ">
-                                                      {hsnItem.hsn_code}
-                                                    </h2>
-                                                    <h2 className=" rounded bg-slate-300 px-4 py-1 ">
-                                                      {hsnItem.igst + "% GST"}
-                                                    </h2>
+                                            (searchCode !== "") === true &&
+                                            hsnCodes
+                                              .filter(
+                                                (code) =>
+                                                  code.hsn_code
+                                                    .toString()
+                                                    .startsWith(searchCode) ||
+                                                  code.hsn_desc.startsWith(
+                                                    searchCode
+                                                  )
+                                              )
+                                              .map((hsnItem) => (
+                                                <div
+                                                  key={hsnItem.id}
+                                                  className="flex card-sec"
+                                                  onClick={() => {
+                                                    handleAddHsnCode(
+                                                      item.product_id
+                                                    );
+                                                    handleHsnChange(
+                                                      item.product_id,
+                                                      hsnItem.hsn_code,
+                                                      hsnItem.hsn_desc,
+                                                      hsnItem.igst,
+                                                      hsnItem.cgst,
+                                                      hsnItem.sgst
+                                                    );
+                                                  }}
+                                                >
+                                                  <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
+                                                    <div className="flex gap-6 pb-4">
+                                                      <h2 className=" rounded bg-slate-300 px-6 py-1 ">
+                                                        {hsnItem.hsn_code}
+                                                      </h2>
+                                                      <h2 className=" rounded bg-slate-300 px-4 py-1 ">
+                                                        {hsnItem.igst + "% GST"}
+                                                      </h2>
+                                                    </div>
+                                                    <p>{hsnItem.hsn_desc}</p>
                                                   </div>
-                                                  <p>{hsnItem.hsn_desc}</p>
                                                 </div>
-                                              </div>
-                                            ))}
+                                              ))}
                                         </>
                                       ) : (
                                         <span className="m-0"></span>
@@ -1540,14 +1549,18 @@ const PurchaseEdit = () => {
                     className="border p-2 rounded-lg w-[90%] border-slate-400"
                     placeholder="Address (Optional)"
                     value={
-                      supplierData.sup_sflat +
-                      ", " +
-                      supplierData.sup_sarea +
-                      ", " +
-                      supplierData.sup_scity +
-                      ", " +
-                      supplierData.sup_sstate +
-                      ", " +
+                      (supplierData.sup_sflat
+                        ? supplierData.sup_sflat + ", "
+                        : "") +
+                      (supplierData.sup_sarea
+                        ? supplierData.sup_sarea + ", "
+                        : "") +
+                      (supplierData.sup_scity
+                        ? supplierData.sup_scity + ", "
+                        : "") +
+                      (supplierData.sup_sstate
+                        ? supplierData.sup_sstate + ", "
+                        : "") +
                       supplierData.sup_spin
                     }
                   />
@@ -1626,7 +1639,7 @@ const PurchaseEdit = () => {
               Items On The Invoice
             </div>
             <div>
-              <div className="grid grid-cols-9 place-items-center border-b border-slate-300 bg-slate-50 py-3">
+              <div className="grid grid-cols-8 place-items-center border-b border-slate-300 bg-slate-50 py-3">
                 <div>SNo.</div>
                 <div>Items</div>
                 <div>HSN/SAC</div>
@@ -1635,7 +1648,7 @@ const PurchaseEdit = () => {
                 <div>Discount | Unit</div>
                 <div>GST | Amount</div>
                 <div>Amount</div>
-                <div>Action</div>
+                {/* <div>Action</div> */}
               </div>
               <div className="h-[37vh] overflow-y-scroll">
                 <PurchaseTran filteredInvoiceItems={filteredInvoiceItems} />

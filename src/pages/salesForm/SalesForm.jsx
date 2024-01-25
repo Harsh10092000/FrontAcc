@@ -19,7 +19,6 @@ import { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import { UserContext } from "../../context/UserIdContext";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import "./salesform.scss";
@@ -120,6 +119,29 @@ const SalesForm = () => {
 
   const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
+  const [isGstBusiness, setIsGstBusiness] = useState(true);
+  const handleBusinessGst = () => {
+    setIsGstBusiness(isGstBusiness ? false : true);
+  };
+
+  useEffect(() => {
+    setNerArr([]);
+    setInvoiceItems({
+      in_serial_no: 0,
+      in_items: "",
+      in_hsn_sac: "",
+      in_qty: "",
+      in_unit: "",
+      in_sale_price: "",
+      in_discount_value: "",
+      in_discount_price: "",
+      in_discount_unit: "",
+      in_gst_prectentage: "",
+      in_gst_amt: "",
+      in_total_amt: "",
+    });
+  }, [isGstBusiness]);
+
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/auth/fetch/${accountId}`)
@@ -131,19 +153,19 @@ const SalesForm = () => {
       .then((response) => {
         setBusinessGst(response.data[0].business_gst);
       });
-    axios
-      .get(
-        import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
-      )
-      .then((response) => {
-        setProductList(response.data);
-      });
+    // axios
+    //   .get(
+    //     import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
+    //   )
+    //   .then((response) => {
+    //     setProductList(response.data);
+    //   });
 
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
-      .then((response) => {
-        setServicesList(response.data);
-      });
+    // axios
+    //   .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
+    //   .then((response) => {
+    //     setServicesList(response.data);
+    //   });
 
     axios
       .get(
@@ -164,6 +186,22 @@ const SalesForm = () => {
         setPaymentInPrefixNo(response.data[0].sale_payment_in_prefix_no);
       });
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
+      )
+      .then((response) => {
+        setProductList(response.data);
+      });
+
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
+      .then((response) => {
+        setServicesList(response.data);
+      });
+  }, [isGstBusiness]);
 
   const [state, setState] = useState({
     add: false,
@@ -295,7 +333,6 @@ const SalesForm = () => {
       )
     );
   };
-
 
   const handleHsnChange = (productId, hsn, desc, igst, sgst, cgst) => {
     setNerArr((nerArr) =>
@@ -521,10 +558,7 @@ const SalesForm = () => {
   useEffect(() => {
     setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   }, [nerArr]);
-  const [isGstBusiness, setIsGstBusiness] = useState(true);
-  const handleBusinessGst = () => {
-    setIsGstBusiness(isGstBusiness ? false : true);
-  };
+
   const [prefixNo, setPrefixNo] = useState(0);
   useEffect(() => {
     salesPrefixData
@@ -717,10 +751,6 @@ const SalesForm = () => {
                 ? item.item_discount_unit
                 : "amount",
 
-              // in_gst_prectentage:
-              //   item.item_igst || item.item_cess
-              //     ? ((item.item_igst ? parseFloat(item.item_igst) : 0) + ( item.item_cess ? parseFloat(item.item_cess) : 0 ) )
-              //     : "-",
               in_gst_prectentage: item.item_igst
                 ? parseFloat(item.item_igst)
                 : 0,
@@ -754,7 +784,7 @@ const SalesForm = () => {
     );
     closeDrawer();
   };
-  const filteredInvoiceItems = [];
+  let filteredInvoiceItems = [];
   for (let i = 0; i < invoiceItems.length; i++) {
     if (invoiceItems[i].in_qty !== "") {
       filteredInvoiceItems.push(invoiceItems[i]);
@@ -996,21 +1026,23 @@ const SalesForm = () => {
                               ).map((item) => (
                                 <div>
                                   <div>
-                                    <Box className="box-sec margin-top-zero ">
-                                      <label className="pl-2 ">
-                                        Tax Included?
-                                      </label>
-                                      <Switch
-                                        {...label}
-                                        defaultChecked={
-                                          item.item_tax === "1" ? true : false
-                                        }
-                                        color="success"
-                                        onChange={() =>
-                                          handleTaxIncluded(item.item_id)
-                                        }
-                                      />
-                                    </Box>
+                                    {isGstBusiness && (
+                                      <Box className="box-sec margin-top-zero ">
+                                        <label className="pl-2 ">
+                                          Tax Included?
+                                        </label>
+                                        <Switch
+                                          {...label}
+                                          defaultChecked={
+                                            item.item_tax === "1" ? true : false
+                                          }
+                                          color="success"
+                                          onChange={() =>
+                                            handleTaxIncluded(item.item_id)
+                                          }
+                                        />
+                                      </Box>
+                                    )}
                                   </div>
                                   <div className="flex flex-col">
                                     <Box className="box-sec ">
@@ -1029,7 +1061,7 @@ const SalesForm = () => {
 
                                       <Box className="sec-2 w-[50%]">
                                         <select
-                                          className=" py-[8.5px] border"
+                                          className=" py-[9.5px] border "
                                           name="discount_unit"
                                           onChange={(e) =>
                                             handleDiscountUnit(item.item_id, e)
@@ -1099,13 +1131,6 @@ const SalesForm = () => {
                                               "% CESS )"
                                             : ""
                                         }
-                                        // helperText={
-                                        //   productData.item.item_cess !== ""
-                                        //     ? custom_gst_details
-                                        //     : productData.item.item_igst !== ""
-                                        //     ? gst_details
-                                        //     : ""
-                                        // }
                                         className="sec-2 w-full"
                                         size="small"
                                         InputProps={{
@@ -1157,21 +1182,6 @@ const SalesForm = () => {
                                                 key={hsnItem.id}
                                                 className="flex card-sec"
                                                 onClick={() => {
-                                                  // setSearchCode("");
-                                                  // setProductData({
-                                                  //   ...productData,
-                                                  //   igst: hsnItem.igst,
-                                                  //   cgst: hsnItem.cgst,
-                                                  //   sgst: hsnItem.sgst,
-                                                  //   cess: hsnItem.cess,
-                                                  //   hsn_code:
-                                                  //     typeof hsnItem.hsn_code ===
-                                                  //     "number"
-                                                  //       ? hsnItem.hsn_code
-                                                  //       : null,
-                                                  //   hsn_desc:
-                                                  //     hsnItem.hsn_desc,
-                                                  // });
                                                   handleAddHsnCode(
                                                     item.item_id
                                                   );
@@ -1183,7 +1193,6 @@ const SalesForm = () => {
                                                     hsnItem.cgst,
                                                     hsnItem.sgst
                                                   );
-                                                  
                                                 }}
                                               >
                                                 <div className="gst-card-text cursor-pointer hover:bg-slate-100 p-3 rounded">
@@ -1192,8 +1201,7 @@ const SalesForm = () => {
                                                       {hsnItem.hsn_code}
                                                     </h2>
                                                     <h2 className=" rounded bg-slate-300 px-4 py-1 ">
-                                                      {hsnItem.igst +
-                                                        "% GST"}
+                                                      {hsnItem.igst + "% GST"}
                                                     </h2>
                                                   </div>
                                                   <p>{hsnItem.hsn_desc}</p>
@@ -1202,7 +1210,7 @@ const SalesForm = () => {
                                             ))}
                                       </>
                                     ) : (
-                                      <span className="m-0"></span>
+                                      <div className="m-0 pt-5"></div>
                                     )}
                                   </>
                                   {item.add_gst ? (
@@ -1385,8 +1393,7 @@ const SalesForm = () => {
           saleData
         );
       }
-      // changeChange();
-      // props.snack();
+
       navigate("/sales");
     } catch (err) {
       console.log(err);
@@ -1510,14 +1517,10 @@ const SalesForm = () => {
                     className="border p-2 rounded-lg w-[90%] border-slate-400"
                     placeholder="Address (Optional)"
                     value={
-                      custData.cust_flat +
-                      ", " +
-                      custData.cust_area +
-                      ", " +
-                      custData.cust_city +
-                      ", " +
-                      custData.cust_state +
-                      ", " +
+                      (custData.cust_flat ? custData.cust_flat + ", " : "") +
+                      (custData.cust_area ? custData.cust_area + ", " : "") +
+                      (custData.cust_city ? custData.cust_city + ", " : "") +
+                      (custData.cust_state ? custData.cust_state + ", " : "") +
                       custData.cust_pin
                     }
                   />
@@ -1539,7 +1542,7 @@ const SalesForm = () => {
                   <input
                     type="text"
                     className="border p-2 rounded-lg w-[58%] border-slate-400 h-[90%]"
-                    placeholder="Invoice Number"
+                    placeholder="Prefix"
                     value={prefixValue === "" ? "Invoice" : prefixValue}
                     onClick={() => setAddPrefix(true)}
                   />
@@ -1552,22 +1555,9 @@ const SalesForm = () => {
                         ? parseInt(defaultPrefixNo) + 1
                         : prefixNo
                     }
-                    // onChange={(e) =>
-                    //   setPrefixNo(
-                    //     salesPrefixData.find(
-                    //       (item) =>
-                    //         (item.sale_prefix_no ===
-                    //         e.target.value.replace(/[^0-9]/g, "") && item.sale_prefix === (prefixValue))
-                    //     )
-                    //       ? setAddNewPrefix(true)
-                    //       : (setAddNewPrefix(false),
-                    //         e.target.value.replace(/[^0-9]/g, ""))
-                    //   )
-                    // }
                     helperText={
                       addNewPrefix ? "Prefix Number Already Exists" : ""
                     }
-                    // onChange={(e)=> setPrefixNo(e.target.value)}
                     name="prefix_number"
                   />
                 </div>
@@ -1578,7 +1568,7 @@ const SalesForm = () => {
                         <input
                           type="text"
                           className="border p-2 rounded-lg w-[58%] border-slate-400 h-[90%]"
-                          placeholder="Invoice Number"
+                          placeholder="Prefix"
                           onChange={(e) => {
                             setTemp(e.target.value), setPrefixNo(1);
                           }}
@@ -1694,7 +1684,7 @@ const SalesForm = () => {
               Items On The Invoice
             </div>
             <div>
-              <div className="grid grid-cols-9 place-items-center border-b border-slate-300 bg-slate-50 py-3">
+              <div className="grid grid-cols-8 place-items-center border-b border-slate-300 bg-slate-50 py-3">
                 <div>SNo.</div>
                 <div>Items</div>
                 <div>HSN/SAC</div>
@@ -1703,7 +1693,7 @@ const SalesForm = () => {
                 <div>Discount | Unit</div>
                 <div>GST | Amount</div>
                 <div>Amount</div>
-                <div>Action</div>
+                {/* <div>Action</div> */}
               </div>
               <div className="h-[37vh] overflow-y-scroll">
                 <SalesProducts filteredInvoiceItems={filteredInvoiceItems} />

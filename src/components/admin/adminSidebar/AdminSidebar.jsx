@@ -48,7 +48,7 @@ const AdminSidebar = () => {
       icon: <IconWallet />,
     },
     {
-      linkto: "/moderator",
+      linkto: "/admin/moderator",
       name: "Moderator",
       icon: <IconBrandAmongUs />,
     },

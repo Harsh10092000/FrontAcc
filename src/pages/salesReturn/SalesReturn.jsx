@@ -88,7 +88,7 @@ const SalesReturn = () => {
           sale_amt_due: response.data[0].sale_amt_due,
           sale_amt_type: response.data[0].sale_amt_type,
         });
-        setAmtPayMethod(response.data[0].sale_amt_type);
+        //setAmtPayMethod(response.data[0].sale_amt_type);
       });
   }, []);
 
@@ -194,7 +194,7 @@ const SalesReturn = () => {
   };
 
   
-  const [amtPayMethod, setAmtPayMethod] = useState("unpaid");
+  const [amtPayMethod, setAmtPayMethod] = useState("");
   const handlePayStatus = (event) => {
     setAmtPayMethod(event.target.value);
   };
@@ -263,8 +263,11 @@ const SalesReturn = () => {
   : (saleReturn.sale_refund_amt = saleDataById.sale_amt);
 
 
+  
+
   const handleClick = async (e) => {
     e.preventDefault();
+    console.log("saleReturn : " , saleReturn);
     try {
       await axios.post(
         import.meta.env.VITE_BACKEND + "/api/sale/returnSale",
@@ -544,17 +547,21 @@ const SalesReturn = () => {
                   value={amtPayMethod}
                   onChange={handlePayStatus}
                 >
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="unpaid"
                     control={<Radio />}
                     label="unpaid"
-                  />
+                  /> */}
+                  {console.log("amtPayMethod : " , amtPayMethod)}
                   <FormControlLabel
+                    
                     value="online"
-                    control={<Radio />}
+                    checked = {amtPayMethod === "online" || amtPayMethod === "" ? true : false}
+                    control={<Radio  />}
                     label="Online"
                   />
                   <FormControlLabel
+                  checked = {amtPayMethod === "cash" ? true : false}
                     value="cash"
                     control={<Radio />}
                     label="Cash"
@@ -563,7 +570,7 @@ const SalesReturn = () => {
               </FormControl>
             </div>
 
-            {amtPayMethod !== "unpaid" ? (
+            {/* {amtPayMethod !== "unpaid" ? (
               <div className="flex gap-2 text-lg font-semibold text-slate-600">
                 
                 <div>
@@ -577,7 +584,7 @@ const SalesReturn = () => {
               </div>
             ) : (
               ""
-            )}
+            )} */}
 
             <div className="flex gap-2 text-lg font-semibold text-slate-600">
               <div>Balance Due :</div>

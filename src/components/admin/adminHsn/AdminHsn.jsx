@@ -10,19 +10,19 @@ import { IconPlus } from "@tabler/icons-react";
 import { UserContext } from "../../../context/UserIdContext";
 import EditHsnCode from "../editHsnCode/EditHsnCode";
 const AdminHsn = () => {
-  const [visibleItems, setVisibleItems] = useState(15);
+  const [visibleItems, setVisibleItems] = useState(20);
   const containerRef = useRef(null);
   const handleIntersection = (entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        setVisibleItems((prevVisibleItems) => prevVisibleItems + 15);
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + 30);
       }
     });
   };
 
   useEffect(() => {
     const options = {
-      threshold: 0.5,
+      threshold: 0,
     };
     const observer = new IntersectionObserver(handleIntersection, options);
     if (containerRef.current) {
@@ -75,7 +75,6 @@ const AdminHsn = () => {
     setSortOption(e.target.value);
   };
   const data = hsnData.slice(hsnData.length - 10, hsnData.length);
-  console.log("data : ", data);
   let sortedUsers = [...hsnData];
 
   if (sortOption === "recent") {
@@ -91,7 +90,7 @@ const AdminHsn = () => {
       {anchor === "add" ? (
         <AddHsnCode
           snack={() =>
-            handleClickVariant("success", "add", "Sac Code Has been Added")
+            handleClickVariant("success", "add", "Hsn Code Has been Added")
           }
         />
       ) : anchor === "edit" ? (
@@ -190,7 +189,7 @@ const AdminHsn = () => {
             {
               // searchValue !== null && (searchValue !== "") === true &&
               sortedUsers
-                .slice(0, visibleItems)
+                
                 .filter((code) => {
                   if (filter === "0") {
                     return parseInt(code.igst) === 0;
@@ -214,7 +213,7 @@ const AdminHsn = () => {
                     code.hsn_desc
                       .toLowerCase()
                       .startsWith(searchValue.toLowerCase())
-                )
+                ).slice(0, visibleItems)
                 .map((item) => (
                   <AdminHsnCard
                     data={item}

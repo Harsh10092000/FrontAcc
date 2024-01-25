@@ -368,7 +368,7 @@ const EditSup = (props) => {
                   onClick={handleClickOpen}
                 >
                   <IconTrash />
-                  Delete Customer
+                  Delete Supplier
                 </button>
                 <Dialog
                   open={open}

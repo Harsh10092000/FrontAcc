@@ -22,15 +22,18 @@ const Login = () => {
   const [cotp, setCotp] = useState(0);
   const [email, setEmail] = useState("");
   const [otpdrop, setOtpdrop] = useState(false);
-  const [otpmsg, setOtpmsg] = useState("Next");
+  //const [otpmsg, setOtpmsg] = useState("Next");
   const [otpError, setOtpError] = useState(false);
-
-  
+  const [timer, setTimer] = useState(false);
+  const [emailError, setEmailError] = useState(true);
+  const [minutes, setMinutes] = useState(1);
+  const [seconds, setSeconds] = useState(30);
 
   const fetchOtp = () => {
     try {
+      setTimer(true);
       setOtpdrop(true);
-      setOtpmsg("Resend Otp");
+      //setOtpmsg("Resend Otp");
       axios
         .get(import.meta.env.VITE_BACKEND + `/api/log/sendmail/${email}`)
         .then((res) => {
@@ -89,48 +92,32 @@ const Login = () => {
     }
   }, [otp]);
 
- 
-  const [minutes, setMinutes] = useState(1);
-  const [seconds, setSeconds] = useState(30);
-  // useEffect(() => {
-  //   const myInterval = setInterval(() => {
-  //     if (seconds > 0) {
-  //       setSeconds(seconds - 1);
-  //     }
-  //     if (seconds === 0) {
-  //       if (minutes === 0) {
-  //         clearInterval(myInterval);
-  //       } else {
-  //         setMinutes(minutes - 1);
-  //         setSeconds(59);
-  //       }
-  //     }
-  //   }, 1000);
-  //   return () => {
-  //     clearInterval(myInterval);
-  //   };
-  // }, [fetchOtp]);
- 
+
   useEffect(() => {
-  
-    const myInterval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      }
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(myInterval);
-        } else {
+    if (seconds > 0 && timer === true) {
+      const intervalId = setInterval(() => {
+        setSeconds((prevTimer) => prevTimer - 1);
+        if (minutes > 0 && seconds === 1) {
           setMinutes(minutes - 1);
           setSeconds(59);
         }
-      }
-    }, 1000);
-    return () => {
-      clearInterval(myInterval);
-    };
-  
+      }, 1000);
+      return () => clearInterval(intervalId);
+    } else {
+      setTimer(false);
+      setMinutes(1);
+      setSeconds(30);
+    }
   }, [fetchOtp]);
+
+
+  useEffect(() => {
+    if (email.length > 0) {
+      setEmailError(false);
+    } else {
+      setEmailError(true);
+    }
+  }, [email]);
 
 
   return (
@@ -139,7 +126,7 @@ const Login = () => {
       <div className="min-h-screen flex flex-row mx-0 justify-center">
         <div className="flex-col flex self-center p-10 max-w-5xl xl:max-w-2xl z-10">
           <div className="self-start hidden lg:flex flex-col text-white">
-            <h1 className="mb-3 font-bold text-5xl">AccBook</h1>
+            <h1 className="mb-3 font-bold text-5xl">Khata Ease</h1>
             <p className="pr-3">
               Using a digital-first approach while keeping the needs of the
               merchants of Bharat at the centre of product design, has helped
@@ -171,14 +158,27 @@ const Login = () => {
                   placeholder="mail@gmail.com"
                   whileTap={{ scale: 0.97 }}
                   onChange={(e) => setEmail(e.target.value)}
+                  // onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/g, ""))}
+                  // onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]/g,"").replace(/^(\@[a-zA-Z0-9.-])/, "$1"))}
+                  //onChange={(e) => setEmail(e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"))}
+                  //cust_amt: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                   readOnly={otpdrop}
                 />
-                <p>{cotp !== 0 ? cotp : ""}</p>
+
+                {otpdrop && (
+                  <div className="flex justify-between">
+                    <div>{cotp !== 0 ? cotp : ""}</div>
+                    <div
+                      onClick={() => (
+                        setOtpdrop(false), setMinutes(1), setSeconds(30), setCotp(0)
+                      )}
+                    >
+                      Edit
+                    </div>
+                  </div>
+                )}
               </div>
-              <div>
-                {console.log(seconds)}
-               
-              </div>
+
               {otpdrop ? (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 tracking-wide">
@@ -191,9 +191,12 @@ const Login = () => {
                     whileTap={{ scale: 0.97 }}
                     onChange={(e) => setOtp(e.target.value)}
                   />
-                  {console.log(seconds)}
-                  {seconds !== 0 ? (
-                    <p>Time Remaining: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</p>
+
+                  {timer === true ? (
+                    <p>
+                      Time Remaining: {minutes}:
+                      {seconds < 10 ? `0${seconds}` : seconds}
+                    </p>
                   ) : (
                     <p>Didn't recieve code?</p>
                   )}
@@ -204,17 +207,42 @@ const Login = () => {
               )}
 
               <div>
-                <motion.button
-                  className="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"
+                {/* <motion.button
+                  className={timer === true && (otpmsg === "Resend Otp" || emailError === true) ? " cursor-not-allowed w-full flex justify-center bg-slate-400 hover:bg-slate-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg transition" : "w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition" }
                   whileTap={{ scale: 0.9 }}
-                  onClick={fetchOtp}
+                  onClick={timer === true && otpmsg === "Resend Otp" ? "" : fetchOtp }
                 >
                   {otpmsg}
-                </motion.button>
+                </motion.button> */}
+                {otpdrop === false ? (
+                  <motion.button
+                    className={
+                      emailError === true
+                        ? " cursor-not-allowed w-full flex justify-center bg-slate-400 hover:bg-slate-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg transition"
+                        : "w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"
+                    }
+                    whileTap={{ scale: 0.9 }}
+                    onClick={emailError === true ? "" : fetchOtp}
+                  >
+                    Next
+                  </motion.button>
+                ) : (
+                  <motion.button
+                    className={
+                      timer === true
+                        ? " cursor-not-allowed w-full flex justify-center bg-slate-400 hover:bg-slate-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg transition"
+                        : "w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition"
+                    }
+                    whileTap={{ scale: 0.9 }}
+                    onClick={timer === true ? "" : fetchOtp}
+                  >
+                    Resend Otp
+                  </motion.button>
+                )}
               </div>
             </div>
             <div className="pt-5 text-center text-gray-400 text-xs">
-              <span>Copyright © 2023-2024 Accbook</span>
+              <span>Copyright © 2023-2024 Khataease</span>
             </div>
           </div>
         </motion.div>

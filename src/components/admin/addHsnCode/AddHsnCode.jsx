@@ -22,6 +22,7 @@ const AddHsnCode = (props) => {
         values
       );
       changeChange();
+      console.log("props.snack() : " , props.snack())
       props.snack();
     } catch (err) {
       console.log(err);

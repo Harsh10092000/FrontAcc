@@ -307,7 +307,7 @@ const AddStaff = (props) => {
                       id="bill_2"
                       name="bills"
                       onClick={() => setBills(2)}
-                      checked={bills === 1 ? true : false}
+                      checked={bills === 2 ? true : false}
                     />
                     <label htmlFor="bill_2">
                       Add, Edit & Delete for Bills, Cashbook & Reports

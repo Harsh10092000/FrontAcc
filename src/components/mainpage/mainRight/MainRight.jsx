@@ -22,32 +22,42 @@ const MainRight = (props) => {
       });
   }, [change, userId]);
 
+  const [hsnData, setHsnData] = useState([]);
+  useEffect(() => {
+      axios
+        .get(import.meta.env.VITE_BACKEND + `/api/ad/fetchHsnCodes`)
+        .then((response) => {
+          setHsnData(response.data);
+        });
+  }, [change]);
 
-  // const [visibleItems, setVisibleItems] = useState(10);
-  // const containerRef = useRef(null);
-  // const handleIntersection = (entries, observer) => {
+  const [visibleItems, setVisibleItems] = useState(10);
+  const containerRef = useRef(null);
+  const handleIntersection = (entries, observer) => {
     
-  //   entries.forEach((entry) => {
-  //     if (entry.isIntersecting) {
-  //       setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
-  //     }
+    entries.forEach((entry) => {
+      console.log("entry : " , entry.isIntersecting)
+      if (entry.isIntersecting) {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
+      }
       
-  //   });
-  // };
+    });
+  };
 
 
-  // useEffect(() => {
-  //   const options = {
-  //     threshold: 0.50,
-  //   };
-  //   const observer = new IntersectionObserver(handleIntersection, options);
-  //   if (containerRef.current) {
-  //     observer.observe(containerRef.current);
-  //   }
-  //   return () => {
-  //     observer.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const options = {
+      threshold: 0,
+    };
+    const observer = new IntersectionObserver(handleIntersection, options);
+    console.log("containerRef.current : " , containerRef.current)
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
 
   return (
@@ -66,7 +76,7 @@ const MainRight = (props) => {
       <div className="transactions">
         {result.length > 0 ? (
           result
-          // .slice(0, visibleItems)
+          .slice(0, visibleItems)
           .map((item, index) => {
             if (custAmtType === "receive") {
               const sum = result
@@ -117,8 +127,20 @@ const MainRight = (props) => {
             <div>No Entries Added</div>
           </div>
         )}
-        {/* <div ref={containerRef}></div> */}
+         <div ref={containerRef} className=" text-white" >containerRef</div> 
       </div>
+       {/* <div className="transactions">
+        {hsnData.slice(0, visibleItems).map((item) => (
+          <Transaction
+                  
+                  transactions={item}
+                  editPay={props.editPay}
+                  editReceive={props.editReceive}
+                  totalBalance="56"
+                />
+        ))}    
+        <div ref={containerRef}>containerRef</div>    
+      </div> */}
       {parties === 2 || parties === 3 ? (
         <div className="btn shadow-lg">
           <button className="pay text-red-600" onClick={props.pay}>

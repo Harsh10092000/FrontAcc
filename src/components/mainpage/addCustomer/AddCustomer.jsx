@@ -37,6 +37,7 @@ const AddCustomer = (props) => {
 
   const [err, setErr] = useState(null);
   const handleClick = async (e) => {
+    console.log("values : " , values, accountId);
     e.preventDefault();
     try {
       await axios.post(import.meta.env.VITE_BACKEND + "/api/auth/send", values);

@@ -31,11 +31,6 @@ const SaleEditPayIn = (props) => {
 
 
 
-  const { enqueueSnackbar } = useSnackbar();
-  const handleClickVariant = (variant, anchor1, msg) => {
-    enqueueSnackbar(msg, { variant });
-  };
-
   const [amtIn, SetAmtIn] = useState(0);
 
   const [saleDataById, setSaleDataById] = useState([]);

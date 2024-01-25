@@ -25,7 +25,7 @@ const MainLeft = (props) => {
   const [skeleton, setSkeleton] = useState(true);
   const [total, setTotal] = useState([]);
 
-console.log(helpertext)
+
 
   useEffect(() => {
     axios
@@ -65,29 +65,28 @@ console.log(helpertext)
     sortedUsers.sort((a, b) => a.cust_name.localeCompare(b.cust_name));
   }
 
-  // const [visibleItems, setVisibleItems] = useState(10);
-  // const containerRef = useRef(null);
-  // const handleIntersection = (entries, observer) => {
-  //   entries.forEach((entry) => {
-  //     if (entry.isIntersecting) {
-  //       setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
-  //     }
-  //   });
-  // };
+  const [visibleItems, setVisibleItems] = useState(10);
+  const containerRef = useRef(null);
+  const handleIntersection = (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setVisibleItems((prevVisibleItems) => prevVisibleItems + 2);
+      }
+    });
+  };
 
-  // console.log("intersaction : ", visibleItems)
-  // useEffect(() => {
-  //   const options = {
-  //     threshold: 0.50,
-  //   };
-  //   const observer = new IntersectionObserver(handleIntersection, options);
-  //   if (containerRef.current) {
-  //     observer.observe(containerRef.current);
-  //   }
-  //   return () => {
-  //     observer.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    const options = {
+      threshold: 0.50,
+    };
+    const observer = new IntersectionObserver(handleIntersection, options);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
 
   const filteredData  = sortedUsers
@@ -107,7 +106,7 @@ console.log(helpertext)
         .toLowerCase()
         .startsWith(searchValue.toLowerCase())
   )
-  const msg = filteredData.length === 0 ? "No Customer data available" : null;
+  const msg = filteredData.length === 0 ? helpertext[4].noData : null;
 
   return (
     <div className="left bg-pri shadow-lg w-full flex flex-col h-full">
@@ -242,7 +241,7 @@ console.log(helpertext)
           </div>
         ) : (
           filteredData.length > 0 ?
-          filteredData
+          filteredData.slice(0, visibleItems)
             .map((filteredItem, index) => (
               <CardItem
                 key={index}
@@ -256,7 +255,7 @@ console.log(helpertext)
             message={msg}
           />
         )}
-        {/* <div ref={containerRef}></div> */}
+        <div ref={containerRef}></div>
       </div>
     </div>
   );

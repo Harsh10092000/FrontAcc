@@ -84,14 +84,15 @@ const SettingAcCard = (props) => {
           aria-describedby="alert-dialog-description"
           maxWidth="xl"
         >
+          {console.log(props.data.business_logo)}
           <div>
             <DialogContent>
               <img
                 className="image"
-                src={
+                src={props.data.business_logo ? 
                   import.meta.env.VITE_BACKEND +
                   "/account/" +
-                  props.data.business_logo
+                  props.data.business_logo : "A"
                 }
                 alt="no image"
               />

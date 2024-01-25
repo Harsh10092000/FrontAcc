@@ -18,6 +18,7 @@ const AdminHsnCard = (props) => {
     useContext(UserContext);
 
   const [open, setOpen] = useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -44,6 +45,9 @@ const AdminHsnCard = (props) => {
       console.log(err);
     }
   };
+
+  console.log("props.add : " , props.add );
+  console.log("props.edit : " , props.edit );
 
   const disabledStyle =
     "cursor-not-allowed text-slate-500 disabled p-1 rounded-md shadow shadow-slate-600 w-9 h-9 flex items-center justify-center hover:bg-slate-500 hover:text-white transition-all ease-in-out duration-500";

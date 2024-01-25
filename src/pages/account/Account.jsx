@@ -245,11 +245,11 @@ export default function AddAccount() {
   };
 
   const errors = {
-    gstError: "error",
-    bankAccName: "error",
-    bankAccNo: "error",
-    bankAccIfsc: "error",
-    bankAccPayeeName: "error",
+    gstError: "Please Enter valid GST Number",
+    bankAccName: "Please Enter valid Bank Account Name",
+    bankAccNo: "Please Enter valid Bank Account Number",
+    bankAccIfsc: "Please Enter valid Bank Account IFSC Code",
+    bankAccPayeeName: "Please Enter valid Payee Name",
   };
 
   const [bankDetails, setBankDetails] = useState(false);

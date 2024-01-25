@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import SettingAcCard from "../settingAcCard/SettingAcCard";
 import { useNavigate } from "react-router-dom";
 const SettingAccount = () => {
-  const navigate  = useNavigate()
   const { currentUser } = useContext(AuthContext);
   const {
     changeAccountId,
@@ -20,7 +19,6 @@ const SettingAccount = () => {
     changeSaleId,
     changePurchaseId,
     changeStaffId,
-    access,
     changeAccess,
     userType,
     change,
@@ -97,24 +95,13 @@ const SettingAccount = () => {
     changeStaffId(0);
   };
 
-  // const [currUser , setCurrUser] = useState([]);
-  // ()=>setCurrUser(localStorage.getItem("lastname"));
-  // // let a = 0;
-  // useEffect(() => {
-  //   a = info.length;
-  //   console.log("a : ", a)
-  // }, [info])
-  
-  //console.log("info.length : " , info.length)
-
   useEffect(() => {
     const info_length = info.length
-    console.log("accountId : " , accountId,info_length )
-    // if(info_length === 0 ) {
-    //   navigate('/addAccount')
-    // } 
     accountId === 0 ? changeAccountId(info[info_length-1]?.business_id) : "" ;
   }, [info ])
+
+
+  console.log("accountId : " , accountId)
 
   return (
     <div className="w-full">

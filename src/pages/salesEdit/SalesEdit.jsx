@@ -19,14 +19,12 @@ import { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import { UserContext } from "../../context/UserIdContext";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-//import "./salesform.scss";
 import { useNavigate } from "react-router-dom";
 
 const SalesEdit = () => {
-  const { change, changeChange, accountId, saleId } = useContext(UserContext);
+  const {  accountId, saleId } = useContext(UserContext);
   const states = [
     {
       state_name: "Haryana",
@@ -108,8 +106,6 @@ const SalesEdit = () => {
   ];
 
   const label = { inputProps: { "aria-label": "Switch demo" } };
-  const [customGst, setcustomGst] = useState("");
-  const [customeCess, setCustomeCess] = useState(null);
   const [customerData, setCustomerData] = useState([]);
   const [productList, setProductList] = useState([]);
   const [servicesList, setServicesList] = useState([]);
@@ -122,6 +118,31 @@ const SalesEdit = () => {
   const [productListInItems, setProductListInItems] = useState([]);
   const [invoiceItemList, setInvoiceItemList] = useState([]);
   const [sacCodes, setSacCodes] = useState("");
+
+
+  const [isGstBusiness, setIsGstBusiness] = useState(true);
+  const handleBusinessGst = () => {
+    setIsGstBusiness(isGstBusiness ? false : true);
+  };
+
+  useEffect(() => {
+    setInvoiceItems({
+      in_serial_no: 0,
+      in_items: "",
+      in_hsn_sac: "",
+      in_qty: "",
+      in_unit: "",
+      in_sale_price: "",
+      in_discount_value: "",
+      in_discount_price: "",
+      in_discount_unit: "",
+      in_gst_prectentage: "",
+      in_gst_amt: "",
+      in_total_amt: "",
+    });
+    
+  }, [isGstBusiness])
+
 
   useEffect(() => {
     axios
@@ -138,8 +159,10 @@ const SalesEdit = () => {
           cust_cnct_id: response.data[0].cust_cnct_id,
           sale_amt_type: response.data[0].sale_amt_type,
         });
-        setAmtPayMethod(response.data[0].sale_amt_type);
-        setAmountPaid(response.data[0].sale_amt_paid);
+        // setAmtPayMethod(response.data[0].sale_amt_type);
+        setAmtPayMethod("unpaid");
+        //setAmountPaid(response.data[0].sale_amt_paid);
+        setAmountPaid(0);
       });
 
     axios
@@ -147,20 +170,7 @@ const SalesEdit = () => {
       .then((response) => {
         setBusinessGst(response.data[0].business_gst);
       });
-    axios
-      .get(
-        import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
-      )
-      .then((response) => {
-        setProductList(response.data);
-      });
-
-    axios
-      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
-      .then((response) => {
-        setServicesList(response.data);
-      });
-
+    
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/auth/fetchProductHsnCodes`)
       .then((response) => {
@@ -179,14 +189,7 @@ const SalesEdit = () => {
       .then((response) => {
         setPaymentInPrefixNo(response.data[0].sale_payment_in_prefix_no);
       });
-    axios
-      .get(
-        import.meta.env.VITE_BACKEND +
-          `/api/sale/invoiceProItemList/${saleId}/${accountId}`
-      )
-      .then((response) => {
-        setProductListInItems(response.data);
-      });
+    
 
     axios
       .get(
@@ -203,6 +206,32 @@ const SalesEdit = () => {
         setInvoiceItemList(response.data);
       });
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
+      )
+      .then((response) => {
+        setProductList(response.data);
+      });
+
+    axios
+      .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
+      .then((response) => {
+        setServicesList(response.data);
+      });
+
+      axios
+      .get(
+        import.meta.env.VITE_BACKEND +
+          `/api/sale/invoiceProItemList/${saleId}/${accountId}`
+      )
+      .then((response) => {
+        setProductListInItems(response.data);
+      });
+
+  }, [])
 
   useEffect(() => {
     axios
@@ -269,7 +298,6 @@ const SalesEdit = () => {
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
 
-  const { enqueueSnackbar } = useSnackbar();
 
   const handleChange2 = (item) => {
     addProducts
@@ -536,10 +564,11 @@ const SalesEdit = () => {
   };
 
   const handleDecrease2 = (productId) => {
+
     setNerArr((nerArr) =>
       nerArr.map(
         (item) =>
-          parseInt(productId) === item.item_id &&
+          parseInt(productId) === parseInt(item.item_id) &&
           item.item_qty >= 1 &&
           item.item_cat === 1
             ? {
@@ -557,9 +586,10 @@ const SalesEdit = () => {
   }, [nerArr]);
 
   const handleDecrease3 = (productId) => {
+
     setNerArr((nerArr) =>
       nerArr.map((item) =>
-        parseInt(productId) === item.item_id &&
+        parseInt(productId) === parseInt(item.item_id) &&
         item.item_qty >= 1 &&
         item.item_cat === 0
           ? {
@@ -571,13 +601,7 @@ const SalesEdit = () => {
     );
   };
 
-  const [isGstBusiness, setIsGstBusiness] = useState(true);
-  const handleBusinessGst = () => {
-    setIsGstBusiness(isGstBusiness ? false : true);
-    //filteredInvoiceItems = [];
-    filteredInvoiceItems.splice(0, filteredInvoiceItems.length);
-    console.log(filteredInvoiceItems, filteredInvoiceItems.length);
-  };
+ 
 
   const [addProducts, setAddProducts] = useState(true);
   const [addServices, setAddServices] = useState(false);
@@ -650,6 +674,7 @@ const SalesEdit = () => {
       )
     );
     setSelectedItems(true);
+    closeDrawer();
   };
 
   const check1 = (item_discount_unit, item_price, item_discount_value) => {
@@ -748,6 +773,10 @@ const SalesEdit = () => {
           100
       : item_price - item_price / ((item_igst !== "-" ? tax : 0) / 100 + 1);
   };
+  const closeDrawer = () => {
+    setState(false);
+  };
+
 
   const handleContinue3 = () => {
     setInvoiceItems({
@@ -833,7 +862,10 @@ const SalesEdit = () => {
       )
     );
     setSelectedItems(true);
+    closeDrawer();
   };
+
+
 
   let filteredInvoiceItems = [];
   for (let i = 0; i < invoiceItems.length; i++) {
@@ -905,6 +937,7 @@ const SalesEdit = () => {
     setState({ ...state, [anchor]: open });
   };
   const list = (anchor) => (
+   
     <Box sx={{ width: 450 }} role="presentation">
       {anchor === "add" ? (
         <>
@@ -1103,6 +1136,7 @@ const SalesEdit = () => {
                               ).map((item) => (
                                 <div>
                                   <div>
+                                  {isGstBusiness &&
                                     <Box className="box-sec margin-top-zero ">
                                       <label className="pl-2 ">
                                         Tax Included?
@@ -1118,6 +1152,7 @@ const SalesEdit = () => {
                                         }
                                       />
                                     </Box>
+                                      }
                                   </div>
                                   <div className="flex flex-col">
                                     <Box className="box-sec ">
@@ -1136,7 +1171,7 @@ const SalesEdit = () => {
 
                                       <Box className="sec-2 w-[50%]">
                                         <select
-                                          className=" py-[8.5px] border"
+                                          className=" py-[9.5px] border"
                                           name="discount_unit"
                                           onChange={(e) =>
                                             handleDiscountUnit(item.item_id, e)
@@ -1192,18 +1227,7 @@ const SalesEdit = () => {
                                             ? item.item_igst + " GST %"
                                             : "GST %"
                                         }
-                                        
-                                        // helperText={
-                                        //   "(" +
-                                        //   item.item_cgst +
-                                        //   "% CGST + " +
-                                        //   item.item_cgst +
-                                        //   "% SGST/UT GST ; " +
-                                        //   item.item_igst +
-                                        //   "% IGST ; " +
-                                        //   item.item_cess +
-                                        //   "% CESS )"
-                                        // }
+                                      
                                         helperText={
                                         item.item_igst > 0 || item.item_cess > 0 ? 
                                         "(" +
@@ -1296,7 +1320,7 @@ const SalesEdit = () => {
                                             ))}
                                       </>
                                     ) : (
-                                      <span className="m-0"></span>
+                                      <div className="m-0 pt-5"></div>
                                     )}
                                   </>
                                   {item.add_gst ? (
@@ -1442,6 +1466,7 @@ const SalesEdit = () => {
         ""
       )}
     </Box>
+    
   );
 
   const navigate = useNavigate();
@@ -1587,14 +1612,14 @@ const SalesEdit = () => {
                     className="border p-2 rounded-lg w-[90%] border-slate-400"
                     placeholder="Address (Optional)"
                     value={
-                      customerData.cust_sflat +
-                      ", " +
-                      customerData.cust_sarea +
-                      ", " +
-                      customerData.cust_scity +
-                      ", " +
-                      customerData.cust_sstate +
-                      ", " +
+                      (customerData.cust_sflat ? customerData.cust_sflat +
+                      ", " : "") +
+                      (customerData.cust_sarea ? customerData.cust_sarea +
+                      ", " : "") +
+                      (customerData.cust_scity ? customerData.cust_scity +
+                      ", " : "") +
+                      (customerData.cust_sstate ? customerData.cust_sstate +
+                      ", " : "") +
                       customerData.cust_spin
                     }
                   />

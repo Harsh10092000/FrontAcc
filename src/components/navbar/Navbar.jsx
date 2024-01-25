@@ -21,7 +21,8 @@ import { useAnimate, stagger, motion } from "framer-motion";
 import { UserContext } from "../../context/UserIdContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import khataeaseLogo from "../../assets/khataease-logo.png";
+import khataeaseLogo2 from "../../assets/khataease-logo2.png";
 
 const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
@@ -113,6 +114,10 @@ const Navbar = () => {
     access !== undefined &&
     access !== null;
 
+
+
+
+
   const items = [
     {
       name: "Customer",
@@ -191,13 +196,15 @@ const Navbar = () => {
     navigate("/login");
   };
   return (
-    <div className="navbar flex items-center w-full justify-around shadow-md">
-      <div className="left flex items-center">
-        <IconBook2 className="text-sec h-16 w-16" />
+    <div className="navbar flex items-center w-[full] justify-around shadow-md">
+      <div className="left flex items-center ">
+        {/* <IconBook2 className="text-sec h-16 w-16" />
         <div className="text-[50px] text-sec">
           Acc
           <span className="font-bold text-amber-500">Book</span>
-        </div>
+        </div> */}
+        {/* <div><img src={khataeaseLogo2} alt="" className="w-[95%]"  /> </div> */}
+        <div><img src={khataeaseLogo} alt="" className="w-[70%]"  /> </div>
       </div>
       <div></div>
       <div className="center flex ">
