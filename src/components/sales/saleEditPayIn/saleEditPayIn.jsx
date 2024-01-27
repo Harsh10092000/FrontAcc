@@ -240,7 +240,7 @@ const SaleEditPayIn = (props) => {
                 <div>Total Amount :{totalAmt[0].sale_amt}</div>
                 <div>
                   Balance Due :
-                  {parseInt(totalAmt[0].sale_amt) - parseInt(totalAmtPaid)}
+                  {(parseFloat(totalAmt[0].sale_amt) - parseFloat(totalAmtPaid)) }
                 </div>
               </div>
               <div className="box-sec">

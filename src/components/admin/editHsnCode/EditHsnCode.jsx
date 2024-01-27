@@ -4,7 +4,7 @@ import { Box, TextField } from "@mui/material";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 
-const EditHsnCode = () => {
+const EditHsnCode = (props) => {
   const { hsnId, changeChange } = useContext(UserContext);
   const [values, setValues] = useState({
     hsn_code: "",

@@ -13,6 +13,7 @@ const AdminCard = (props) => {
   const { changeChange, adminAccess } = useContext(UserContext);
   const { enqueueSnackbar } = useSnackbar();
   const handleClickVariant = (variant, msg) => {
+    console.log("variant, msg : " , variant, msg);
     enqueueSnackbar(msg, { variant });
   };
 

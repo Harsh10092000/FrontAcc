@@ -23,6 +23,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import "./salesform.scss";
 import { useNavigate } from "react-router-dom";
+import { helpertext } from "../../components/HelperText";
 
 const SalesForm = () => {
   const { accountId } = useContext(UserContext);
@@ -153,20 +154,7 @@ const SalesForm = () => {
       .then((response) => {
         setBusinessGst(response.data[0].business_gst);
       });
-    // axios
-    //   .get(
-    //     import.meta.env.VITE_BACKEND + `/api/auth/fetchProductData/${accountId}`
-    //   )
-    //   .then((response) => {
-    //     setProductList(response.data);
-    //   });
-
-    // axios
-    //   .get(import.meta.env.VITE_BACKEND + `/api/ser/fetchData/${accountId}`)
-    //   .then((response) => {
-    //     setServicesList(response.data);
-    //   });
-
+   
     axios
       .get(
         import.meta.env.VITE_BACKEND +
@@ -384,10 +372,17 @@ const SalesForm = () => {
           ? {
               ...item,
               item_price: e.target.value.replace(numberValidation, "$1"),
+              
             }
           : item
       )
     );
+
+    if(e.target.value <= 0) {
+      setSubDisabledContinue(true);
+    } else  {
+      setSubDisabledContinue(false);
+    }
   };
 
   const handleDiscountUnit = (productId, e) => {
@@ -804,7 +799,7 @@ const SalesForm = () => {
   const handlePayStatus = (event) => {
     setAmtPayMethod(event.target.value);
   };
-  const [amountPaid, setAmountPaid] = useState(0);
+  const [amountPaid, setAmountPaid] = useState("");
   const [saleData, setSaleData] = useState({
     cust_cnct_id: "",
     sale_prefix: "",
@@ -831,6 +826,27 @@ const SalesForm = () => {
     .reduce((acc, current) => {
       return acc + current;
     }, 0);
+
+    const [subDisabledContinue , setSubDisabledContinue] = useState(false);
+    // useEffect(() => {
+    //   if (nerArr.some((i) => i.item_value <= 0 )) { 
+    //     setSubDisabledContinue(true);
+       
+    //   } else {
+    //     setSubDisabledContinue(false);
+    //   }
+
+    // }, [nerArr])
+    // useEffect(() => {
+    //   nerArr.filter((i) => i.item_value <= 0 )
+    //   if (items.length > 0) { 
+    //     setSubDisabledContinue(false);
+    //   } else {
+    //     setSubDisabledContinue(true);
+    //   }
+
+    // }, [nerArr])
+
   const list = (anchor) => (
     <Box sx={{ width: 450 }} role="presentation">
       {anchor === "add" ? (
@@ -1024,6 +1040,7 @@ const SalesForm = () => {
                                       code.item_cat === 0
                                   )
                               ).map((item) => (
+                                
                                 <div>
                                   <div>
                                     {isGstBusiness && (
@@ -1045,7 +1062,7 @@ const SalesForm = () => {
                                     )}
                                   </div>
                                   <div className="flex flex-col">
-                                    <Box className="box-sec ">
+                                    <Box className="box-sec">
                                       <TextField
                                         id="outlined-basic"
                                         variant="outlined"
@@ -1056,6 +1073,12 @@ const SalesForm = () => {
                                         value={item.item_price}
                                         onChange={(e) =>
                                           handlePriceChange(item.item_id, e)
+                                        }
+                                        
+                                        helperText={
+                                          item.item_price > 0
+                                            ? ""
+                                            : helpertext[5].price
                                         }
                                       />
 
@@ -1084,80 +1107,93 @@ const SalesForm = () => {
                                           name="discount_value"
                                           className=" w-[35%]"
                                           required
+                                          helperText={
+                                            item.item_price > 0 ? "" : " "
+                                          }
                                         />
                                       </Box>
                                     </Box>
                                   </div>
 
                                   {isGstBusiness ? (
-                                    <Box className="box-sec box-sex-1 ">
-                                      <TextField
-                                        id="outlined-read-only-input"
-                                        value={
-                                          item.item_code !== null &&
-                                          item.item_code !== ""
-                                            ? item.item_code
-                                            : "HSN Code"
-                                        }
-                                        helperText={item.item_desc}
-                                        className="sec-1 w-full"
-                                        size="small"
-                                        InputProps={{
-                                          readOnly: true,
-                                        }}
-                                        onClick={() => {
-                                          handleAddHsnCode(item.item_id);
-                                        }}
-                                      />
+                                    <Box className="box-sec box-sec-1 ">
+                                      <div className=" mt-3">
+                                        <div className="flex">
+                                          <TextField
+                                            id="outlined-read-only-input"
+                                            value={
+                                              item.item_code !== null &&
+                                              item.item_code !== ""
+                                                ? item.item_code
+                                                : "HSN Code"
+                                            }
+                                            helperText={item.item_desc}
+                                            className="sec-1 w-full"
+                                            size="small"
+                                            InputProps={{
+                                              readOnly: true,
+                                            }}
+                                            onClick={() => {
+                                              handleAddHsnCode(item.item_id);
+                                            }}
+                                          />
 
-                                      <TextField
-                                        id="outlined-read-only-input"
-                                        value={
-                                          item.item_igst !== null
-                                            ? item.item_igst + " GST %"
-                                            : "GST %"
-                                        }
-                                        helperText={
-                                          item.item_igst > 0 ||
-                                          item.item_cess > 0
-                                            ? "(" +
-                                              item.item_cgst +
-                                              "% CGST + " +
-                                              item.item_cgst +
-                                              "% SGST/UT GST ; " +
-                                              item.item_igst +
-                                              "% IGST ; " +
-                                              item.item_cess +
-                                              "% CESS )"
-                                            : ""
-                                        }
-                                        className="sec-2 w-full"
-                                        size="small"
-                                        InputProps={{
-                                          readOnly: true,
-                                        }}
-                                        onClick={() => {
-                                          handleAddGst(item.item_id);
-                                        }}
-                                      />
+                                          <TextField
+                                            id="outlined-read-only-input"
+                                            value={
+                                              item.item_igst !== null
+                                                ? item.item_igst + " GST %"
+                                                : "GST %"
+                                            }
+                                            helperText={
+                                              item.item_igst > 0 ||
+                                              item.item_cess > 0
+                                                ? "(" +
+                                                  item.item_cgst +
+                                                  "% CGST + " +
+                                                  item.item_cgst +
+                                                  "% SGST/UT GST ; " +
+                                                  item.item_igst +
+                                                  "% IGST ; " +
+                                                  item.item_cess +
+                                                  "% CESS )"
+                                                : ""
+                                            }
+                                            className="sec-2 w-full"
+                                            size="small"
+                                            InputProps={{
+                                              readOnly: true,
+                                            }}
+                                            onClick={() => {
+                                              handleAddGst(item.item_id);
+                                            }}
+                                          />
+                                        </div>
+
+                                        <div className="mb-3 mt-4">
+                                          {item.add_hsn && (
+                                            <TextField
+                                              id="outlined-basic"
+                                              variant="outlined"
+                                              label="Search By"
+                                              className=" my-0 z-0 "
+                                              size="small"
+                                              placeholder="HSN Code or Product Name "
+                                              onChange={(e) => {
+                                                setSearchCode(e.target.value);
+                                              }}
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
                                     </Box>
                                   ) : (
                                     ""
                                   )}
-                                  <>
+                                  <div>
                                     {item.add_hsn ? (
                                       <>
-                                        <TextField
-                                          id="outlined-basic"
-                                          variant="outlined"
-                                          label="Search By"
-                                          className=" my-0 z-0"
-                                          size="small"
-                                          placeholder="HSN Code or Product Name "
-                                          onChange={(e) => {
-                                            setSearchCode(e.target.value);
-                                          }}
-                                        />
+                                       
 
                                         {searchCode !== null &&
                                           (searchCode !== "") === true &&
@@ -1212,10 +1248,10 @@ const SalesForm = () => {
                                     ) : (
                                       <div className="m-0 pt-5"></div>
                                     )}
-                                  </>
+                                  </div>
                                   {item.add_gst ? (
                                     <>
-                                      <Box className="box-sec">
+                                      <Box className="box-sec ">
                                         <div className="gst-section-wrapper">
                                           <div className="gst-section">
                                             {gst.map((gstItem, index) => (
@@ -1330,8 +1366,9 @@ const SalesForm = () => {
             className="flex justify-between p-3 px-5"
           >
             <button
-              className="text-blue-600  py-2 px-4 rounded-[5px] hover:text-white hover:bg-blue-600 transition-all ease-in"
+              className={subDisabledContinue ?  " py-2 px-4 !border-none cursor-not-allowed text-slate-400 bg-slate-200 p-2 rounded-[5px]  transition-all ease-in" : " text-blue-600  py-2 px-4 rounded-[5px] hover:text-white hover:bg-blue-600 transition-all ease-in" }
               style={{ border: "1px solid rgb(37, 99, 235)" }}
+              disabled={subDisabledContinue}
             >
               Continue
             </button>
@@ -1371,7 +1408,7 @@ const SalesForm = () => {
     ? (saleData.sale_desc = "PAYMENT IN")
     : null;
 
-  amountPaid === "0" ? (saleData.sale_amt_type = "unpaid") : "";
+  amountPaid === "0" || amountPaid === "" ? (saleData.sale_amt_type = "unpaid") : "";
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -1475,6 +1512,7 @@ const SalesForm = () => {
                   onClick={(e) => setCustomerList(true)}
                   value={custData.cust_name}
                 />
+
                 {customerList ? (
                   <div className="absolute bg-white z-10 p-3">
                     {customerData.map((item, index) => (
@@ -1510,12 +1548,14 @@ const SalesForm = () => {
                   className="border p-2 rounded-lg w-[90%] border-slate-400"
                   placeholder="Phone Number"
                   value={custData.cust_number}
+                  disabled
                 />
                 <div>
                   <input
                     type="text"
                     className="border p-2 rounded-lg w-[90%] border-slate-400"
                     placeholder="Address (Optional)"
+                    disabled
                     value={
                       (custData.cust_flat ? custData.cust_flat + ", " : "") +
                       (custData.cust_area ? custData.cust_area + ", " : "") +
@@ -1527,6 +1567,7 @@ const SalesForm = () => {
                 </div>
                 <input
                   type="text"
+                  disabled
                   className="border p-2 rounded-lg w-[90%] border-slate-400"
                   placeholder="GSTIN (Optional)"
                   value={custData.cust_gst}
@@ -1645,9 +1686,10 @@ const SalesForm = () => {
                     value={transactionDate}
                     onChange={(newValue) => setTransactionDate(newValue)}
                     format="LL"
-                    className="w-[90%]"
+                    className="w-[90%] "
                     maxDate={todaysDate}
                     sx={{ height: "50px" }}
+                    slotProps={{ textField: { size: "small" } }}
                     onError={(newError) => {
                       setError(newError);
                     }}
@@ -1658,6 +1700,7 @@ const SalesForm = () => {
                   className="border p-2 rounded-lg w-[90%] border-slate-400"
                   placeholder="Your GSTIN"
                   value={businessGst}
+                  disabled
                 />
 
                 <Autocomplete
@@ -1720,6 +1763,7 @@ const SalesForm = () => {
                   name="row-radio-buttons-group"
                   value={amtPayMethod}
                   onChange={handlePayStatus}
+                  
                 >
                   <FormControlLabel
                     value="unpaid"
@@ -1757,7 +1801,7 @@ const SalesForm = () => {
                     }
                     helperText={
                       parseFloat(amountPaid) > parseFloat(totalGrossValue)
-                        ? "Error"
+                        ? helpertext[5].price
                         : ""
                     }
                   />
@@ -1766,7 +1810,6 @@ const SalesForm = () => {
             ) : (
               ""
             )}
-
             <div className="flex gap-2 text-lg font-semibold text-slate-600">
               <div>Balance Due :</div>
               <div>
@@ -1779,8 +1822,8 @@ const SalesForm = () => {
             </div>
             <div className="flex gap-2 text-lg">
               <div className="font-semibold">Total Amount :</div>
-              <div>
-                {totalGrossValue > 0 ? totalGrossValue.toFixed(2) : "0"}
+              <div> ₹
+                {totalGrossValue > 0 ? totalGrossValue.toFixed(2) : "0.00"}
               </div>
             </div>
           </div>

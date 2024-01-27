@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
-
+import { helpertext } from "../../HelperText";
 const AddSupplier = (props) => {
   const { changeChange, accountId } = useContext(UserContext);
   const [isChecked, setIsChecked] = useState(false);
@@ -20,7 +20,7 @@ const AddSupplier = (props) => {
     sup_name: "",
     sup_number: "",
     sup_amt: "",
-    sup_amt_type: "",
+    sup_amt_type: "pay",
     sup_gstin: "",
     sup_sflat: "",
     sup_sarea: "",
@@ -138,6 +138,7 @@ const AddSupplier = (props) => {
                     value={values.sup_number}
                     inputProps={{ maxLength: 10 }}
                     required
+                    helperText={values.sup_number.length < 10 ? helpertext[2].phoneNumber : "" }
                   />
                   <span className="text-red-600 text-xs ml-2 mt-1">
                     {err && err}
@@ -172,9 +173,7 @@ const AddSupplier = (props) => {
                     onChange={handleChange}
                     defaultValue=""
                   >
-                    <option value="" disabled>
-                      Select
-                    </option>
+                    
                     <option value="pay" onClick={() => setSelect(false)}>
                       Pay
                     </option>
@@ -211,6 +210,7 @@ const AddSupplier = (props) => {
                         name="sup_gstin"
                         inputProps={{ maxLength: 15 }}
                         value={values.sup_gstin}
+                        helperText={values.sup_gstin.length < 15 && values.sup_gstin !== ""  ? helpertext[1].gstIn : "" }
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -219,7 +219,7 @@ const AddSupplier = (props) => {
                         }
                       />
                     </div>
-                    <p className="text-xl font-semibold">Shipping Address</p>
+                    <p className="text-left mt-2">Shipping Address</p>
                     <div className="box-sec">
                       <TextField
                         id="outlined-basic"
@@ -272,6 +272,7 @@ const AddSupplier = (props) => {
                         name="sup_spin"
                         inputProps={{ maxLength: 6 }}
                         value={values.sup_spin}
+                        helperText={values.sup_spin.length < 6 && values.sup_spin !== ""  ? helpertext[0].pinCode : "" }
                         onChange={(e) =>
                           setValues({
                             ...values,
@@ -329,7 +330,7 @@ const AddSupplier = (props) => {
                       onChange={handleOnChange2}
                       defaultChecked
                     />
-                    <span>Billing Address</span>
+                    <span>Billing Address same as Shipping Address</span>
                   </div>
 
                   {isChecked2 ? (
@@ -339,7 +340,7 @@ const AddSupplier = (props) => {
                       }}
                       className="box-sec-2 forms"
                     >
-                      <p className="text_left text-xl font-semibold">
+                      <p className="text_left mt-2 ">
                         Billing Address
                       </p>
                       <div className="box-sec">
@@ -394,6 +395,7 @@ const AddSupplier = (props) => {
                           name="sup_bpin"
                           inputProps={{ maxLength: 6 }}
                           value={values.sup_bpin}
+                          helperText={values.sup_bpin.length < 6 && values.sup_bpin !== ""  ? helpertext[0].pinCode : "" }
                           onChange={(e) =>
                             setValues({
                               ...values,

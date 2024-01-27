@@ -103,12 +103,13 @@ const Edit = (props) => {
       console.log(err);
     }
   };
+  if (isChecked2 === false) {
   (data.cust_bflat = data.cust_sflat),
     (data.cust_barea = data.cust_sarea),
     (data.cust_bpin = data.cust_spin),
     (data.cust_bcity = data.cust_scity),
     (data.cust_bstate = data.cust_sstate);
-
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
@@ -510,8 +511,7 @@ const Edit = (props) => {
                           variant="outlined"
                           label="Enter amount"
                           className="sec-1"
-                          size="small"
-                          
+                          size="small"  
                           value={data.cust_amt}
                           required
                         />
@@ -732,7 +732,7 @@ const Edit = (props) => {
                                     ),
                                   })
                                 }
-                                helperText={data.cust_spin.length < 6 && data.cust_spin !== ""  ? "Please Enter valid PIN Code" : "" }
+                                helperText={data.cust_bpin.length < 6 && data.cust_bpin !== ""  ? "Please Enter valid PIN Code" : "" }
                               />
                             </div>
                             <div className="box-sec">

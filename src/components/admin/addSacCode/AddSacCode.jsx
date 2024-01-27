@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
 import { UserContext } from "../../../context/UserIdContext";
 
-const AddSacCode = () => {
+const AddSacCode = (props) => {
   const { changeChange } = useContext(UserContext);
 
   const [values, setValues] = useState({

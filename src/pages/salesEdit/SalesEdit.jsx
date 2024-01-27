@@ -1200,7 +1200,7 @@ const SalesEdit = () => {
                                   </div>
 
                                   {isGstBusiness ? (
-                                    <Box className="box-sec box-sex-1 ">
+                                    <Box className="box-sec box-sec-1 ">
                                       <TextField
                                         id="outlined-read-only-input"
                                         value={

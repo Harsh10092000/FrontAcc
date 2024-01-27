@@ -3,7 +3,7 @@ import { Box, TextField } from "@mui/material";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 
-const EditSacCode = () => {
+const EditSacCode = (props) => {
   const { sacId, changeChange } = useContext(UserContext);
   const [values, setValues] = useState({
     sac_code: "",

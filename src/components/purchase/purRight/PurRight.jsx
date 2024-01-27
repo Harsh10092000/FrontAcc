@@ -289,19 +289,21 @@ const PurRight = (props) => {
                   <IconEdit className="w-5 h-5" /> Edit
                 </button>
               </Link>
-            ) : totalAmtPaid === 0 && data.purchase_re_id === null ? (
-              <button
-                className="edit flex items-center gap-2 p-2 rounded text-blue-700 hover:text-white hover:bg-blue-700"
-                style={{
-                  border: "1px solid #2b59da",
-                  transition: "all 300ms ease-in-out",
-                }}
-                onClick={props.edit}
-                disabled={bills === 2 ? false : true}
-              >
-                <IconEdit className="w-5 h-5" /> Edit
-              </button>
-            ) : (
+            )
+            // ) : totalAmtPaid === 0 && data.purchase_re_id === null ? (
+            //   <button
+            //     className="edit flex items-center gap-2 p-2 rounded text-blue-700 hover:text-white hover:bg-blue-700"
+            //     style={{
+            //       border: "1px solid #2b59da",
+            //       transition: "all 300ms ease-in-out",
+            //     }}
+            //     onClick={props.edit}
+            //     disabled={bills === 2 ? false : true}
+            //   >
+            //     <IconEdit className="w-5 h-5" /> Edit
+            //   </button>
+            // ) 
+            : (
               ""
             )}
 

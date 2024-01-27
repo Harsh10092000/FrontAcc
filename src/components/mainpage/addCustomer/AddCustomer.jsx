@@ -172,9 +172,7 @@ const AddCustomer = (props) => {
                     onChange={handleChange}
                     defaultValue=""
                   >
-                    {/* <option value="" disabled>
-                      Select
-                    </option> */}
+                    
                     <option value="pay" onClick={() => setSelect(true)}>
                       Pay
                     </option>
@@ -456,7 +454,7 @@ const AddCustomer = (props) => {
             {submitDisabled ? (
               <button
                 disabled={submitDisabled}
-                className="cursor-not-allowed text-slate-600 bg-slate-200 w-full p-3 rounded-[5px]  transition-all ease-in"
+                className="dis-btn"
               >
                 Add Customer
               </button>

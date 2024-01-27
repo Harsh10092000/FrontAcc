@@ -24,7 +24,7 @@ import { useContext } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
 import { Skeleton } from "@mui/material";
-import Tooltip from '@mui/material/Tooltip';
+import { helpertext } from "../../HelperText";
 
 const EditSup = (props) => {
   const [skeleton, setSkeleton] = useState(true);
@@ -134,6 +134,15 @@ const EditSup = (props) => {
       setSubmitDisabled(true);
     }
   }, [info.sup_name, info.sup_number, info.sup_spin, info.sup_bpin]);
+
+
+  if (isChecked2 === false) {
+    (info.sup_bflat = info.sup_sflat),
+      (info.sup_barea = info.sup_sarea),
+      (info.sup_bpin = info.sup_spin),
+      (info.sup_bcity = info.sup_scity),
+      (info.sup_bstate = info.sup_sstate);
+  }
 
   return (
     <div>
@@ -329,7 +338,7 @@ const EditSup = (props) => {
                           <IconMapPin />
                         </div>
                         <div className="customer-info-text">
-                          <h2>Shipping Address</h2>
+                          <p className="text-left mt-2">Shipping Address</p>
                           <p className=" font-medium">
                           {/* <Tooltip title={item.sup_sflat}> */}
                             {item.sup_sflat ? item.sup_sflat + "," : ""}
@@ -347,7 +356,7 @@ const EditSup = (props) => {
                           <IconMapPin />
                         </div>
                         <div className="customer-info-text">
-                          <h2>Billing Address</h2>
+                          <p className="text-left mt-2">Billing Address</p>
                           <p className=" font-medium">
                             {item.sup_bflat ? item.sup_bflat.slice(0,30) + "," : ""}
                             {item.sup_barea ? " " + item.sup_barea + "," : ""}
@@ -477,6 +486,7 @@ const EditSup = (props) => {
                               sup_number: e.target.value.replace(/\D/g, ""),
                             })
                           }
+                          helperText={info.sup_number.length < 10 ? helpertext[2].phoneNumber : "" }
                           required
                         />
                       </Box>
@@ -542,9 +552,10 @@ const EditSup = (props) => {
                                   ),
                                 })
                               }
+                              helperText={info.sup_gstin.length < 15 && info.sup_gstin !== ""  ? helpertext[1].gstIn : "" }
                             />
                           </Box>
-                          <p className="text-xl font-semibold">
+                          <p className="text_left mt-2 ">
                             Shipping Address
                           </p>
                           <Box className="box-sec">
@@ -606,6 +617,7 @@ const EditSup = (props) => {
                                   ),
                                 })
                               }
+                              helperText={info.sup_spin.length < 6 && info.sup_spin !== ""  ? helpertext[0].pinCode : "" }
                             />
                           </Box>
                           <Box className="box-sec">
@@ -655,7 +667,7 @@ const EditSup = (props) => {
                             onChange={handleOnChange2}
                             defaultChecked
                           />
-                          <span>Billing Address</span>
+                          <span>Billing Address same as Shipping Address</span>
                         </Box>
 
                         {isChecked2 ? (
@@ -666,7 +678,7 @@ const EditSup = (props) => {
                             noValidate
                             className="forms"
                           >
-                            <p className="text_left">Billing Address</p>
+                            <p className="text_left mt-2">Billing Address</p>
                             <Box className="box-sec">
                               <TextField
                                 id="outlined-basic"
@@ -725,6 +737,7 @@ const EditSup = (props) => {
                                     ),
                                   })
                                 }
+                                helperText={info.sup_bpin.length < 6 && info.sup_bpin !== ""  ? helpertext[0].pinCode : "" }
                               />
                             </Box>
                             <Box className="box-sec">

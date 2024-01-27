@@ -3,7 +3,7 @@ import AdminHsnCard from "../adminHsnCard/AdminHsnCard";
 import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import AddHsnCode from "../addHsnCode/AddHsnCode";
-import { useSnackbar } from "notistack";
+import {useSnackbar } from "notistack";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import { IconPlus } from "@tabler/icons-react";
@@ -65,6 +65,7 @@ const AdminHsn = () => {
     setState({ ...state, [anchor]: open });
   };
   const handleClickVariant = (variant, anchor1, msg) => {
+    console.log("variant, anchor1, msg : " , variant, anchor1, msg)
     toggleDrawer1(anchor1, false);
     enqueueSnackbar(msg, { variant });
   };
@@ -74,7 +75,7 @@ const AdminHsn = () => {
   const handleSort = (e) => {
     setSortOption(e.target.value);
   };
-  const data = hsnData.slice(hsnData.length - 10, hsnData.length);
+
   let sortedUsers = [...hsnData];
 
   if (sortOption === "recent") {
@@ -87,16 +88,19 @@ const AdminHsn = () => {
 
   const list = (anchor) => (
     <Box sx={{ width: 400 }} role="presentation">
+      {console.log("anchor : " , anchor )}
       {anchor === "add" ? (
         <AddHsnCode
           snack={() =>
             handleClickVariant("success", "add", "Hsn Code Has been Added")
+            
           }
         />
       ) : anchor === "edit" ? (
         <EditHsnCode
           snacku={() =>
             handleClickVariant("success", "edit", "Updated Successfully")
+
           }
         />
       ) : (
@@ -105,6 +109,7 @@ const AdminHsn = () => {
     </Box>
   );
   return (
+    
     <React.Fragment>
       <Drawer
         anchor="right"
@@ -173,7 +178,7 @@ const AdminHsn = () => {
             </div>
             <button
               onClick={toggleDrawer("add", true)}
-              className="  shadow-sm shadow-emerald-600 p-2 rounded text-emerald-600 cursor-pointer hover:bg-emerald-600 hover:text-white transition-all duration-500 flex items-center"
+              className=" shadow-sm shadow-emerald-600 p-2 rounded text-emerald-600 cursor-pointer hover:bg-emerald-600 hover:text-white transition-all duration-500 flex items-center"
             >
               <IconPlus />
               Add Hsn Code
@@ -217,7 +222,7 @@ const AdminHsn = () => {
                 .map((item) => (
                   <AdminHsnCard
                     data={item}
-                    add={toggleDrawer("add", true)}
+                    //add={toggleDrawer("add", true)}
                     edit={toggleDrawer("edit", true)}
                   />
                 ))

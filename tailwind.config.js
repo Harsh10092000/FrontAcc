@@ -8,7 +8,11 @@ export default {
         sec: "#2e4e93",
         high: "#fca311",
       },
+      cursor: {
+        cnl: "cursor-not-allowed",
+      }
     },
+
   },
   plugins: [],
 };
