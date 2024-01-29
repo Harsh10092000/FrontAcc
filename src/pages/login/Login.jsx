@@ -158,8 +158,8 @@ const Login = () => {
                   placeholder="mail@gmail.com"
                   whileTap={{ scale: 0.97 }}
                   onChange={(e) => setEmail(e.target.value)}
-                  // onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/g, ""))}
-                  // onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]/g,"").replace(/^(\@[a-zA-Z0-9.-])/, "$1"))}
+                  //onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/g, ""))}
+                  //onChange={(e) => setEmail(e.target.value.replace(/^[a-zA-Z0-9._-]/g,"").replace(/^(\@[a-zA-Z0-9.-])/, "$1"))}
                   //onChange={(e) => setEmail(e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"))}
                   //cust_amt: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"),
                   readOnly={otpdrop}

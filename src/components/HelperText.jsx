@@ -7,4 +7,6 @@ export const helpertext = [
     {date: "Please Enter valid Date"}, //3
     {noData: "No data available"}, //4
     {price: "Plaese Enter valid Price"}, //5
+    {unit: "Plaese Select secondary unit" }, //6
+    {unitRate: "Plaese enter valid unit rate" } //7
 ];

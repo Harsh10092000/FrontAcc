@@ -146,7 +146,7 @@ const Edit = (props) => {
         skeleton ? (
           <div>
             <Box sx={{ width: 400 }} className="w-full">
-              <h1 className="text_left heading">Pay Entry Details</h1>
+              <h1 className="text_left heading">Customer Details</h1>
               <div className="customer-profile flex items-start px-4 py-6 gap-4">
                 <Skeleton variant="circular" width={45} height={45} />
 
@@ -262,16 +262,17 @@ const Edit = (props) => {
           result.map((filteredPersons) => (
             <div key={userId}>
               <Box sx={{ width: 400 }} className="w-full">
-                <h1 className="text_left heading">Pay Entry Details</h1>
+                <h1 className="text_left heading">Customer Details</h1>
                 <div className="customer-profile flex items-start px-4 py-6 gap-4">
                   <div className="icon2 p-3 rounded-full">
                     <IconUser className="text-blue-500" />
                   </div>
                   <div className="">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-normal text-gray-700 -mt-1">
+                      <p className="text-lg font-normal text-gray-700 -mt-1 overflow-ellipsis overflow-hidden">
                         {filteredPersons.cust_name}
-                      </h2>
+                        {/* yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy */}
+                      </p>
                     </div>
                     <p className="text-gray-500  bg-slate-200 rounded text-center">
                       Customer

@@ -146,7 +146,7 @@ const AddService = (props) => {
       data.ser_name !== "" &&
       data.ser_unit !== null &&
       data.ser_unit !== "" &&
-      data.ser_price > 0 
+      data.ser_price > 0
     ) {
       setSubmitDisabled(false);
     } else {
@@ -173,6 +173,7 @@ const AddService = (props) => {
     "% IGST ; " +
     data.ser_cess +
     "% CESS )";
+
 
   const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
@@ -265,59 +266,65 @@ const AddService = (props) => {
                   />
                 </Box>
 
-                <Box className="box-sec box-sex-1 flex gap-2">
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    value={data.ser_sac ? data.ser_sac : "SAC Code"}
-                    helperText={data.ser_sac_desc ? data.ser_sac_desc : ""}
-                    className="sec-1 cursor-pointer"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange3();
-                    }}
-                  />
+                <Box className="box-sec box-sec-1 flex gap-2">
+                  <div className=" mt-3">
+                    <div className="flex">
+                      <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={data.ser_sac ? data.ser_sac : "SAC Code"}
+                        helperText={data.ser_sac_desc ? data.ser_sac_desc : ""}
+                        className="sec-1 cursor-pointer"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange3();
+                        }}
+                      />
 
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    
-                    value={data.ser_igst ? data.ser_igst + "%" : "GST %"}
-                    helperText={
-                      data.ser_cess !== ""
-                        ? custom_gst_details
-                        : data.ser_igst !== ""
-                        ? gst_details
-                        : ""
-                    }
-                    className="sec-2 cursor-pointer"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange4();
-                    }}
-                  />
+                      <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={data.ser_igst ? data.ser_igst + "%" : "GST %"}
+                        helperText={
+                          data.ser_cess !== ""
+                            ? custom_gst_details
+                            : data.ser_igst !== ""
+                            ? gst_details
+                            : ""
+                        }
+                        className="sec-2 cursor-pointer"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange4();
+                        }}
+                      />
+                    </div>
+                    <div className="mb-3 mt-4">
+                      {isClicked && (
+                        <TextField
+                          id="outlined-basic"
+                          variant="outlined"
+                          label="Search By"
+                          className=" my-0 "
+                          placeholder="SAC Code or Services Name "
+                          size="small"
+                          onChange={(e) => {
+                            setSearchValue(e.target.value);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </Box>
                 <>
                   {isClicked ? (
                     <>
-                      <TextField
-                        id="outlined-basic"
-                        variant="outlined"
-                        label="Search By"
-                        className=" my-0 "
-                        placeholder="SAC Code or Services Name "
-                        size="small"
-                        onChange={(e) => {
-                          setSearchValue(e.target.value);
-                        }}
-                      />
-
                       {searchValue !== null &&
                         (searchValue !== "") === true &&
                         sacCodes
@@ -347,7 +354,6 @@ const AddService = (props) => {
                                   ser_sgst: filteredItem.sac_igst / 2,
                                 });
                                 setSearchValue("");
-
                                 setIsClicked(false);
                               }}
                             >
@@ -411,13 +417,14 @@ const AddService = (props) => {
                         </div>
                       </div>
                     </Box>
+                    <div>Custom Tax %</div>
                     <Box className="box-sec">
-                      <div>Custom Tax %</div>
+                      
                       <TextField
                         label="GST"
                         id="outlined-basic"
                         variant="outlined"
-                        className="sec-1"
+                        className="sec-1 w-full"
                         required
                         inputProps={{ maxLength: 10 }}
                         value={data.ser_igst}
@@ -442,16 +449,14 @@ const AddService = (props) => {
                         label="CESS"
                         id="outlined-basic"
                         variant="outlined"
-                        className="sec-2"
+                        className="sec-2 w-full"
                         required
-                        
                         inputProps={{ maxLength: 10 }}
                         value={data.ser_cess}
                         onChange={(e) => {
                           setData({
                             ...data,
-                            ser_cess: e.target.value
-                            .replace(
+                            ser_cess: e.target.value.replace(
                               numberValidation,
                               "$1"
                             ),
@@ -459,8 +464,6 @@ const AddService = (props) => {
                         }}
                       />
                     </Box>
-
-                    
                   </>
                 ) : (
                   <div></div>

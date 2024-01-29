@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Navbar from "../../components/navbar/Navbar";
-//import "./account.scss";
 import { IconX } from "@tabler/icons-react";
 import axios from "axios";
 import { UserContext } from "../../context/UserIdContext";
@@ -13,18 +12,18 @@ export default function EditAccount() {
   const { changeChange, changeAccountId, accountId, uId } =
     useContext(UserContext);
   const navigate = useNavigate();
-  const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+  const [fileSizeExceeded2, setFileSizeExceeded2] = useState(false);
   const [fileSizeExceeded1, setFileSizeExceeded1] = useState(false);
-  const maxFileSize1 = 2000000;
+  const maxFileSize1 = 1000000;
   const maxFileSize2 = 100000;
-  const [file, setFile] = useState("");
+  const [file2, setFile2] = useState("");
   const [file1, setFile1] = useState("");
 
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("business_logo", file);
+      formData.append("business_logo", file2);
       formData.append("business_signature", file1);
       formData.append("business_name", accDataById.business_name);
       formData.append("business_address", accDataById.business_address);
@@ -81,12 +80,12 @@ export default function EditAccount() {
           business_payee_name: res.data[0].business_payee_name,
           business_id: res.data[0].business_id,
         });
-        setFile(res.data[0].business_logo);
+        setFile2(res.data[0].business_logo);
         setFile1(res.data[0].business_signature);
       });
   }, []);
 
-  const [formatError, setFormatError] = useState(false);
+  const [formatError2, setFormatError2] = useState(false);
   const [formatError1, setFormatError1] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   useEffect(() => {
@@ -127,19 +126,19 @@ export default function EditAccount() {
     accDataById.business_gst,
   ]);
 
-  const handleImage = (event) => {
-    setFile(event[0]);
+  const handleImage2 = (event) => {
+    setFile2(event[0]);
     var pattern = /image-*/;
     if (!event[0].type.match(pattern)) {
-      setFormatError(true);
-      setFileSizeExceeded(false);
-    } else if (event[0].size > maxFileSize) {
-      setFileSizeExceeded(true);
-      setFormatError(false);
+      setFormatError2(true);
+      setFileSizeExceeded2(false);
+    } else if (event[0].size > maxFileSize2) {
+      setFileSizeExceeded2(true);
+      setFormatError2(false);
       return;
     } else {
-      setFileSizeExceeded(false);
-      setFormatError(false);
+      setFileSizeExceeded2(false);
+      setFormatError2(false);
     }
   };
 
@@ -149,7 +148,7 @@ export default function EditAccount() {
     if (!event[0].type.match(pattern)) {
       setFormatError1(true);
       setFileSizeExceeded1(false);
-    } else if (event[0].size > maxFileSize) {
+    } else if (event[0].size > maxFileSize1) {
       setFileSizeExceeded1(true);
       setFormatError1(false);
       return;
@@ -164,12 +163,12 @@ export default function EditAccount() {
     e.stopPropagation();
   };
 
-  const handleDrop = function (e) {
+  const handleDrop2 = function (e) {
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       console.log("e.dataTransfer.files : ", e.dataTransfer.files);
-      handleImage(e.dataTransfer.files);
+      handleImage2(e.dataTransfer.files);
     }
   };
 
@@ -183,11 +182,11 @@ export default function EditAccount() {
   };
 
   const errors = {
-    gstError: "error",
-    bankAccName: "error",
-    bankAccNo: "error",
-    bankAccIfsc: "error",
-    bankAccPayeeName: "error",
+    gstError: "Please Enter valid GST Number",
+    bankAccName: "Please Enter valid Bank Account Name",
+    bankAccNo: "Please Enter valid Bank Account Number",
+    bankAccIfsc: "Please Enter valid Bank Account IFSC Code",
+    bankAccPayeeName: "Please Enter valid Payee Name",
   };
 
   const [bankDetails, setBankDetails] = useState(false);
@@ -247,7 +246,7 @@ export default function EditAccount() {
             autoComplete="off"
           >
             <h1 className="text-3xl text-center mb-5 text-sky-700">
-              Create Business Account
+              Edit Business Account
             </h1>
             <Box className="box-sec">
               <TextField
@@ -390,7 +389,7 @@ export default function EditAccount() {
                 helperText={
                   accDataById.business_bank_acc.length < 1 &&
                   bankDetails === true
-                    ? errors.gstError
+                    ? errors.bankAccName
                     : ""
                 }
               />
@@ -416,7 +415,7 @@ export default function EditAccount() {
                 helperText={
                   accDataById.business_payee_name.length < 1 &&
                   bankDetails === true
-                    ? errors.gstError
+                    ? errors.bankAccPayeeName
                     : ""
                 }
               />
@@ -441,7 +440,7 @@ export default function EditAccount() {
                 helperText={
                   accDataById.business_acc_no.length < 16 &&
                   bankDetails === true
-                    ? errors.gstError
+                    ? errors.bankAccNo
                     : ""
                 }
               />
@@ -467,7 +466,7 @@ export default function EditAccount() {
                 helperText={
                   accDataById.business_ifsc_code.length < 11 &&
                   bankDetails === true
-                    ? errors.gstError
+                    ? errors.bankAccIfsc
                     : ""
                 }
               />
@@ -501,14 +500,7 @@ export default function EditAccount() {
 
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    {/* <span className="truncate pr-3 text-base font-medium text-sky-800 ">
-                      {file1 !== "" && file1 !== undefined && file1 !== null
-                        ? file1.name
-                        : file1.name === undefined &&
-                          accDataById.business_signature
-                        ? accDataById.business_signature
-                        : "Your Logo"}
-                    </span> */}
+                    
                     {file1 !== "" && file1 !== undefined && file1 !== null ? (
                       <span className="truncate pr-3 text-base font-medium text-sky-800">
                         {file1.name ? file1.name : file1}
@@ -529,13 +521,15 @@ export default function EditAccount() {
                   </div>
                 </div>
               </label>
-              {fileSizeExceeded && (
+             
+              {fileSizeExceeded1 && (
                 <p className="error">
-                  File size exceeded the limit of {maxFileSize1 / 1000000} MB
+                  File size exceeded the limit of {maxFileSize1 / 1000000} MB   
                 </p>
               )}
               {formatError1 && <p className="error">Invalid Format</p>}
             </div>
+
             <div className="upload-img-sec">
               <input
                 type="file"
@@ -543,14 +537,14 @@ export default function EditAccount() {
                 className="hidden sr-only"
                 accept="image/x-png,image/gif,image/jpeg"
                 onChange={(event) => {
-                  handleImage(event.target.files);
+                  handleImage2(event.target.files);
                 }}
               />
               <label
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
-                onDrop={handleDrop}
+                onDrop={handleDrop2}
                 htmlFor="file-2"
                 id="file-2"
                 className="relative flex min-h-[5px] "
@@ -563,9 +557,9 @@ export default function EditAccount() {
                 </div>
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    {file !== "" && file !== undefined && file !== null ? (
-                      <span className="truncate pr-3 text-base font-medium text-sky-800">
-                        {file.name ? file.name : file}
+                    {file2 !== "" && file2 !== undefined && file2 !== null ? (
+                      <span className=" pr-3 text-base font-medium text-sky-800 ">
+                        {file2.name ? file2.name : file2}
                       </span>
                     ) : (
                       "Your Signature"
@@ -573,9 +567,9 @@ export default function EditAccount() {
                     <button
                       className="text-sky-800"
                       onClick={(e) => {
-                        e.preventDefault(), setFile("");
-                        setFileSizeExceeded(false);
-                        setFormatError(false);
+                        e.preventDefault(), setFile2("");
+                        setFileSizeExceeded2(false);
+                        setFormatError2(false);
                       }}
                     >
                       <IconX className="static h-4 w-4" />
@@ -583,13 +577,14 @@ export default function EditAccount() {
                   </div>
                 </div>
               </label>
-              {fileSizeExceeded1 && (
+              {fileSizeExceeded2 && (
                 <p className="error">
                   File size exceeded the limit of {maxFileSize2 / 1000} KB
                 </p>
               )}
-              {formatError && <p className="error">Invalid Format</p>}
+              {formatError2 && <p className="error">Invalid Format</p>}
             </div>
+
             <div className="create_acc_btn_wrapper border">
               <button
                 className={

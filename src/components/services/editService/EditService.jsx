@@ -245,6 +245,8 @@ const EditService = (props) => {
     }
   }, [info.ser_name, info.ser_unit, info.ser_price]);
 
+  const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
+
   return (
     <div>
       <div>
@@ -333,76 +335,84 @@ const EditService = (props) => {
                   </Box>
                 )}
 
-                <Box className="box-sec box-sex-1">
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    value={info.ser_sac}
-                    helperText={info.ser_sac_desc}
-                    className="sec-1"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange3();
-                    }}
-                  />
+                <Box className="box-sec box-sec-1">
+                  <div className="mt-3">
+                    <div className="flex">
+                      <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={info.ser_sac}
+                        helperText={info.ser_sac_desc}
+                        className="sec-1"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange3();
+                        }}
+                      />
 
-                  <TextField
-                    id="outlined-basic"
-                    variant="outlined"
-                    value={
-                      info.ser_igst !== null
-                        ? info.ser_igst + " GST %"
-                        : "GST %"
-                    }
-                    helperText={
-                      info.ser_igst !== null
-                        ? info.ser_cess !== null
-                          ? "(" +
-                            info.ser_cgst +
-                            "% CGST + " +
-                            info.ser_sgst +
-                            "% SGST/UT GST ; " +
-                            info.ser_igst +
-                            "% IGST ; " +
-                            info.ser_cess +
-                            "% CESS )"
-                          : "(" +
-                            info.ser_cgst +
-                            "% CGST + " +
-                            info.ser_sgst +
-                            "% SGST/UT GST ; " +
-                            info.ser_igst +
-                            "% IGST ; )"
-                        : ""
-                    }
-                    className="sec-2"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange4();
-                    }}
-                  />
+                      <TextField
+                        id="outlined-basic"
+                        variant="outlined"
+                        value={
+                          info.ser_igst !== null
+                            ? info.ser_igst + " GST %"
+                            : "GST %"
+                        }
+                        helperText={
+                          info.ser_igst !== null
+                            ? info.ser_cess !== null
+                              ? "(" +
+                                info.ser_cgst +
+                                "% CGST + " +
+                                info.ser_sgst +
+                                "% SGST/UT GST ; " +
+                                info.ser_igst +
+                                "% IGST ; " +
+                                info.ser_cess +
+                                "% CESS )"
+                              : "(" +
+                                info.ser_cgst +
+                                "% CGST + " +
+                                info.ser_sgst +
+                                "% SGST/UT GST ; " +
+                                info.ser_igst +
+                                "% IGST ; )"
+                            : ""
+                        }
+                        className="sec-2"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange4();
+                        }}
+                      />
+                    </div>
+
+                    <div className="mb-3 mt-4">
+                      {isClicked && (
+                        <TextField
+                          id="outlined-basic"
+                          variant="outlined"
+                          label="Search By"
+                          className=" my-0 "
+                          placeholder="SAC Code or Services Name "
+                          size="small"
+                          onChange={(e) => {
+                            setSearchValue(e.target.value);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </Box>
                 <>
                   {isClicked ? (
                     <>
-                      <TextField
-                        id="outlined-basic"
-                        variant="outlined"
-                        label="Search By"
-                        className=" my-0 "
-                        placeholder="SAC Code or Services Name "
-                        size="small"
-                        onChange={(e) => {
-                          setSearchValue(e.target.value);
-                        }}
-                      />
-
                       {productHsnCodes
                         .filter(
                           (code) =>
@@ -499,12 +509,9 @@ const EditService = (props) => {
                                     setCustomeCess(0);
                                     setInfo({
                                       ...info,
-                                      // igst: item.label1,
-                                      // cgst: item.label2,
-                                      // sgst: item.label3,
-                                      ser_igst: filteredItem.label1,
-                                      ser_cgst: filteredItem.label2,
-                                      ser_sgst: filteredItem.label3,
+                                      ser_igst: item.label1,
+                                      ser_cgst: item.label2,
+                                      ser_sgst: item.label3,
                                     });
                                   }}
                                 />
@@ -515,46 +522,54 @@ const EditService = (props) => {
                       </div>
                     </Box>
                     <div>Custom Tax %</div>
+                    
                     <Box className="box-sec">
                       <TextField
                         label="GST"
                         id="outlined-basic"
                         variant="outlined"
-                        className="sec-1"
+                        className="sec-1 w-full"
                         size="small"
                         required
+                        inputProps={{ maxLength: 10 }}
+                        value={info.igst}
                         onChange={(e) => {
-                          setcustomGst(e.target.value);
+                          setInfo({
+                            ...info,
+                            ser_igst: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
+                            ser_cgst:
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
+                              ser_sgst:
+                              e.target.value.replace(numberValidation, "$1") /
+                              2,
+                          });
                         }}
                       />
                       <TextField
                         label="CESS"
                         id="outlined-basic"
                         variant="outlined"
-                        className="sec-2"
+                        className="sec-2 w-full"
                         size="small"
                         required
+                        inputProps={{ maxLength: 10 }}
+                        value={info.ser_cess}
                         onChange={(e) => {
-                          setCustomeCess(e.target.value);
+                          setInfo({
+                            ...info,
+                            ser_cess: e.target.value.replace(
+                              numberValidation,
+                              "$1"
+                            ),
+                          });
                         }}
                       />
                     </Box>
-                    <Box className="box-sec">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault(),
-                            setInfo({
-                              ...info,
-                              ser_igst: customGst,
-                              ser_cgst: customGst / 2,
-                              ser_sgst: customGst / 2,
-                              ser_cess: customeCess,
-                            });
-                        }}
-                      >
-                        Add Custome Gst
-                      </button>
-                    </Box>
+                    
                   </>
                 ) : (
                   <div></div>

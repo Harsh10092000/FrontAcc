@@ -103,14 +103,12 @@ const EditExpenses = (props) => {
   var filteredDate = date1.toString().slice(4, 16);
 
   const [categoryName, setCategoryName] = useState("");
-  console.log("categoryName : ", categoryName);
+
   const [addNewCategories, setAddNewCategories] = useState(false);
   const [newCategoryValue, setNewCategoryValue] = useState("");
   const [editCategories, setEditCategories] = useState(false);
-  const [updatedExpenseCategoryName, setUpdatedExpenseCategoryName] =
-    useState("");
+  const [updatedExpenseCategoryName, setUpdatedExpenseCategoryName] = useState("");
   const [ecid, setEcid] = useState(0);
-
   const [addExpenseItems, setAddExpenseItems] = useState(false);
   const [addNewExpenseItems, setNewAddExpenseItems] = useState(false);
   const [expenseList, setExpenseList] = useState("");
@@ -120,13 +118,16 @@ const EditExpenses = (props) => {
   const [updatedExpensePrice, setUpdatedExpensePrice] = useState("");
   const [selectedItems, setSelectedItems] = useState(false);
 
-  const [values2, setValues2] = useState({
-    category_name: null,
-  });
   const { enqueueSnackbar } = useSnackbar();
   const handleClickVariant = (variant, anchor1, msg) => {
     enqueueSnackbar(msg, { variant });
   };
+
+  const [values2, setValues2] = useState({
+    category_name: null,
+    acc_id: null,
+  });
+  values2.acc_id = accountId;
   values2.category_name = newCategoryValue;
   const handleClick2 = async (e) => {
     e.preventDefault();
@@ -146,10 +147,13 @@ const EditExpenses = (props) => {
   const [values3, setValues3] = useState({
     expense_name: null,
     price: null,
+    acc_id: null,
   });
 
+  
   values3.expense_name = expenseList;
   values3.price = price;
+  values3.acc_id = accountId;
 
   const handleClick3 = async () => {
     console.log(values3);
@@ -186,7 +190,9 @@ const EditExpenses = (props) => {
 
   const [values5, setValues5] = useState({
     category_name: null,
+    
   });
+  
   values5.category_name = updatedExpenseCategoryName;
   const updateExpenseCategoryData = async (e) => {
     e.preventDefault();
@@ -290,7 +296,7 @@ const EditExpenses = (props) => {
     );
   };
 
-  console.log("list : ", list, expensesUserAddedItemList);
+  
   const result3 = [];
   for (let i = 0; i < list.length; i++) {
     if (list[i].expense_name !== "") {
@@ -307,7 +313,10 @@ const EditExpenses = (props) => {
     exp_category: "",
     exp_total: sum,
     list: "",
+
   });
+
+  expenseData.exp_acc_id = accountId;
 
   const [dateFlag, setDateFlag] = useState(false);
   const [categoryFlag, setCategoryFlag] = useState(false);

@@ -17,6 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import "./editproduct.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import { helpertext } from "../../HelperText";
 
 const EditProduct = (props) => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
@@ -98,7 +99,6 @@ const EditProduct = (props) => {
   const [isOn, setIsOn] = useState(false);
   const handleOnChange1 = () => {
     setIsOn(!isOn);
-    console.log("isOn : ", isOn);
   };
 
   const [isClicked, setIsClicked] = useState(false);
@@ -333,6 +333,26 @@ const EditProduct = (props) => {
 
   const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
+  const gst_details =
+    "(" +
+    data.igst / 2 +
+    "% CSTS + " +
+    data.igst / 2 +
+    "% SGST/UT GST ; " +
+    data.igst +
+    "% IGST ); ";
+
+  const custom_gst_details =
+    "(" +
+    data.igst / 2 +
+    "% CGST + " +
+    data.igst / 2 +
+    "% SGST/UT GST ; " +
+    data.igst +
+    "% IGST ; " +
+    data.cess +
+    "% CESS )";
+
   return (
     <div>
       <div>
@@ -460,8 +480,10 @@ const EditProduct = (props) => {
                   )}
                 />
 
-                {isOn ? (
+                {isOn === true ? (
+                  
                   <Box className="box-sec margin-top-zero margin-bottom-zero">
+                    {""}
                     <label className="pl-3">Add Secondary Unit</label>
                     <Switch
                       {...label}
@@ -500,6 +522,12 @@ const EditProduct = (props) => {
                           label="Units"
                           className="w-full"
                           size="small"
+                          helperText={
+                            secondaryUnitValue === "" ||
+                            secondaryUnitValue === null
+                              ? helpertext[6].unit
+                              : " "
+                          }
                         />
                       )}
                     />
@@ -521,6 +549,11 @@ const EditProduct = (props) => {
                               "$1"
                             ),
                           })
+                        }
+                        helperText={
+                          data.conversion <= 0
+                            ? helpertext[7].unitRate
+                            : " "
                         }
                       />
                     </div>
@@ -652,7 +685,9 @@ const EditProduct = (props) => {
                   </LocalizationProvider>
                 </Box>
 
-                <Box className="box-sec box-sex-1 ">
+                <Box className="box-sec box-sec-1 ">
+                <div className=" mt-3">
+                    <div className="flex">
                   <TextField
                     id="outlined-read-only-input"
                     value={
@@ -674,27 +709,15 @@ const EditProduct = (props) => {
                   <TextField
                     id="outlined-read-only-input"
                     value={data.igst !== null ? data.igst + " GST %" : "GST %"}
+                   
                     helperText={
-                      data.igst !== null && data.cess !== ""
-                        ? data.cess !== null && data.cess !== ""
-                          ? "(" +
-                            data.cgst +
-                            "% CGST + " +
-                            data.sgst +
-                            "% SGST/UT GST ; " +
-                            data.igst +
-                            "% IGST ; " +
-                            data.cess +
-                            "% CESS )"
-                          : "(" +
-                            data.cgst +
-                            "% CGST + " +
-                            data.sgst +
-                            "% SGST/UT GST ; " +
-                            data.igst +
-                            "% IGST ; )"
+                      data.cess !== ""
+                        ? custom_gst_details
+                        : data.igst !== ""
+                        ? gst_details
                         : ""
                     }
+                    
                     className="sec-2 w-full"
                     size="small"
                     InputProps={{
@@ -704,12 +727,10 @@ const EditProduct = (props) => {
                       handleOnChange4();
                     }}
                   />
-                </Box>
-
-                <>
-                  {isClicked ? (
-                    <>
-                      <TextField
+                  </div>
+                    <div className="mb-3 mt-4">
+                      {isClicked && (
+                        <TextField
                         id="outlined-basic"
                         variant="outlined"
                         label="Search By"
@@ -719,7 +740,16 @@ const EditProduct = (props) => {
                         onChange={(e) => {
                           setSearchValue(e.target.value);
                         }}
-                      />
+                        />
+                      )}
+                    </div>
+                  </div>
+                </Box>
+
+                <>
+                  {isClicked ? (
+                    <>
+                     
 
                       {searchValue !== null &&
                         (searchValue !== "") === true &&

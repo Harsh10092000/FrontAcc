@@ -12,6 +12,7 @@ import Switch from "@mui/material/Switch";
 import "./addproduct.scss";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import { helpertext } from "../../HelperText";
 const AddProduct = (props) => {
   const { changeChange, accountId } = useContext(UserContext);
 
@@ -134,7 +135,6 @@ const AddProduct = (props) => {
   const maxFileSize = 20000;
   const [file, setFile] = useState("");
 
-
   const [primaryUnitValue, setPrimaryUnitValue] = useState(null);
   const [secondaryUnitValue, setSecondaryUnitValue] = useState("");
 
@@ -215,7 +215,7 @@ const AddProduct = (props) => {
         import.meta.env.VITE_BACKEND + "/api/auth/addProduct",
         formData
       );
-      console.log("values : ", productData);
+
       changeChange();
       props.snack();
     } catch (err) {
@@ -252,7 +252,6 @@ const AddProduct = (props) => {
     formatError,
     fileSizeExceeded,
   ]);
-
 
   const handleImage = (event) => {
     setFile(event[0]);
@@ -322,10 +321,7 @@ const AddProduct = (props) => {
                     onChange={(e) =>
                       setProductData({
                         ...productData,
-                        product_name: e.target.value.replace(
-                          /[^A-Z a-z.]/g,
-                          ""
-                        ),
+                        product_name: e.target.value.replace(/[^A-Z a-z]/g, ""),
                       })
                     }
                     required
@@ -339,7 +335,6 @@ const AddProduct = (props) => {
                       id="file-1"
                       className="hidden sr-only w-full"
                       accept="image/x-png,image/gif,image/jpeg"
-                      
                       onChange={(event) => {
                         handleImage(event.target.files);
                       }}
@@ -416,7 +411,7 @@ const AddProduct = (props) => {
                     />
                   )}
                 />
-                {console.log(secondaryUnitValue)}
+
                 <Box className="box-sec margin-top-zero margin-bottom-zero">
                   <label className="pl-3">Add Secondary Unit</label>
                   <Switch
@@ -427,6 +422,7 @@ const AddProduct = (props) => {
                 </Box>
                 {isOn ? (
                   <Box className="box-sec margin-top-zero">
+                    {console.log("secondaryUnitValue : ", secondaryUnitValue)}
                     <Autocomplete
                       options={result
                         .filter((code) => code.unit_code !== primaryUnitValue)
@@ -446,6 +442,12 @@ const AddProduct = (props) => {
                           className="w-full"
                           size="small"
                           name="secondary_unit"
+                          helperText={
+                            secondaryUnitValue === "" ||
+                            secondaryUnitValue === null
+                              ? helpertext[6].unit
+                              : " "
+                          }
                         />
                       )}
                     />
@@ -470,6 +472,11 @@ const AddProduct = (props) => {
                           })
                         }
                         value={productData.conversion}
+                        helperText={
+                          productData.conversion <= 0
+                            ? helpertext[7].unitRate
+                            : " "
+                        }
                       />
                     </div>
                   </Box>
@@ -592,50 +599,54 @@ const AddProduct = (props) => {
                 </Box>
 
                 <Box className="box-sec box-sex-1 ">
-                  <TextField
-                    id="outlined-read-only-input"
-                    //value={hsnCode}
-                    value={
-                      productData.hsn_code ? productData.hsn_code : "HSN Code"
-                    }
-                    helperText={
-                      productData.hsn_desc ? productData.hsn_desc : ""
-                    }
-                    className="sec-1 w-full"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange3();
-                    }}
-                  />
-
-                  <TextField
-                    id="outlined-read-only-input"
-                    value={productData.igst ? productData.igst + "%" : "GST %"}
-                    helperText={
-                      productData.cess !== ""
-                        ? custom_gst_details
-                        : productData.igst !== ""
-                        ? gst_details
-                        : ""
-                    }
-                    className="sec-2 w-full"
-                    size="small"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    onClick={() => {
-                      handleOnChange4();
-                    }}
-                  />
-                </Box>
-
-                <>
-                  {isClicked ? (
-                    <>
+                  <div className=" mt-3">
+                    <div className="flex">
                       <TextField
+                        id="outlined-read-only-input"
+                        //value={hsnCode}
+                        value={
+                          productData.hsn_code
+                            ? productData.hsn_code
+                            : "HSN Code"
+                        }
+                        helperText={
+                          productData.hsn_desc ? productData.hsn_desc : ""
+                        }
+                        className="sec-1 w-full"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange3();
+                        }}
+                      />
+
+                      <TextField
+                        id="outlined-read-only-input"
+                        value={
+                          productData.igst ? productData.igst + "%" : "GST %"
+                        }
+                        helperText={
+                          productData.cess !== ""
+                            ? custom_gst_details
+                            : productData.igst !== ""
+                            ? gst_details
+                            : ""
+                        }
+                        className="sec-2 w-full"
+                        size="small"
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        onClick={() => {
+                          handleOnChange4();
+                        }}
+                      />
+                    </div>
+                    <div className="mb-3 mt-4">
+                      {isClicked && (
+                        <TextField
                         id="outlined-basic"
                         variant="outlined"
                         label="Search By"
@@ -645,7 +656,16 @@ const AddProduct = (props) => {
                         onChange={(e) => {
                           setSearchValue(e.target.value);
                         }}
-                      />
+                        />
+                      )}
+                    </div>
+                  </div>
+                </Box>
+
+                <>
+                  {isClicked ? (
+                    <>
+                      
 
                       {searchValue !== null && (searchValue !== "") === true
                         ? result2
