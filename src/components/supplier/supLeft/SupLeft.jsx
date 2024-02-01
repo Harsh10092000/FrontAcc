@@ -28,6 +28,8 @@ const SupLeft = (props) => {
   const [skeleton, setSkeleton] = useState(true);
   const [total, setTotal] = useState([]);
 
+  console.log("account id : " , accountId)
+
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/sup/fetchData/${accountId}`)
@@ -45,7 +47,7 @@ const SupLeft = (props) => {
       .then((response) => {
         setTotal(response.data);
       });
-  }, [change]);
+  }, [change, accountId]);
   const sum = data
     .filter((person) => person.sup_amt_type === "pay")
     .reduce(function (prev, current) {

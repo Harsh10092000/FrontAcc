@@ -1,30 +1,30 @@
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import StaffObj from "../staffObj/StaffObj";
+import ModeratorObj from "../moderatorObj/ModeratorObj";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../context/UserIdContext";
+import { UserContext } from "../../../../context/UserIdContext";
 import axios from "axios";
 
-const StaffLeft = (props) => {
+const ModeratorLeft = (props) => {
   //const uId = 5;
-  const { change , accountId, staffId, uId } = useContext(UserContext);
-  const [staffData , setStaffData] = useState([]);
+  const { change } = useContext(UserContext);
+  const [moderatorData , setModeratorData] = useState([]);
   const [searchValue , setSearchValue] = useState("");
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_BACKEND + `/api/st/fetch/${accountId}/${uId}`)
+      .get(import.meta.env.VITE_BACKEND + `/api/ad/fetchModerator`)
       .then((response) => {
-        setStaffData(response.data);
+        setModeratorData(response.data);
       });
-  }, [change, accountId]);
+  }, [change]);
 
   return (
 
     <div className="bg-white shadow-lg w-full flex flex-col h-full">
       <div className="text-xl font-semibold flex p-5 gap-2 text-[#008cffb4] items-center border-b border-slate-300">
-        Staff
+      Moderator
         <p className="font-semibold text-sm px-5 bg-blue-300/20 py-1 rounded-full text-sky-600">
-          {staffData.length}
+          {moderatorData.length}
         </p>
       </div>
       <div className="p-5 border-b border-slate-300 grid grid-cols-12">
@@ -33,7 +33,7 @@ const StaffLeft = (props) => {
           <input
             type="text"
             className="focus:outline-none p-1 w-full"
-            placeholder="Search for staff..."
+            placeholder="Search for moderator..."
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}
@@ -49,25 +49,25 @@ const StaffLeft = (props) => {
           onClick={props.add}
         >
           <IconPlus className="w-5" />
-          Add Staff
+          Add Moderator
         </button>
       </div>
       <div>
         <div className="text-xl px-4 py-2 text-black">
-          <div>Staff Information</div>
+          <div>Moderator Information</div>
         </div>
-        <div className="flex flex-col gap-1 h-[calc(100vh-280px)] overflow-y-scroll">
+        <div className="flex flex-col gap-1 h-[100vh] overflow-y-scroll">
           
-          {staffData.
+          {moderatorData.
           filter(
               (code) =>
-                code.staff_email.toString().toLowerCase().startsWith(searchValue.toString().toLowerCase()) ||
-                code.staff_name
+                code.mod_email.toString().toLowerCase().startsWith(searchValue.toString().toLowerCase()) ||
+                code.mod_name
                   .toLowerCase()
                   .startsWith(searchValue.toLowerCase())
             )
           .map((filteredItem, index) => (
-            <StaffObj data={filteredItem} key={index} />
+            <ModeratorObj data={filteredItem} key={index} />
           ))}
         </div>
       </div>
@@ -75,4 +75,4 @@ const StaffLeft = (props) => {
   );
 };
 
-export default StaffLeft;
+export default ModeratorLeft;

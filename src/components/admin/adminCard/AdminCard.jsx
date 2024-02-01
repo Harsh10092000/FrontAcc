@@ -10,7 +10,7 @@ import { UserContext } from "../../../context/UserIdContext";
 const AdminCard = (props) => {
   const disabledStyle =
     "cursor-not-allowed text-slate-500 disabled p-1 rounded-md shadow shadow-slate-600 w-9 h-9 flex items-center justify-center hover:bg-slate-500 hover:text-white transition-all ease-in-out duration-500";
-  const { changeChange, adminAccess } = useContext(UserContext);
+  const { changeChange, adminAccAccess } = useContext(UserContext);
   const { enqueueSnackbar } = useSnackbar();
   const handleClickVariant = (variant, msg) => {
     console.log("variant, msg : " , variant, msg);
@@ -71,12 +71,12 @@ const AdminCard = (props) => {
       <div className="flex gap-4 justify-self-center">
         {parseInt(props.data.access) === 1 ? (
           <button
-            disabled={parseInt(adminAccess) === 2 ? false : true}
+            disabled={parseInt(adminAccAccess) === 2 ? false : true}
             onClick={(e) => (
               e.preventDefault(), restrictAcc(props.data.business_id)
             )}
             className={
-              parseInt(adminAccess) === 2
+              parseInt(adminAccAccess) === 2
                 ? "text-red-500 p-1 rounded-md shadow shadow-red-600 w-9 h-9 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all ease-in-out duration-500"
                 : disabledStyle
             }
@@ -85,12 +85,12 @@ const AdminCard = (props) => {
           </button>
         ) : (
           <button
-            disabled={parseInt(adminAccess) === 2 ? false : true}
+            disabled={parseInt(adminAccAccess) === 2 ? false : true}
             onClick={(e) => (
               e.preventDefault(), unrestrictAcc(props.data.business_id)
             )}
             className={
-              parseInt(adminAccess) === 2
+              parseInt(adminAccAccess) === 2
                 ? "text-green-500 p-1 rounded-md shadow shadow-green-600 w-9 h-9 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all ease-in-out duration-500 "
                 : disabledStyle
             }

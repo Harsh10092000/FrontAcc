@@ -16,7 +16,7 @@ const SaleLeft = (props) => {
       .then((response) => {
         setResult(response.data);
       });
-  }, [change]);
+  }, [change, accountId]);
 
   const total_amt = result.reduce((acc, current) => {
     return acc + +current.sale_amt;

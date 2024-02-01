@@ -375,6 +375,7 @@ const PurchaseForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleIncrease2 = (productId) => {
@@ -389,6 +390,7 @@ const PurchaseForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease = (productId) => {
@@ -402,6 +404,7 @@ const PurchaseForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease2 = (productId) => {
@@ -417,6 +420,7 @@ const PurchaseForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleCustomGstChange = (productId, igst) => {
@@ -446,9 +450,12 @@ const PurchaseForm = () => {
     );
   };
 
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
+
+  
+
+  // useEffect(() => {
+  //   setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  // }, [nerArr]);
 
   const [prefixNo, setPrefixNo] = useState(0);
   useEffect(() => {

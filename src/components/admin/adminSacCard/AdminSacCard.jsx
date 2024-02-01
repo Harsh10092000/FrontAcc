@@ -17,7 +17,7 @@ import { useSnackbar } from "notistack";
 const AdminSacCard = (props) => {
   const disabledStyle =
     "cursor-not-allowed text-slate-500 disabled p-1 rounded-md shadow shadow-slate-600 w-9 h-9 flex items-center justify-center hover:bg-slate-500 hover:text-white transition-all ease-in-out duration-500";
-  const { changeSacId, sacId, changeChange, adminAccess } =
+  const { changeSacId, sacId, changeChange, adminGstAccess } =
     useContext(UserContext);
 
   const [open, setOpen] = useState(false);
@@ -69,10 +69,10 @@ const AdminSacCard = (props) => {
       <div className="justify-self-center">{props.data.sac_igst}</div>
       <div className="flex gap-4 justify-self-center">
         <button
-          disabled={parseInt(adminAccess) === 2 ? false : true}
+          disabled={parseInt(adminGstAccess) === 2 ? false : true}
           onClick={props.edit}
           className={
-            parseInt(adminAccess) === 2
+            parseInt(adminGstAccess) === 2
               ? "text-green-500 p-1 rounded-md shadow shadow-green-600 w-9 h-9 flex items-center justify-center  hover:bg-emerald-500 hover:text-white transition-all ease-in-out duration-500 "
               : disabledStyle
           }
@@ -80,9 +80,9 @@ const AdminSacCard = (props) => {
           <IconEdit />
         </button>
         <button
-          disabled={parseInt(adminAccess) === 2 ? false : true}
+          disabled={parseInt(adminGstAccess) === 2 ? false : true}
           className={
-            parseInt(adminAccess) === 2
+            parseInt(adminGstAccess) === 2
               ? "text-red-500 p-1 rounded-md shadow shadow-red-600 w-9 h-9 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all ease-in-out duration-500"
               : disabledStyle
           }

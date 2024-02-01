@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import khataeaseLogo from "../../assets/khataease-logo.png";
 import khataeaseLogo2 from "../../assets/khataease-logo2.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
@@ -59,7 +60,7 @@ function useMenuAnimation(isOpen) {
 }
 const Navbar = () => {
   const navigate = useNavigate();
-  const { parties, inventory, bills, access, accountId, userType } =
+  const { parties, inventory, bills, access, accountId, userType , changeAccess, changeAccountId, changeBills, changeInventory , changeParties, changeUId, changeUserType} =
     useContext(UserContext);
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -181,7 +182,7 @@ const Navbar = () => {
       name: "Staff",
       icon: <IconUsers />,
       linkto: "/staff",
-      user_access: access_validation,
+      user_access: access_validation && userType === 1,
     },
 
     {
@@ -195,6 +196,24 @@ const Navbar = () => {
     localStorage.removeItem("user");
     navigate("/login");
   };
+
+ 
+  // const { currentUser } = useContext(AuthContext);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     changeAccountId(currentUser[0].business_id);
+  //     changeUId(currentUser[0].log_id);
+  //     changeAccess(currentUser[0].access);
+  //     changeUserType(currentUser[0].log_user);
+  //     console.log(currentUser[0].log_user, currentUser[0].access);
+  //     if (currentUser[0].log_user === 0) {
+  //       changeParties(currentUser[0].staff_parties);
+  //       changeBills(currentUser[0].staff_bills);
+  //       changeInventory(currentUser[0].staff_inventory);
+  //     }
+  //   }
+  // }, []);
+
   return (
     <div className="navbar flex items-center w-[full] justify-around shadow-md">
       <div className="left flex items-center ">
@@ -212,6 +231,7 @@ const Navbar = () => {
           {items
             .filter((code) => code.linkto !== undefined)
             .map((item, index) => (
+              item.user_access &&
               <Link
                 className={
                   location.pathname === item.linkto ||

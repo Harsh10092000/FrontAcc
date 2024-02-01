@@ -33,6 +33,7 @@ const PurchaseReturn = () => {
   const [purReturnPrefixNo, setPurReturnPrefixNo] = useState(0);
 
   useEffect(() => {
+    
     axios
       .get(
         import.meta.env.VITE_BACKEND +
@@ -86,6 +87,7 @@ const PurchaseReturn = () => {
   }, []);
 
   useEffect(() => {
+    
     axios
       .get(
         import.meta.env.VITE_BACKEND +
@@ -120,13 +122,14 @@ const PurchaseReturn = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const [nerArr, setNerArr] = useState([]);
+  // const [nerArr, setNerArr] = useState([]);
 
 
 
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
+  // useEffect(() => {
+  //   console.log("test1")
+  //   setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  // }, [nerArr]);
 
   const [isGstBusiness, setIsGstBusiness] = useState(true);
   const handleBusinessGst = () => {
@@ -175,12 +178,14 @@ const PurchaseReturn = () => {
   const [totalRefundAmt, setTotalRefundAmt] = useState(0);
 
   const removeItem = (id) => {
+    
     setInvoiceItemList(
       invoiceItemList.filter((a) => a.purchase_tran_id !== id)
     );
   };
 
   useEffect(() => {
+    
     setTotalRefundAmt(
       invoiceItemList.reduce(function (prev, current) {
         return (
@@ -210,6 +215,7 @@ const PurchaseReturn = () => {
   );
 
   const handleClick = async (e) => {
+   
     e.preventDefault();
     try {
       await axios.post(
@@ -235,13 +241,13 @@ const PurchaseReturn = () => {
     }, 0);
 
   const [submitDisabled, setSubmitDisabled] = useState(true);
-  useEffect(() => {
-    if (invoiceItemList.length > 0) {
-      setSubmitDisabled(false);
-    } else {
-      setSubmitDisabled(true);
-    }
-  }, [invoiceItemList]);
+  // useEffect(() => {
+  //   if (invoiceItemList.length > 0) {
+  //     setSubmitDisabled(false);
+  //   } else {
+  //     setSubmitDisabled(true);
+  //   }
+  // }, [invoiceItemList]);
 
   let i = 1;
   return (

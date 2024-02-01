@@ -19,14 +19,12 @@ import { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import { UserContext } from "../../context/UserIdContext";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-//import "./salesform.scss";
 import { useNavigate } from "react-router-dom";
 
 const PurchaseEdit = () => {
-  const { change, changeChange, purchaseId, accountId } =
+  const { purchaseId, accountId } =
     useContext(UserContext);
   const states = [
     {
@@ -512,6 +510,7 @@ const PurchaseEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleIncrease2 = (productId) => {
@@ -525,6 +524,7 @@ const PurchaseEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease = (productId) => {
@@ -538,6 +538,7 @@ const PurchaseEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease2 = (productId) => {
@@ -553,25 +554,26 @@ const PurchaseEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
+  // useEffect(() => {
+  //   setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  // }, [nerArr]);
 
   const [invoiceItems, setInvoiceItems] = useState({
     in_serial_no: 0,
-    in_items: "Ghee",
-    in_hsn_sac: "4533",
-    in_qty: "6",
-    in_unit: "KG",
-    in_purchase_price: "500",
-    in_discount_value: "10%",
-    in_discount_price: "450",
-    in_discount_unit: "%",
-    in_gst_prectentage: "10",
-    in_gst_amt: "50",
-    in_total_amt: "500",
+    in_items: "",
+    in_hsn_sac: "",
+    in_qty: "",
+    in_unit: "",
+    in_purchase_price: "",
+    in_discount_value: "",
+    in_discount_price: "",
+    in_discount_unit: "",
+    in_gst_prectentage: "",
+    in_gst_amt: "",
+    in_total_amt: "",
   });
 
   const closeDrawer = () => {
@@ -740,54 +742,15 @@ const PurchaseEdit = () => {
                       item.cess
                     ),
 
-              // in_discount_price:
-              //   item.tax === "0"
-              //     ? item.item_discount_unit === "percentage"
-              //       ? parseFloat(item.purchase_price) -
-              //         (item.purchase_price *
-              //           (item.item_discount_value
-              //             ? item.item_discount_value
-              //             : 1)) /
-              //           100
-              //       : item.purchase_price -
-              //         (item.item_discount_value ? item.item_discount_value : 0)
-              //     : item.discount_unit === "percentage"
-              //     ? ((item.purchase_price / (item.igst / 100 + 1)) *
-              //         (100 -
-              //           (item.item_discount_value
-              //             ? item.item_discount_value
-              //             : 0))) /
-              //       100
-              //     : item.purchase_price / (item.igst / 100 + 1) -
-              //       (item.item_discount_value ? item.item_discount_value : 0),
-
+              
               in_discount_unit: item.item_discount_unit
                 ? item.item_discount_unit
                 : "amount",
 
-              // in_gst_prectentage: item.igst ? item.igst : "-",
-              // in_gst_prectentage: item.igst
-              //   ? (item.igst ? parseFloat(item.igst) : 0) +
-              //     (item.cess ? parseFloat(item.cess) : 0)
-              //   : "-",
+              
               in_gst_prectentage: item.igst ? parseFloat(item.igst) : 0,
               in_cess_prectentage: item.cess ? parseFloat(item.cess) : 0,
-              // in_gst_amt:
-              //   item.tax === "0"
-              //     ? (item.igst *
-              //         (item.item_discount_unit === "percentage"
-              //           ? item.purchase_price -
-              //             (item.purchase_price * item.item_discount_value) / 100
-              //           : item.purchase_price)) /
-              //       100
-              //     : item.item_discount_unit === "percentage"
-              //     ? ((item.purchase_price / (item.igst / 100 + 1)) *
-              //         ((100 - item.item_discount_value) / 100) *
-              //         item.igst) /
-              //       100
-              //     : item.purchase_price -
-              //       item.purchase_price / (item.igst / 100 + 1),
-
+          
               in_gst_amt:
                 item.tax === "0"
                   ? check3(
@@ -856,16 +819,16 @@ const PurchaseEdit = () => {
 
   const numberValidation = /^\.|[^0-9.]|\.\d*\.|^(\d*\.\d{0,2}).*$/g;
 
-  const total_amt = filteredInvoiceItems
-    .map(
-      (item) =>
-        parseFloat(item.in_qty) *
-        (parseFloat(item.in_discount_price ? item.in_discount_price : 0) +
-          parseFloat(item.in_gst_amt ? item.in_gst_amt : 0))
-    )
-    .reduce((acc, current) => {
-      return acc + current;
-    }, 0);
+  // const total_amt = filteredInvoiceItems
+  //   .map(
+  //     (item) =>
+  //       parseFloat(item.in_qty) *
+  //       (parseFloat(item.in_discount_price ? item.in_discount_price : 0) +
+  //         parseFloat(item.in_gst_amt ? item.in_gst_amt : 0))
+  //   )
+  //   .reduce((acc, current) => {
+  //     return acc + current;
+  //   }, 0);
 
   const [state, setState] = useState({
     edit: false,
@@ -928,7 +891,6 @@ const PurchaseEdit = () => {
                     />
                   </Box>
 
-{console.log("productListInItems : " , productListInItems)}
                   <Box>
                     {productListInItems
                         .filter((code) =>
@@ -1166,27 +1128,7 @@ const PurchaseEdit = () => {
                                                 "% CESS )"
                                               : ""
                                           }
-                                          // helperText={
-                                          //   item.igst !== "" && item.cess === ""
-                                          //     ? item.cess !== ""
-                                          //       ? "(" +
-                                          //         item.cgst +
-                                          //         "% CGST + " +
-                                          //         item.cgst +
-                                          //         "% SGST/UT GST ; " +
-                                          //         item.igst +
-                                          //         "% IGST ; " +
-                                          //         item.cess +
-                                          //         "% CESS )"
-                                          //       : "(" +
-                                          //         item.cgst +
-                                          //         "% CGST + " +
-                                          //         item.cgst +
-                                          //         "% SGST/UT GST ; " +
-                                          //         item.igst +
-                                          //         "% IGST ; )"
-                                          //     : ""
-                                          // }
+                                         
                                           className="sec-2 w-full"
                                           size="small"
                                           InputProps={{
@@ -1321,17 +1263,7 @@ const PurchaseEdit = () => {
                                             className="sec-1 w-full"
                                             size="small"
                                             required
-                                            // value={
-                                            //   item.igst ? item.igst : 0
-                                            // }
-                                            // onChange={(e) => {
-                                            //   setcustomGst(
-                                            //     e.target.value.replace(
-                                            //       /\D/g,
-                                            //       ""
-                                            //     )
-                                            //   );
-                                            // }}
+                                            
                                             value={item.igst}
                                             onChange={(e) => {
                                               handleCustomGstChange(
@@ -1362,20 +1294,7 @@ const PurchaseEdit = () => {
                                             }}
                                           />
                                         </Box>
-                                        {/* <Box className="box-sec">
-                                          <button
-                                            onClick={(e) => {
-                                              e.preventDefault(),
-                                                handleCustomGstChange(
-                                                  item.product_id,
-                                                  customGst,
-                                                  customeCess ? customeCess : 0
-                                                );
-                                            }}
-                                          >
-                                            Add Custome Gst
-                                          </button>
-                                        </Box> */}
+                                        
                                       </>
                                     ) : (
                                       <div></div>

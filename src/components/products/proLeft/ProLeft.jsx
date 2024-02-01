@@ -35,7 +35,7 @@ const ProLeft = (props) => {
       .then((res) => {
         setData(res.data);
       });
-  }, [change]);
+  }, [change, accountId]);
 
   const [sortOption, setSortOption] = useState("recent");
   const handleChange1 = (e) => {

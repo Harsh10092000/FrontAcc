@@ -17,7 +17,7 @@ const ExLeft = (props) => {
       .then((response) => {
         setResult(response.data);
       });
-  }, [change, expId]);
+  }, [change, expId, accountId]);
 
   const [sortOption, setSortOption] = useState("latestFirst");
   const [filterByValue, setFilterByValue] = useState("All");

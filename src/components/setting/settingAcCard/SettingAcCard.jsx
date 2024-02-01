@@ -84,7 +84,7 @@ const SettingAcCard = (props) => {
           aria-describedby="alert-dialog-description"
           maxWidth="xl"
         >
-          {console.log(props.data.business_logo)}
+         
           <div>
             <DialogContent>
               <img

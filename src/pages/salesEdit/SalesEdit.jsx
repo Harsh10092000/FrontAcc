@@ -511,6 +511,7 @@ const SalesEdit = () => {
               : item
           )
         );
+        setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleIncrease2 = (productId) => {
@@ -524,6 +525,7 @@ const SalesEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleIncrease3 = (productId) => {
@@ -537,6 +539,7 @@ const SalesEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease = (productId) => {
@@ -561,6 +564,7 @@ const SalesEdit = () => {
               : item
           )
         );
+        setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
   const handleDecrease2 = (productId) => {
@@ -579,11 +583,12 @@ const SalesEdit = () => {
         //nerArr.pop(nerArr[productId])
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
+  // useEffect(() => {
+  //   setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  // }, [nerArr]);
 
   const handleDecrease3 = (productId) => {
 
@@ -599,6 +604,7 @@ const SalesEdit = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
  

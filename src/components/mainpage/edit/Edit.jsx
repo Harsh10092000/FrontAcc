@@ -21,6 +21,7 @@ import "./edit.scss";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 import axios from "axios";
+import Tooltip from '@mui/material/Tooltip';
 const Edit = (props) => {
   const [isChecked, setIsChecked] = useState(false);
   const handleOnChange = () => {
@@ -104,11 +105,11 @@ const Edit = (props) => {
     }
   };
   if (isChecked2 === false) {
-  (data.cust_bflat = data.cust_sflat),
-    (data.cust_barea = data.cust_sarea),
-    (data.cust_bpin = data.cust_spin),
-    (data.cust_bcity = data.cust_scity),
-    (data.cust_bstate = data.cust_sstate);
+    (data.cust_bflat = data.cust_sflat),
+      (data.cust_barea = data.cust_sarea),
+      (data.cust_bpin = data.cust_spin),
+      (data.cust_bcity = data.cust_scity),
+      (data.cust_bstate = data.cust_sstate);
   }
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,7 +139,13 @@ const Edit = (props) => {
     } else {
       setSubmitDisabled(true);
     }
-  }, [data.cust_name, data.cust_number,data.cust_spin, data.cust_bpin, data.cust_gstin]);
+  }, [
+    data.cust_name,
+    data.cust_number,
+    data.cust_spin,
+    data.cust_bpin,
+    data.cust_gstin,
+  ]);
 
   return (
     <Box sx={{ width: 400 }} role="presentation">
@@ -269,12 +276,15 @@ const Edit = (props) => {
                   </div>
                   <div className="">
                     <div className="flex items-center justify-between">
-                      <p className="text-lg font-normal text-gray-700 -mt-1 overflow-ellipsis overflow-hidden">
-                        {filteredPersons.cust_name}
-                        {/* yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy */}
+                      <p className="text-lg font-normal text-gray-700 -mt-1 overflow-ellipsis overflow-hidden max-w-[250px]">
+                      {/* <Tooltip title={filteredPersons.cust_name} > */}
+                        {filteredPersons.cust_name} 
+                      {/* </Tooltip> */}
+                        
                       </p>
                     </div>
-                    <p className="text-gray-500  bg-slate-200 rounded text-center">
+
+                    <p className="text-gray-500  bg-slate-200 rounded text-center px-2">
                       Customer
                     </p>
                   </div>
@@ -478,7 +488,13 @@ const Edit = (props) => {
                           size="small"
                           value={data.cust_name}
                           onChange={(e) =>
-                            setData({ ...data, cust_name: e.target.value.replace(/[^A-Z a-z]/g, "") })
+                            setData({
+                              ...data,
+                              cust_name: e.target.value.replace(
+                                /[^A-Z a-z]/g,
+                                ""
+                              ),
+                            })
                           }
                           required
                         />
@@ -497,10 +513,17 @@ const Edit = (props) => {
                           onChange={(e) =>
                             setData({
                               ...data,
-                              cust_number: e.target.value.replace(/[^0-9]/g, ""),
+                              cust_number: e.target.value.replace(
+                                /[^0-9]/g,
+                                ""
+                              ),
                             })
                           }
-                          helperText={data.cust_number.length < 10 ? "Please Enter valid mobile number" : "" }
+                          helperText={
+                            data.cust_number.length < 10
+                              ? "Please Enter valid mobile number"
+                              : ""
+                          }
                           required
                         />
                       </div>
@@ -512,7 +535,7 @@ const Edit = (props) => {
                           variant="outlined"
                           label="Enter amount"
                           className="sec-1"
-                          size="small"  
+                          size="small"
                           value={data.cust_amt}
                           required
                         />
@@ -525,7 +548,13 @@ const Edit = (props) => {
                           }
                           value={data.amt_type}
                           onChange={(e) =>
-                            setData({ ...data, amt_type: e.target.value.replace(/^\.|[^0-9.]/g, "").replace(/(\.\d*\.)/, "$1").replace(/^(\d*\.\d{0,2}).*$/, "$1"), })
+                            setData({
+                              ...data,
+                              amt_type: e.target.value
+                                .replace(/^\.|[^0-9.]/g, "")
+                                .replace(/(\.\d*\.)/, "$1")
+                                .replace(/^(\d*\.\d{0,2}).*$/, "$1"),
+                            })
                           }
                         >
                           <option value="pay">Pay</option>
@@ -557,14 +586,22 @@ const Edit = (props) => {
                               label="GST IN"
                               className="w-full"
                               value={data.cust_gstin}
-                              inputProps={{ maxLength: 15}}
+                              inputProps={{ maxLength: 15 }}
                               onChange={(e) =>
-                                setData({ ...data, cust_gstin: e.target.value.replace(
-                                  /[^A-Z0-9a-z]/g,
-                                  ""
-                                ), })
+                                setData({
+                                  ...data,
+                                  cust_gstin: e.target.value.replace(
+                                    /[^A-Z0-9a-z]/g,
+                                    ""
+                                  ),
+                                })
                               }
-                              helperText={data.cust_gstin.length < 15 && data.cust_gstin !== ""  ? "Please Enter valid GST Number" : "" }
+                              helperText={
+                                data.cust_gstin.length < 15 &&
+                                data.cust_gstin !== ""
+                                  ? "Please Enter valid GST Number"
+                                  : ""
+                              }
                               size="small"
                             />
                           </div>
@@ -577,12 +614,15 @@ const Edit = (props) => {
                               className="w-full"
                               size="small"
                               value={data.cust_sflat}
-                              inputProps={{ maxLength: 40}}
+                              inputProps={{ maxLength: 40 }}
                               onChange={(e) =>
-                                setData({ ...data, cust_sflat: e.target.value.replace(
-                                  /[^A-Z a-z 0-9 /]/g,
-                                  ""
-                                ), })
+                                setData({
+                                  ...data,
+                                  cust_sflat: e.target.value.replace(
+                                    /[^A-Z a-z 0-9 /]/g,
+                                    ""
+                                  ),
+                                })
                               }
                             />
                           </div>
@@ -595,12 +635,15 @@ const Edit = (props) => {
                               className="w-full"
                               size="small"
                               value={data.cust_sarea}
-                              inputProps={{ maxLength: 40}}
+                              inputProps={{ maxLength: 40 }}
                               onChange={(e) =>
-                                setData({ ...data, cust_sarea: e.target.value.replace(
-                                  /[^A-Z a-z 0-9 /]/g,
-                                  ""
-                                ), })
+                                setData({
+                                  ...data,
+                                  cust_sarea: e.target.value.replace(
+                                    /[^A-Z a-z 0-9 /]/g,
+                                    ""
+                                  ),
+                                })
                               }
                             />
                           </div>
@@ -614,9 +657,20 @@ const Edit = (props) => {
                               value={data.cust_spin}
                               inputProps={{ maxLength: 6 }}
                               onChange={(e) =>
-                                setData({ ...data, cust_spin: e.target.value.replace(/[^0-9]/g, ""), })
+                                setData({
+                                  ...data,
+                                  cust_spin: e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                  ),
+                                })
                               }
-                              helperText={data.cust_spin.length < 6 && data.cust_spin !== ""  ? "Please Enter valid PIN Code" : "" }
+                              helperText={
+                                data.cust_spin.length < 6 &&
+                                data.cust_spin !== ""
+                                  ? "Please Enter valid PIN Code"
+                                  : ""
+                              }
                             />
                           </div>
                           <div className="box-sec">
@@ -626,12 +680,15 @@ const Edit = (props) => {
                               variant="outlined"
                               className="sec-1 w-full"
                               value={data.cust_scity}
-                              inputProps={{ maxLength: 30}}
+                              inputProps={{ maxLength: 30 }}
                               onChange={(e) =>
-                                setData({ ...data, cust_scity: e.target.value.replace(
-                                  /[^A-Z a-z]/g,
-                                  ""
-                                ), })
+                                setData({
+                                  ...data,
+                                  cust_scity: e.target.value.replace(
+                                    /[^A-Z a-z]/g,
+                                    ""
+                                  ),
+                                })
                               }
                               size="small"
                             />
@@ -643,7 +700,7 @@ const Edit = (props) => {
                               className="sec-2"
                               size="small"
                               value={data.cust_sstate}
-                              inputProps={{ maxLength: 30}}
+                              inputProps={{ maxLength: 30 }}
                               onChange={(e) =>
                                 setData({
                                   ...data,
@@ -682,7 +739,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_bflat}
-                                inputProps={{ maxLength: 40}}
+                                inputProps={{ maxLength: 40 }}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -703,7 +760,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_barea}
-                                inputProps={{ maxLength: 40}}
+                                inputProps={{ maxLength: 40 }}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -723,7 +780,7 @@ const Edit = (props) => {
                                 className="w-full"
                                 size="small"
                                 value={data.cust_bpin}
-                                inputProps={{ maxLength: 6}}
+                                inputProps={{ maxLength: 6 }}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -733,7 +790,12 @@ const Edit = (props) => {
                                     ),
                                   })
                                 }
-                                helperText={data.cust_bpin.length < 6 && data.cust_bpin !== ""  ? "Please Enter valid PIN Code" : "" }
+                                helperText={
+                                  data.cust_bpin.length < 6 &&
+                                  data.cust_bpin !== ""
+                                    ? "Please Enter valid PIN Code"
+                                    : ""
+                                }
                               />
                             </div>
                             <div className="box-sec">
@@ -744,7 +806,7 @@ const Edit = (props) => {
                                 className="sec-1"
                                 size="small"
                                 value={data.cust_bcity}
-                                inputProps={{ maxLength: 30}}
+                                inputProps={{ maxLength: 30 }}
                                 onChange={(e) =>
                                   setData({
                                     ...data,
@@ -762,7 +824,7 @@ const Edit = (props) => {
                                 variant="outlined"
                                 className="sec-2"
                                 size="small"
-                                inputProps={{ maxLength: 30}}
+                                inputProps={{ maxLength: 30 }}
                                 value={data.cust_bstate}
                                 onChange={(e) =>
                                   setData({

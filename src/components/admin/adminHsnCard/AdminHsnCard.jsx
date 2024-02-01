@@ -14,7 +14,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useContext, useState } from "react";
 import { UserContext } from "../../../context/UserIdContext";
 const AdminHsnCard = (props) => {
-  const { changeHsnId, hsnId, changeChange, adminAccess } =
+  const { changeHsnId, hsnId, changeChange, adminGstAccess } =
     useContext(UserContext);
 
   const [open, setOpen] = useState(false);
@@ -72,10 +72,10 @@ const AdminHsnCard = (props) => {
       <div className="mt-1 justify-self-center">{props.data.igst}</div>
       <div className="flex gap-4 justify-self-center">
         <button
-          disabled={parseInt(adminAccess) === 2 ? false : true}
+          disabled={parseInt(adminGstAccess) === 2 ? false : true}
           onClick={props.edit}
           className={
-            parseInt(adminAccess) === 2
+            parseInt(adminGstAccess) === 2
               ? "text-emerald-500 p-1 rounded-md shadow shadow-emerald-600 w-9 h-9 flex items-center justify-center  hover:bg-emerald-500 hover:text-white transition-all ease-in-out duration-500 "
               : disabledStyle
           }
@@ -83,9 +83,9 @@ const AdminHsnCard = (props) => {
           <IconEdit />
         </button>
         <button
-          disabled={parseInt(adminAccess) === 2 ? false : true}
+          disabled={parseInt(adminGstAccess) === 2 ? false : true}
           className={
-            parseInt(adminAccess) === 2
+            parseInt(adminGstAccess) === 2
               ? "text-rose-500 p-1 rounded-md shadow shadow-rose-600 w-9 h-9 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all ease-in-out duration-500"
               : disabledStyle
           }
@@ -115,7 +115,7 @@ const AdminHsnCard = (props) => {
                   Cancel
                 </button>
                 <button
-                  disabled={parseInt(adminAccess) === 2 ? false : true}
+                  disabled={parseInt(adminGstAccess) === 2 ? false : true}
                   className="delete-btn text-red-600 pb-3 pr-3"
                   autoFocus
                   onClick={handleDelete}

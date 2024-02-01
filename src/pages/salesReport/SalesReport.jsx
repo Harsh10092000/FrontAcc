@@ -62,6 +62,7 @@ const SalesReport = () => {
       setEdateval(today);
     }
   }, [period, sdate, edate]);
+
   const net = data
     .filter(
       (item) =>
@@ -71,6 +72,7 @@ const SalesReport = () => {
     .reduce(function (prev, current) {
       return prev + +current.sale_amt;
     }, 0);
+
   const due = data
     .filter(
       (item) =>
@@ -78,8 +80,11 @@ const SalesReport = () => {
         new Date(item.sale_date) < edateval
     )
     .reduce(function (prev, current) {
-      return prev + +current.sale_amt_due;
+      return prev + +current.sale_amt;
     }, 0);
+
+    
+
   if (sort === "recent") {
     data.sort(function (a, b) {
       return b.sale_id - a.sale_id;
@@ -263,7 +268,7 @@ const SalesReport = () => {
                   <div>Transactions</div>
                   <div>Payment</div>
                   <div>Amount</div>
-                  <div>Balance</div>
+                  <div>Out/Balance</div>
                 </div>
                 <div className="h-[48vh] overflow-y-scroll">
                   {data

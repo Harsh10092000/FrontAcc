@@ -35,7 +35,7 @@ const SerLeft = (props) => {
       .then((response) => {
         setData(response.data);
       });
-  }, [change]);
+  }, [change, accountId]);
 
   const [filter2, setFilter2] = useState("All");
   const [searchValue, setSearchValue] = useState("");

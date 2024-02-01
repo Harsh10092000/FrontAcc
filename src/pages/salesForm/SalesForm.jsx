@@ -477,6 +477,7 @@ const SalesForm = () => {
               : item
           )
         );
+        setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));    
   };
   const handleIncrease2 = (productId) => {
     setNerArr((nerArr) =>
@@ -489,6 +490,7 @@ const SalesForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
   const handleIncrease3 = (productId) => {
     setNerArr((nerArr) =>
@@ -501,6 +503,7 @@ const SalesForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
   const handleDecrease = (productId) => {
     addProducts
@@ -524,6 +527,7 @@ const SalesForm = () => {
               : item
           )
         );
+        setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
   const handleDecrease2 = (productId) => {
     setNerArr((nerArr) =>
@@ -536,6 +540,7 @@ const SalesForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
   const handleDecrease3 = (productId) => {
     setNerArr((nerArr) =>
@@ -548,11 +553,12 @@ const SalesForm = () => {
           : item
       )
     );
+    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
   };
 
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
+  // useEffect(() => {
+  //   setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
+  // }, [nerArr]);
 
   const [prefixNo, setPrefixNo] = useState(0);
   useEffect(() => {
@@ -692,6 +698,7 @@ const SalesForm = () => {
           100
       : item_price - item_price / ((item_igst !== "-" ? tax : 0) / 100 + 1);
   };
+  // (1000 / (5/100+1))*(1 * (5/100))
 
   const handleContinue3 = (e) => {
     setInvoiceItems({
@@ -1591,6 +1598,7 @@ const SalesForm = () => {
                     type="text"
                     className="border p-2 rounded-lg w-[32%] border-slate-400 h-[90%]"
                     placeholder="Invoice Number"
+                    disabled
                     value={
                       prefixValue === "" || prefixValue === undefined
                         ? parseInt(defaultPrefixNo) + 1

@@ -502,7 +502,7 @@ export default function EditAccount() {
                   <div className="flex items-center justify-between">
                     
                     {file1 !== "" && file1 !== undefined && file1 !== null ? (
-                      <span className="truncate pr-3 text-base font-medium text-sky-800">
+                      <span className="pr-3 text-base font-medium text-sky-800 truncate max-w-[290px]">
                         {file1.name ? file1.name : file1}
                       </span>
                     ) : (
@@ -558,7 +558,7 @@ export default function EditAccount() {
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
                     {file2 !== "" && file2 !== undefined && file2 !== null ? (
-                      <span className=" pr-3 text-base font-medium text-sky-800 ">
+                      <span className=" pr-3 text-base font-medium text-sky-800 truncate max-w-[290px]">
                         {file2.name ? file2.name : file2}
                       </span>
                     ) : (

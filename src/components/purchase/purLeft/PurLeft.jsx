@@ -18,7 +18,7 @@ const PurLeft = () => {
       .then((response) => {
         setResult(response.data);
       });
-  }, [change]);
+  }, [change, accountId]);
 
   const total_amt = result.reduce((acc, current) => {
     return acc + +current.purchase_amt;

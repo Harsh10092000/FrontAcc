@@ -38,7 +38,8 @@ import AdminAccount from "./components/admin/adminAccount/AdminAccount";
 import AdminSac from "./components/admin/adminSac/AdminSac";
 import AdminHsn from "./components/admin/adminHsn/AdminHsn";
 import AdminLogin from "./pages/adminLogin/AdminLogin";
-import Moderator from "./components/admin/moderator/Moderator";
+//import Moderator from "./components/admin/moderator/Moderator";
+import Moderator from "./components/admin/adminModerator/moderator/Moderator";
 import Subscription from "./pages/subscription/Subscription";
 
 const App = () => {

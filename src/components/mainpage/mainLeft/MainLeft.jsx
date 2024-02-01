@@ -26,7 +26,6 @@ const MainLeft = (props) => {
   const [total, setTotal] = useState([]);
 
 
-
   useEffect(() => {
     axios
       .get(import.meta.env.VITE_BACKEND + `/api/auth/fetch/${accountId}`)

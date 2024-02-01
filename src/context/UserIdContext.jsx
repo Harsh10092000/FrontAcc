@@ -114,7 +114,29 @@ export const UserContextProvider = ({ children }) => {
   const changeAdminType = (adminType) => {
     setAdminType(adminType);
   };
+
+  const [moderatorId, setModeratorId] = useState(0);
+  const changeModeratorId = (moderatorId) => {
+    setModeratorId(moderatorId);
+  };
+
+  const [adminAccAccess, setAdminAccAccess] = useState(0);
+  const changeAdminAccAccess = (adminAccAccess) => {
+    setAdminAccAccess(adminAccAccess);
+  };
+
+  const [adminGstAccess, setAdminGstAccess] = useState(0);
+  const changeAdminGstAccess = (adminGstAccess) => {
+    setAdminGstAccess(adminGstAccess);
+  };
+
+  const [adminPayAccess, setAdminPayAccess] = useState(0);
+  const changeAdminPayAccess = (adminPayAccess) => {
+    setAdminPayAccess(adminPayAccess);
+  };
+
   const { currentUser } = useContext(AuthContext);
+
   useEffect(() => {
     if (currentUser) {
       setAccountId(currentUser[0].business_id);
@@ -129,6 +151,50 @@ export const UserContextProvider = ({ children }) => {
       }
     }
   }, []);
+
+
+
+  // const { currentUser } = useContext(AuthContext);
+  // console.log("inside useridcontext")
+
+  //const [user1, setUser1] = useState([]);
+  // useEffect(() => {
+  //   const items = window.localStorage.getItem("user");
+  //   if (items) {
+  //     console.log("items : " , items)
+  //     //setUser1(items);
+  //   }
+  // });
+
+  //console.log("user 1 : " , user1)
+
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     setAccountId(currentUser[0].business_id);
+  //     changeUId(currentUser[0].log_id);
+  //     changeAccess(currentUser[0].access);
+  //     changeUserType(currentUser[0].log_user);
+  //     console.log(currentUser[0].log_user, currentUser[0].access);
+  //     if (currentUser[0].log_user === 0) {
+  //       changeParties(currentUser[0].staff_parties);
+  //       changeBills(currentUser[0].staff_bills);
+  //       changeInventory(currentUser[0].staff_inventory);
+  //     }
+  //   }
+  // }, []);
+
+  // const [items, setItems] = useState([]);
+  // useEffect(() => {
+  //   const items = JSON.parse(localStorage.getItem('selected'));
+  //   if (items) {
+  //     setItems(items);
+  //   }
+  // }, []);
+
+
+  // useEffect(() => {
+  //   localStorage.setItem('selected', JSON.stringify(accountId));
+  // }, [accountId])
 
   return (
     <UserContext.Provider
@@ -181,6 +247,14 @@ export const UserContextProvider = ({ children }) => {
         changeAdminId,
         adminType,
         changeAdminType,
+        moderatorId,
+        changeModeratorId,
+        adminAccAccess,
+        changeAdminAccAccess,
+        adminGstAccess,
+        changeAdminGstAccess,
+        adminPayAccess,
+        changeAdminPayAccess,
       }}
     >
       {children}

@@ -6,9 +6,11 @@ import { UserContext } from "../../context/UserIdContext";
 
 const AdminLogin = () => {
   const {
-    changeAdminAccess,
     changeAdminId,
     changeAdminType,
+    changeAdminAccAccess,
+    changeAdminGstAccess,
+    changeAdminPayAccess,
   } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -24,8 +26,17 @@ const AdminLogin = () => {
       .then((res) => {
         SetAdminData(res.data);
         changeAdminId(res.data[0].super_id),
-        changeAdminType(res.data[0].super_type);
-        changeAdminAccess(res.data[0].super_access);
+          changeAdminType(res.data[0].super_type);
+        //changeAdminAccess(res.data[0].super_access);
+        if (res.data[0].super_type === 0) {
+          changeAdminAccAccess(res.data[0].mod_accounts),
+          changeAdminGstAccess(res.data[0].mod_gst),
+          changeAdminPayAccess(res.data[0].mod_payplan);
+        } else {
+          changeAdminAccAccess(2);
+          changeAdminGstAccess(2);
+          changeAdminPayAccess(2);
+        }
       });
   };
 

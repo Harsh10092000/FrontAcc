@@ -18,10 +18,10 @@ import { useState, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import { UserContext } from "../../context/UserIdContext";
 import axios from "axios";
-import { useSnackbar } from "notistack";
+
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-//import "./salesform.scss";
+
 import { useNavigate } from "react-router-dom";
 
 const SalesReturn = () => {
@@ -29,7 +29,7 @@ const SalesReturn = () => {
     useContext(UserContext);
 
   const [customerData, setCustomerData] = useState([]);
-  const [businessdata, setBusinessdata] = useState([]);
+
 
   const [businessGst, setBusinessGst] = useState("");
 
@@ -51,7 +51,6 @@ const SalesReturn = () => {
     axios
       .get(import.meta.env.VITE_BACKEND + "/api/act/fetchData")
       .then((response) => {
-        setBusinessdata(response.data);
         setBusinessGst(response.data[0].business_gst);
       });
     axios
@@ -88,7 +87,7 @@ const SalesReturn = () => {
           sale_amt_due: response.data[0].sale_amt_due,
           sale_amt_type: response.data[0].sale_amt_type,
         });
-        //setAmtPayMethod(response.data[0].sale_amt_type);
+
       });
   }, []);
 
@@ -113,7 +112,6 @@ const SalesReturn = () => {
       });
   }, [saleDataById]);
 
-  const [searchValue, setSearchValue] = useState("");
 
   const today = new Date();
   const month = today.getMonth() + 1;
@@ -125,68 +123,8 @@ const SalesReturn = () => {
   var date1 = transactionDate.$d;
   var filteredDate = date1.toString().slice(4, 16);
 
-  const [prefixValue, setPrefixValue] = useState("");
-  const { enqueueSnackbar } = useSnackbar();
 
-  const [nerArr, setNerArr] = useState([]);
 
-  // const handleIncrease = (productId) => {
-  //   setProductList((productList) =>
-  //     productList.map((item) =>
-  //       productId === item.product_id
-  //         ? {
-  //             ...item,
-  //             qty: item.qty + 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  // const handleIncrease2 = (productId) => {
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.product_id && item.item_cat === 1
-  //         ? {
-  //             ...item,
-  //             item_qty: item.item_qty + 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  // const handleDecrease = (productId) => {
-  //   setProductList((productList) =>
-  //     productList.map((item) =>
-  //       productId === item.product_id
-  //         ? {
-  //             ...item,
-  //             qty: item.qty - 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  // const handleDecrease2 = (productId) => {
-  //   setNerArr((nerArr) =>
-  //     nerArr.map((item) =>
-  //       productId === item.product_id &&
-  //       item.item_qty >= 1 &&
-  //       item.item_cat === 1
-  //         ? {
-  //             ...item,
-  //             item_qty: item.item_qty - 1,
-  //           }
-  //         : item
-  //     )
-  //   );
-  // };
-
-  useEffect(() => {
-    setNerArr((prevNerArr) => prevNerArr.filter((item) => item.item_qty !== 0));
-  }, [nerArr]);
 
   const [isGstBusiness, setIsGstBusiness] = useState(true);
   const handleBusinessGst = () => {
@@ -199,7 +137,7 @@ const SalesReturn = () => {
     setAmtPayMethod(event.target.value);
   };
 
-  const [amountPaid, setAmountPaid] = useState(0);
+
 
   const navigate = useNavigate();
 
@@ -273,8 +211,7 @@ const SalesReturn = () => {
         import.meta.env.VITE_BACKEND + "/api/sale/returnSale",
         saleReturn
       );
-      // changeChange();
-      // props.snack();
+     
       navigate("/sales");
     } catch (err) {
       console.log(err);
@@ -547,12 +484,7 @@ const SalesReturn = () => {
                   value={amtPayMethod}
                   onChange={handlePayStatus}
                 >
-                  {/* <FormControlLabel
-                    value="unpaid"
-                    control={<Radio />}
-                    label="unpaid"
-                  /> */}
-                  {console.log("amtPayMethod : " , amtPayMethod)}
+                  
                   <FormControlLabel
                     
                     value="online"
@@ -570,21 +502,7 @@ const SalesReturn = () => {
               </FormControl>
             </div>
 
-            {/* {amtPayMethod !== "unpaid" ? (
-              <div className="flex gap-2 text-lg font-semibold text-slate-600">
-                
-                <div>
-                  <input
-                    type="text"
-                    className="border p-2 rounded-lg w-[90%] border-slate-400"
-                    placeholder="Amount Paid (₹)"
-                    
-                  />
-                </div>
-              </div>
-            ) : (
-              ""
-            )} */}
+           
 
             <div className="flex gap-2 text-lg font-semibold text-slate-600">
               <div>Balance Due :</div>

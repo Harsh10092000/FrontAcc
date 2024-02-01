@@ -4,30 +4,19 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Navbar from "../../components/navbar/Navbar";
 import "./account.scss";
-import { IconAlertOctagonFilled, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import axios from "axios";
 import { UserContext } from "../../context/UserIdContext";
 
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 
 export default function AddAccount() {
   const {
     changeChange,
-    change,
     accountId,
     changeAccountId,
     changeUser,
-    changeParties,
-    changeInventory,
-    changeBills,
-    parties,
     uId,
   } = useContext(UserContext);
   const navigate = useNavigate();
@@ -38,12 +27,7 @@ export default function AddAccount() {
   const [file, setFile] = useState("");
   const [file1, setFile1] = useState("");
 
-  // const onChange = (e) => {
-  //   setFile(e.target.files[0]);
-  //   setFilename(e.target.files[0].name);
-  //   console.log(file);
-  //   console.log(filename);
-  // };
+  
 
   const [data, setData] = useState({
     business_name: "",
@@ -91,64 +75,7 @@ export default function AddAccount() {
     }
   };
 
-  //const uId = 5;
-  // const [info, setInfo] = useState([]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchStaffData/${uId}`)
-  //     .then((res) => {
-  //       setStaffData(res.data);
-  //     });
-  // }, [uId]);
-
-  // useEffect(() => {
-  //   if (staffData.length > 0) {
-  //     console.log(staffData , staffData[0].staff_acc_id);
-  //     changeParties(staffData[0].staff_parties);
-  //     changeInventory(staffData[0].staff_inventory);
-  //     changeBills(staffData[0].staff_bills);
-
-  //   axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetchData/${staffData[0].staff_acc_id}`)
-  //     .then((res) => {
-  //       setInfo(res.data);
-  //       changeAccountId(res.data[0].business_id);
-  //     });
-  //   } else {
-  //     axios
-  //     .get(import.meta.env.VITE_BACKEND + `/api/act/fetch/${uId}`)
-  //     .then((res) => {
-  //       setInfo(res.data);
-  //       changeAccountId(res.data[0].business_id);
-  //     });
-  //   }
-  // }, [staffData]);
-
-  const deleteAc = async () => {
-    try {
-      await axios.delete(
-        import.meta.env.VITE_BACKEND + `/api/act/delData/${parseInt(accountId)}`
-      );
-      changeChange();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const changeId = (id) => {
-    changeAccountId(id);
-    changeUser(0);
-  };
+  
 
   const [formatError, setFormatError] = useState(false);
   const [formatError1, setFormatError1] = useState(false);
@@ -322,7 +249,7 @@ export default function AddAccount() {
                 label="Address"
                 className="w-full"
                 name="business_address"
-                inputProps={{ maxLength: 80 }}
+                inputProps={{ maxLength: 100 }}
                 value={data.business_address}
                 onChange={(e) =>
                   setData({
@@ -528,7 +455,7 @@ export default function AddAccount() {
                 </div>
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    <span className="truncate pr-3 text-base font-medium text-sky-800 ">
+                    <span className="truncate pr-3 text-base font-medium text-sky-800 overflow-ellipsis overflow-hidden max-w-[300px]">
                       {file1 !== "" && file1 !== undefined
                         ? file1.name
                         : "Your Logo"}
@@ -580,7 +507,7 @@ export default function AddAccount() {
                 </div>
                 <div className="   py-2 px-7 block w-full border border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    <span className="truncate pr-3 text-base font-medium text-sky-800">
+                    <span className="truncate pr-3 text-base font-medium text-sky-800 overflow-ellipsis overflow-hidden max-w-[300px]">
                       {file !== "" && file !== undefined
                         ? file.name
                         : "Your Signature"}

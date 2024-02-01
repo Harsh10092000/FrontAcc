@@ -43,7 +43,7 @@ const CashLeft = (props) => {
       .then((res) => {
         setInfo(res.data);
       });
-  }, [change, transactionDate]);
+  }, [change, transactionDate, , accountId]);
 
   const sum_pay = data.reduce(function (prev, current) {
     return prev + +current.cash_pay;
